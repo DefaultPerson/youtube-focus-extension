@@ -27,12 +27,12 @@ input[type=checkbox]:disabled { cursor: not-allowed; }
 .changed-filter { margin: 0; }
 .check { justify-content: space-between; padding: 8px 0; }
 .check input { order: 2; margin-left: auto; }
-.weekdays { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; }
+.weekdays { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 8px; }
 .weekdays label { justify-content: space-between; padding: 4px 0; margin: 0; }
 .weekdays input { order: 2; }
 fieldset { min-width: 0; }
 fieldset > label, form > label, .form-grid > label { min-width: 0; }
-select, input, textarea { max-width: 100%; }
+select, input, textarea { min-width: 0; max-width: 100%; }
 [data-section] > p { max-width: 72ch; }
 [data-section] > form > button[type=submit] { margin-top: 8px; }
 #appearance-panel .section-heading { gap: 12px; }
@@ -158,7 +158,9 @@ fieldset p { font-size: 14px; }
 .focus-detail > summary::marker { color: var(--muted); }
 .detail-body { padding: 0 0 20px; }
 .detail-body > label { display: grid; gap: 8px; margin: 16px 0; }
+.detail-body > :first-child { margin-top: 0; }
 .detail-body > :last-child { margin-bottom: 0; }
+#focus-defaults form:last-child fieldset { margin-bottom: 0; }
 .focus-save-row { padding: 6px 0 26px; }
 .focus-save-row .field-help { margin: 0; }
 .focus-detail[open] { scroll-margin-top: 140px; }

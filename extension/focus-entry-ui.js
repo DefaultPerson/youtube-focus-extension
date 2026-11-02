@@ -12,7 +12,8 @@
     const progress = document.createElement('progress'); progress.max = Math.max(1, state.seconds);
     const button = document.createElement('button'); button.textContent = t('Open settings'); button.disabled = true;
     const cancel = document.createElement('button'); cancel.textContent = t('Not now');
-    dialog.append(heading, message, status, progress, button, cancel); document.body.append(dialog);
+    const actions = document.createElement('div'); actions.className = 'dialog-actions'; actions.append(button, cancel);
+    dialog.append(heading, message, status, progress, actions); document.body.append(dialog);
     const update = () => {
       const remaining = Math.max(0, Math.ceil((state.readyAt - Date.now()) / 1000));
       status.hidden = state.style !== 'detailed'; progress.hidden = state.style !== 'subtle';
