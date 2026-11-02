@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const images = ':is(ytd-thumbnail,yt-thumbnail-view-model,ytm-shorts-lockup-view-model) img';
-  const titles = ':is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #video-title,yt-lockup-view-model .yt-lockup-metadata-view-model__title';
+  const titles = ':is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #video-title,yt-lockup-view-model :is(.yt-lockup-metadata-view-model__title,.ytLockupMetadataViewModelTitle)';
   function pageCategory(path) {
     if (path.startsWith('/embed/')) return 'embed';
     if (path === '/' || path === '/home') return 'homePage';
@@ -27,6 +27,9 @@
       if (option.type === 'boolean' && values[option.id] === true) css.push(...option.css);
     }
     if (page === 'embed') return css.join('\n');
+    if (page === 'channelPage' && values.channel_hide_channel_subscribers_counter && values.channel_hide_channel_videos_counter) {
+      css.push(rule('ytd-browse[page-subtype="channels"] yt-page-header-view-model .ytContentMetadataViewModelDelimiterStandalone', 'display:none!important;'));
+    }
     const blur = Number(values.video_card_blur_thumbnail);
     const gray = Number(values.video_card_grayscale_thumbnail);
     const transparent = Number(values.video_card_opacity_thumbnail);

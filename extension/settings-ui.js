@@ -53,6 +53,9 @@
   $('navigation-toggle').append(YFEIcons('menu')); $('navigation-close').append(YFEIcons('close'));
   $('navigation-toggle').addEventListener('click', () => setNavigation(!document.body.classList.contains('navigation-open')));
   $('navigation-close').addEventListener('click', () => { setNavigation(false); $('navigation-toggle').focus(); });
+  document.addEventListener('click', event => {
+    if (document.body.classList.contains('navigation-open') && !event.target.closest('.sidebar, #navigation-toggle')) setNavigation(false);
+  });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') setNavigation(false); });
   const language = $('interface-language');
   void YFEI18n.ready.then(() => { language.value = YFEI18n.language; });

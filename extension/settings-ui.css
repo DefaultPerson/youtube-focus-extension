@@ -163,6 +163,7 @@ fieldset p { font-size: 14px; }
 #focus-defaults form:last-child fieldset { margin-bottom: 0; }
 .focus-save-row { padding: 6px 0 26px; }
 .focus-save-row .field-help { margin: 0; }
+#focus-session-widget-help { margin-bottom: 20px; }
 .focus-detail[open] { scroll-margin-top: 140px; }
 @media (max-width: 720px) {
   .session-overview { padding: 18px 16px; }

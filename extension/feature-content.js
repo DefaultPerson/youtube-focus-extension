@@ -138,7 +138,7 @@
     sessionRoot.querySelector('#session-action').textContent = t(access.phase === 'active' ? 'End session' : 'Start focus session');
   }
   function showSessionControl() {
-    if (!document.documentElement || !snapshot.settings.enabled || snapshot.access.blocked) { removeSessionControl(); return; }
+    if (!document.documentElement || !snapshot.settings.enabled || snapshot.features.focus.showSessionWidget !== true || snapshot.access.blocked) { removeSessionControl(); return; }
     // Embedded videos share the session, while its controls live on the main YouTube page.
     if (window.top !== window || location.hostname !== 'www.youtube.com') return;
     if (!sessionHost) {

@@ -505,7 +505,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Explore heading",
       "css": [
-        "ytd-guide-section-renderer:has(a[href^=\"/feed/trending\"]) > #header{display:none!important;}"
+        "ytd-guide-section-renderer:has(:is(a[href^=\"/feed/trending\"],a[href=\"/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ\"])) > :is(#header,h3){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -518,7 +518,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Explore section",
       "css": [
-        "ytd-guide-section-renderer:has(a[href^=\"/feed/trending\"]){display:none!important;}"
+        "ytd-guide-section-renderer:has(:is(a[href^=\"/feed/trending\"],a[href=\"/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ\"])){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -739,7 +739,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts link",
       "css": [
-        ":is(ytd-guide-entry-renderer,ytd-mini-guide-entry-renderer):has(a[href=\"/shorts/\"]),:is(ytd-guide-entry-renderer,ytd-mini-guide-entry-renderer):has(a[href=\"/shorts\"]){display:none!important;}"
+        ":is(ytd-guide-entry-renderer,ytd-mini-guide-entry-renderer):has(a:is([href=\"/shorts\"],[href^=\"/shorts/\"],[title=\"Shorts\"])){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -972,7 +972,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide YouTube services heading",
       "css": [
-        "ytd-guide-section-renderer:has(a[href=\"/premium\"]) > #header{display:none!important;}"
+        "ytd-guide-section-renderer:has(a[href=\"/premium\"]) > :is(#header,h3){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1102,7 +1102,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide subscribed channel list",
       "css": [
-        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]){display:none!important;}"
+        "ytd-guide-section-renderer:is(:has(a[href=\"/feed/channels\"]),:has(ytd-guide-collapsible-section-entry-renderer #header a[href=\"/feed/subscriptions\"])){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1115,7 +1115,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide subscribed channel heading",
       "css": [
-        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) > #header{display:none!important;}"
+        "ytd-guide-section-renderer:is(:has(a[href=\"/feed/channels\"]),:has(ytd-guide-collapsible-section-entry-renderer #header a[href=\"/feed/subscriptions\"])) > :is(#header,h3),ytd-guide-section-renderer:is(:has(a[href=\"/feed/channels\"]),:has(ytd-guide-collapsible-section-entry-renderer #header a[href=\"/feed/subscriptions\"])) > #items > ytd-guide-collapsible-section-entry-renderer > #header{display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1140,7 +1140,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel update dots",
       "css": [
-        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) #newness-dot{display:none!important;}"
+        "ytd-guide-section-renderer:is(:has(a[href=\"/feed/channels\"]),:has(ytd-guide-collapsible-section-entry-renderer #header a[href=\"/feed/subscriptions\"])) #newness-dot{display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1153,7 +1153,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel live indicators",
       "css": [
-        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) :is(.guide-entry-badge,yt-icon#badge){display:none!important;}"
+        "ytd-guide-section-renderer:is(:has(a[href=\"/feed/channels\"]),:has(ytd-guide-collapsible-section-entry-renderer #header a[href=\"/feed/subscriptions\"])) :is(.guide-entry-badge,yt-icon#badge){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1166,7 +1166,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide subscribed channel avatars",
       "css": [
-        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) yt-img-shadow{display:none!important;}"
+        "ytd-guide-section-renderer:is(:has(a[href=\"/feed/channels\"]),:has(ytd-guide-collapsible-section-entry-renderer #header a[href=\"/feed/subscriptions\"])) yt-img-shadow{display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1179,7 +1179,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Grayscale subscribed channel avatars",
       "css": [
-        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) yt-img-shadow{filter:grayscale(1)!important;}"
+        "ytd-guide-section-renderer:is(:has(a[href=\"/feed/channels\"]),:has(ytd-guide-collapsible-section-entry-renderer #header a[href=\"/feed/subscriptions\"])) yt-img-shadow{filter:grayscale(1)!important;}"
       ],
       "implementation": "css"
     },
@@ -1192,7 +1192,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel list expansion button",
       "css": [
-        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) #expander-item{display:none!important;}"
+        "ytd-guide-section-renderer:is(:has(a[href=\"/feed/channels\"]),:has(ytd-guide-collapsible-section-entry-renderer #header a[href=\"/feed/subscriptions\"])) #expander-item{display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1231,7 +1231,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Create button",
       "css": [
-        "ytd-masthead :is(ytd-topbar-menu-button-renderer,yt-button-view-model):has(button[aria-label=\"Create\"]){display:none!important;}"
+        "ytd-masthead :is(ytd-topbar-menu-button-renderer,ytd-button-renderer,yt-button-view-model,button-view-model):has(button:is([aria-label=\"Create\"],[aria-label=\"Создать\"])){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1346,7 +1346,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide logo text",
       "css": [
-        "ytd-masthead ytd-topbar-logo-renderer :is(g#youtube-paths,path[id=\"youtube-paths\"]){display:none!important;}"
+        "ytd-masthead ytd-topbar-logo-renderer :is(g[id^=\"youtube-paths\"],path[id^=\"youtube-paths\"]){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1489,7 +1489,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide video like count",
       "css": [
-        "ytd-watch-metadata :is(like-button-view-model .yt-spec-button-shape-next__button-text-content,ytd-toggle-button-renderer#like-button #text){display:none!important;}"
+        "ytd-watch-metadata :is(like-button-view-model :is(.yt-spec-button-shape-next__button-text-content,.ytSpecButtonShapeNextButtonTextContent),ytd-toggle-button-renderer#like-button #text){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1515,7 +1515,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Share action",
       "css": [
-        "ytd-watch-metadata :is(yt-button-view-model,ytd-button-renderer):has(button[aria-label=\"Share\"]){display:none!important;}"
+        "ytd-watch-metadata :is(:is(yt-button-view-model,button-view-model),ytd-button-renderer):has(button[aria-label=\"Share\"]){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1528,7 +1528,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Thanks action",
       "css": [
-        "ytd-watch-metadata :is(yt-button-view-model,ytd-button-renderer):has(button[aria-label=\"Thanks\"]){display:none!important;}"
+        "ytd-watch-metadata :is(:is(yt-button-view-model,button-view-model),ytd-button-renderer):has(button[aria-label=\"Thanks\"]){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1541,7 +1541,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Clip action",
       "css": [
-        "ytd-watch-metadata :is(yt-button-view-model,ytd-button-renderer):has(button[aria-label=\"Clip\"]){display:none!important;}"
+        "ytd-watch-metadata :is(:is(yt-button-view-model,button-view-model),ytd-button-renderer):has(button[aria-label=\"Clip\"]){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -1567,7 +1567,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Save action",
       "css": [
-        "ytd-watch-metadata :is(yt-button-view-model,ytd-button-renderer):has(button[aria-label=\"Save to playlist\"]){display:none!important;}"
+        "ytd-watch-metadata :is(:is(yt-button-view-model,button-view-model),ytd-button-renderer):has(button[aria-label=\"Save to playlist\"]){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -2550,7 +2550,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide video card badges",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(ytd-badge-supported-renderer,yt-badge-view-model){display:none!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(ytd-badge-supported-renderer,yt-badge-view-model,yt-thumbnail-badge-view-model,.ytContentMetadataViewModelIcon){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -2563,7 +2563,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Live badges",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(.badge-style-type-live-now,.yt-badge-shape--live){display:none!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(.badge-style-type-live-now,:is(.yt-badge-shape--live,.ytBadgeShapeThumbnailLive)){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -2589,7 +2589,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide verification badges",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(.badge-style-type-verified,.badge-style-type-verified-artist){display:none!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(.badge-style-type-verified,.badge-style-type-verified-artist,.ytContentMetadataViewModelMetadataText:has(a) + .ytContentMetadataViewModelIcon){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -2602,7 +2602,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide video card channel avatars",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(#avatar-link,.yt-content-metadata-view-model__avatar){display:none!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(#avatar-link,:is(.yt-content-metadata-view-model__avatar,.ytLockupMetadataViewModelAvatar)){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -2615,7 +2615,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Grayscale video card avatars",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(#avatar-link,.yt-content-metadata-view-model__avatar){filter:grayscale(1)!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(#avatar-link,:is(.yt-content-metadata-view-model__avatar,.ytLockupMetadataViewModelAvatar)){filter:grayscale(1)!important;}"
       ],
       "implementation": "css"
     },
@@ -2628,7 +2628,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide video card channel names",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) ytd-channel-name,yt-lockup-view-model .yt-content-metadata-view-model__metadata-row a[href^=\"/@\"]{display:none!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) ytd-channel-name,yt-lockup-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow) > :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText):has(a),yt-lockup-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow) > :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText):has(a) + .ytContentMetadataViewModelIcon,yt-lockup-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):has(a) > :nth-child(1 of :is(.yt-content-metadata-view-model__delimiter,.ytContentMetadataViewModelDelimiter)){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -2641,7 +2641,8 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide video card view counts",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #metadata-line > span:first-child,yt-lockup-view-model .yt-content-metadata-view-model__metadata-row:last-child .yt-content-metadata-view-model__metadata-text:first-child{display:none!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #metadata-line > span:first-child,yt-lockup-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow) > :nth-child(1 of :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText):not(:has(a))){display:none!important;}",
+        "yt-lockup-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow) > :nth-child(1 of :is(.yt-content-metadata-view-model__delimiter,.ytContentMetadataViewModelDelimiter)),yt-lockup-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow) > .ytContentMetadataViewModelLeadingIcon{display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -2654,7 +2655,8 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide video card publication dates",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #metadata-line > span:nth-child(2),yt-lockup-view-model .yt-content-metadata-view-model__metadata-row:last-child .yt-content-metadata-view-model__metadata-text:nth-child(2){display:none!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #metadata-line > span:nth-child(2),yt-lockup-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow) > :nth-child(2 of :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText):not(:has(a))){display:none!important;}",
+        "yt-lockup-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):has(a):has(> :nth-child(3 of :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText))) > :nth-last-child(1 of :is(.yt-content-metadata-view-model__delimiter,.ytContentMetadataViewModelDelimiter)),yt-lockup-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):not(:has(a)):has(> :nth-child(2 of :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText))) > :nth-last-child(1 of :is(.yt-content-metadata-view-model__delimiter,.ytContentMetadataViewModelDelimiter)){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -2680,7 +2682,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide video card action menus",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(ytd-menu-renderer,.yt-lockup-view-model__menu-button){display:none!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(ytd-menu-renderer,:is(.yt-lockup-view-model__menu-button,.ytLockupMetadataViewModelMenuButton)){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -2981,7 +2983,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Show complete video titles",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #video-title,yt-lockup-view-model .yt-lockup-metadata-view-model__title{display:block!important;-webkit-line-clamp:unset!important;max-height:none!important;white-space:normal!important;overflow:visible!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #video-title,yt-lockup-view-model :is(.yt-lockup-metadata-view-model__title,.ytLockupMetadataViewModelTitle){display:block!important;-webkit-line-clamp:unset!important;max-height:none!important;white-space:normal!important;overflow:visible!important;}"
       ],
       "implementation": "css"
     },
@@ -2994,7 +2996,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide video card titles",
       "css": [
-        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #video-title,yt-lockup-view-model .yt-lockup-metadata-view-model__title{display:none!important;}"
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #video-title,yt-lockup-view-model :is(.yt-lockup-metadata-view-model__title,.ytLockupMetadataViewModelTitle){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3100,7 +3102,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide search topic chips",
       "css": [
-        "ytd-search ytd-feed-filter-chip-bar-renderer{display:none!important;}"
+        "ytd-search :is(ytd-feed-filter-chip-bar-renderer,yt-chip-cloud-renderer){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3152,7 +3154,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts search results",
       "css": [
-        "ytd-search :is(ytd-reel-shelf-renderer,ytm-shorts-lockup-view-model,ytd-video-renderer:has(a[href^=\"/shorts/\"])){display:none!important;}"
+        "ytd-search :is(ytd-reel-shelf-renderer,grid-shelf-view-model:has(ytm-shorts-lockup-view-model),ytm-shorts-lockup-view-model,ytd-video-renderer:has(a[href^=\"/shorts/\"])){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3270,7 +3272,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide live subscriptions",
       "css": [
-        "ytd-browse[page-subtype=\"subscriptions\"] :is(ytd-rich-item-renderer,ytd-grid-video-renderer):has(:is(.badge-style-type-live-now,ytd-thumbnail-overlay-time-status-renderer[overlay-style=\"LIVE\"])){display:none!important;}"
+        "ytd-browse[page-subtype=\"subscriptions\"] :is(ytd-rich-item-renderer,ytd-grid-video-renderer):has(:is(.badge-style-type-live-now,.ytBadgeShapeThumbnailLive,ytd-thumbnail-overlay-time-status-renderer[overlay-style=\"LIVE\"])){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3335,7 +3337,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel avatar",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-view-model .yt-page-header-view-model__page-header-headline-image,ytd-c4-tabbed-header-renderer #avatar){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-view-model :is(.yt-page-header-view-model__page-header-headline-image,.ytPageHeaderViewModelHeadlineImage),ytd-c4-tabbed-header-renderer #avatar){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3348,7 +3350,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Grayscale channel avatar",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-view-model .yt-page-header-view-model__page-header-headline-image,ytd-c4-tabbed-header-renderer #avatar){filter:grayscale(1)!important;}"
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-view-model :is(.yt-page-header-view-model__page-header-headline-image,.ytPageHeaderViewModelHeadlineImage),ytd-c4-tabbed-header-renderer #avatar){filter:grayscale(1)!important;}"
       ],
       "implementation": "css"
     },
@@ -3374,7 +3376,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel verification badge",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-renderer,ytd-c4-tabbed-header-renderer) :is(ytd-badge-supported-renderer,yt-icon[aria-label*=\"Verified\"]){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-renderer,ytd-c4-tabbed-header-renderer) :is(ytd-badge-supported-renderer,yt-icon[aria-label*=\"Verified\"],h1 .ytAttributedStringImageElement){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3387,7 +3389,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel handle",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(#channel-handle,yt-page-header-view-model .yt-content-metadata-view-model__metadata-row:first-child > .yt-content-metadata-view-model__metadata-text:first-child){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] #channel-handle,ytd-browse[page-subtype=\"channels\"] yt-page-header-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):first-child > :nth-child(1 of :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText)),ytd-browse[page-subtype=\"channels\"] yt-page-header-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):first-child + :is(.yt-content-metadata-view-model__delimiter,.ytContentMetadataViewModelDelimiter){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3400,7 +3402,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide subscriber count",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(#subscriber-count,yt-page-header-view-model .yt-content-metadata-view-model__metadata-row:first-child > .yt-content-metadata-view-model__metadata-text:nth-child(2)){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] #subscriber-count,ytd-browse[page-subtype=\"channels\"] yt-page-header-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):not(:first-child) > :nth-child(1 of :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText)),ytd-browse[page-subtype=\"channels\"] yt-page-header-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):first-child > :nth-child(2 of :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText)),ytd-browse[page-subtype=\"channels\"] yt-page-header-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):not(:first-child) > :is(.yt-content-metadata-view-model__delimiter,.ytContentMetadataViewModelDelimiter),ytd-browse[page-subtype=\"channels\"] yt-page-header-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):first-child > :nth-child(1 of :is(.yt-content-metadata-view-model__delimiter,.ytContentMetadataViewModelDelimiter)){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3413,7 +3415,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel video count",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(#videos-count,yt-page-header-view-model .yt-content-metadata-view-model__metadata-row:first-child > .yt-content-metadata-view-model__metadata-text:nth-child(3)){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] #videos-count,ytd-browse[page-subtype=\"channels\"] yt-page-header-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):not(:first-child) > :nth-child(2 of :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText)),ytd-browse[page-subtype=\"channels\"] yt-page-header-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):first-child > :nth-child(3 of :is(.yt-content-metadata-view-model__metadata-text,.ytContentMetadataViewModelMetadataText)),ytd-browse[page-subtype=\"channels\"] yt-page-header-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):not(:first-child) > :is(.yt-content-metadata-view-model__delimiter,.ytContentMetadataViewModelDelimiter),ytd-browse[page-subtype=\"channels\"] yt-page-header-view-model :is(.yt-content-metadata-view-model__metadata-row,.ytContentMetadataViewModelMetadataRow):first-child > :nth-child(2 of :is(.yt-content-metadata-view-model__delimiter,.ytContentMetadataViewModelDelimiter)){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3426,7 +3428,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel introduction",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(.yt-description-preview-view-model, #channel-tagline){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] :is(.yt-description-preview-view-model,yt-description-preview-view-model,#channel-tagline){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3439,7 +3441,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel external links",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(yt-channel-external-link-view-model,#links-container){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-channel-external-link-view-model,yt-page-header-view-model yt-attribution-view-model,#links-container){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3465,7 +3467,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel purchase button",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-renderer,ytd-c4-tabbed-header-renderer) :is(ytd-button-renderer,yt-button-view-model):has(button[aria-label=\"Buy\"]){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-renderer,ytd-c4-tabbed-header-renderer) :is(ytd-button-renderer,:is(yt-button-view-model,button-view-model)):has(button[aria-label=\"Buy\"]){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3478,7 +3480,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel Join button",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(#sponsor-button,yt-button-view-model:has(button[aria-label=\"Join\"])){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] :is(#sponsor-button,:is(yt-button-view-model,button-view-model):has(button[aria-label=\"Join\"])){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3624,7 +3626,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel search tab",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(yt-tab-shape[tab-title=\"Search\"],button[aria-label=\"Search this channel\"],#channel-search-button){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] :is(ytd-expandable-tab-renderer,yt-tab-shape[tab-title=\"Search\"],button[aria-label=\"Search this channel\"],#channel-search-button){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3799,7 +3801,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide channel Play all buttons",
       "css": [
-        "ytd-browse[page-subtype=\"channels\"] :is(#play-all-button,ytd-button-renderer:has(a[href*=\"playnext=1\"])){display:none!important;}"
+        "ytd-browse[page-subtype=\"channels\"] :is(#play-all-button,ytd-shelf-renderer #title-container ytd-button-renderer:has(a[href*=\"list=\"]),ytd-button-renderer:has(a[href*=\"playnext=1\"])){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3812,7 +3814,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts Play button",
       "css": [
-        "ytd-shorts :is(.ytp-play-button,#play-pause-button,button[aria-label=\"Pause\"],button[aria-label=\"Play\"]){display:none!important;}"
+        "ytd-shorts :is(.ytp-play-button,#play-pause-button,#play-pause-button-shape,button[aria-label=\"Pause\"],button[aria-label=\"Play\"]){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3825,7 +3827,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts mute button",
       "css": [
-        "ytd-shorts :is(#mute-button,.ytp-mute-button,button[aria-label=\"Mute\"],button[aria-label=\"Unmute\"]){display:none!important;}"
+        "ytd-shorts :is(#mute-button,.ytp-mute-button,ytd-shorts-player-controls volume-controls,button[aria-label=\"Mute\"],button[aria-label=\"Unmute\"]){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3851,7 +3853,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts Like button",
       "css": [
-        "ytd-shorts #like-button{display:none!important;}"
+        "ytd-shorts #like-button,ytd-shorts reel-action-bar-view-model > like-button-view-model{display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3864,7 +3866,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts Dislike button",
       "css": [
-        "ytd-shorts #dislike-button{display:none!important;}"
+        "ytd-shorts #dislike-button,ytd-shorts reel-action-bar-view-model > :is(dislike-button-view-model,.ytwReelActionBarViewModelHostDesktopActionButton:has(button:is([aria-label^=\"Dislike\"],[aria-label^=\"Не нравится\"],[aria-label^=\"Удалить отметку «Не нравится»\"]))){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3877,7 +3879,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts Comments button",
       "css": [
-        "ytd-shorts #comments-button{display:none!important;}"
+        "ytd-shorts #comments-button,ytd-shorts reel-action-bar-view-model > button-view-model:has(button:is([aria-label*=\"comments\" i],[aria-label*=\"комментар\" i])){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3890,7 +3892,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts Share button",
       "css": [
-        "ytd-shorts #share-button{display:none!important;}"
+        "ytd-shorts #share-button,ytd-shorts reel-action-bar-view-model > button-view-model:has(button:is([aria-label=\"Share\"],[aria-label=\"Поделиться\"])){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3916,7 +3918,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts audio link",
       "css": [
-        "ytd-shorts :is(#pivot-button,yt-reel-sound-metadata-view-model){display:none!important;}"
+        "ytd-shorts :is(#pivot-button,yt-reel-sound-metadata-view-model,pivot-button-view-model){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3929,7 +3931,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts description",
       "css": [
-        "ytd-shorts :is(#description,.ytReelMetapanelViewModelDescription){display:none!important;}"
+        "ytd-shorts :is(#description,.ytReelMetapanelViewModelDescription,yt-shorts-video-title-view-model){display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3968,7 +3970,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts like count",
       "css": [
-        "ytd-shorts #like-button :is(.yt-spec-button-shape-next__button-text-content,#text){display:none!important;}"
+        "ytd-shorts #like-button :is(.yt-spec-button-shape-next__button-text-content,.ytSpecButtonShapeNextButtonTextContent,#text,.ytSpecButtonShapeWithLabelLabel),ytd-shorts reel-action-bar-view-model > like-button-view-model .ytSpecButtonShapeWithLabelLabel{display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3981,7 +3983,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts comment count",
       "css": [
-        "ytd-shorts #comments-button :is(.yt-spec-button-shape-next__button-text-content,#text){display:none!important;}"
+        "ytd-shorts #comments-button :is(.yt-spec-button-shape-next__button-text-content,.ytSpecButtonShapeNextButtonTextContent,#text,.ytSpecButtonShapeWithLabelLabel),ytd-shorts reel-action-bar-view-model > button-view-model:has(button:is([aria-label*=\"comments\" i],[aria-label*=\"комментар\" i])) .ytSpecButtonShapeWithLabelLabel{display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -3994,7 +3996,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide Shorts Dislike and Share labels",
       "css": [
-        "ytd-shorts :is(#dislike-button,#share-button) :is(.yt-spec-button-shape-next__button-text-content,#text){display:none!important;}"
+        "ytd-shorts :is(#dislike-button,#share-button) :is(.yt-spec-button-shape-next__button-text-content,.ytSpecButtonShapeNextButtonTextContent,#text,.ytSpecButtonShapeWithLabelLabel),ytd-shorts reel-action-bar-view-model > :is(:is(dislike-button-view-model,.ytwReelActionBarViewModelHostDesktopActionButton:has(button:is([aria-label^=\"Dislike\"],[aria-label^=\"Не нравится\"],[aria-label^=\"Удалить отметку «Не нравится»\"]))),button-view-model:has(button:is([aria-label=\"Share\"],[aria-label=\"Поделиться\"]))) .ytSpecButtonShapeWithLabelLabel{display:none!important;}"
       ],
       "implementation": "css"
     },
@@ -4031,7 +4033,7 @@ globalThis.YTV_CATALOG = {
       "choices": [],
       "label": "Hide personal page avatar",
       "css": [
-        "ytd-browse[page-subtype=\"you\"] :is(yt-page-header-view-model .yt-page-header-view-model__page-header-headline-image,#avatar),ytd-browse[page-subtype=\"library\"] #avatar{display:none!important;}"
+        ":is(ytd-browse[page-subtype=\"you\"],ytd-browse[page-subtype=\"library\"]) :is(yt-page-header-view-model :is(.yt-page-header-view-model__page-header-headline-image,.ytPageHeaderViewModelHeadlineImage),#avatar){display:none!important;}"
       ],
       "implementation": "css"
     },

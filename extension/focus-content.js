@@ -7,6 +7,7 @@
   const style = document.createElement('style');
   style.textContent = `[${watchedMarker}="hidden"],[${budgetMarker}="hidden"],[${tabMarker}="hidden"]{display:none!important}`;
   const flagNames = [
+    'header_disable_logo_link',
     'redirect_shorts_to_exclude_player', 'sidebar_auto_collapse_sidebar',
     'sidebar_auto_expand_playlists', 'sidebar_auto_expand_subscriptions',
     'video_page_auto_expand_description', 'video_page_auto_shows_chapters_in_sidebar',
@@ -292,6 +293,11 @@
     if (event.type === 'keydown' && !['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) return;
     event.preventDefault(); event.stopImmediatePropagation();
   }
+  function blockLogo(event) {
+    if (!enabled('header_disable_logo_link') || !(event.target instanceof Element) || !event.target.closest('ytd-topbar-logo-renderer')) return;
+    if (event.type === 'keydown' && !['Enter', ' '].includes(event.key)) return;
+    event.preventDefault(); event.stopImmediatePropagation();
+  }
   function detachCarousel() {
     if (!carousel) return;
     carousel.removeEventListener('wheel', blockScroll, true);
@@ -379,6 +385,7 @@
     if (frame !== null) cancelAnimationFrame(frame);
     frame = null; clearTimeout(fallback); fallback = null; clearTimeout(deadlineTimer); deadlineTimer = null;
     for (const name of documentEvents) document.removeEventListener(name, onNavigation, true);
+    for (const name of ['click', 'auxclick', 'keydown']) document.removeEventListener(name, blockLogo, true);
     window.removeEventListener('popstate', onNavigation); window.removeEventListener('pageshow', onNavigation); window.removeEventListener('resize', schedule);
     detachCarousel(); restore();
     attempted = new WeakMap();
@@ -409,6 +416,7 @@
       observer = new MutationObserver(changes => { if (relevant(changes)) schedule(); });
       updateObserver();
       for (const name of documentEvents) document.addEventListener(name, onNavigation, true);
+      for (const name of ['click', 'auxclick', 'keydown']) document.addEventListener(name, blockLogo, true);
       window.addEventListener('popstate', onNavigation); window.addEventListener('pageshow', onNavigation); window.addEventListener('resize', schedule);
       if (typeof ResizeObserver === 'function') {
         let width = -1;

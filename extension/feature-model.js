@@ -13,7 +13,7 @@
   function defaults() {
     return {
       version: 2,
-      focus: {openingPause: {enabled: false, seconds: 3, message: 'Which settings would you like to change?', style: 'hidden'}, onOpen: 'keep', presetId: '', schedules: []},
+      focus: {openingPause: {enabled: false, seconds: 3, message: 'Which settings would you like to change?', style: 'hidden'}, showSessionWidget: false, onOpen: 'keep', presetId: '', schedules: []},
       restrictions: {enabled: false, temporaryUntil: 0, schedules: [],
         entry: {enabled: false, message: 'Why are you opening YouTube?', seconds: 5, phrase: '', countdownStyle: 'detailed'},
         session: {enabled: false, minutes: 20, idleMinutes: 15, cooldownMinutes: 5, skipPhrase: '', allowSkip: true}},
@@ -29,6 +29,7 @@
       raw.restrictions.session.allowSkip = Boolean(raw.restrictions.session.skipPhrase);
     }
     if (raw?.version === 2 && raw.player && !Object.hasOwn(raw.player, 'seekAds')) { raw = structuredClone(raw); raw.player.seekAds = false; }
+    if (raw?.version === 2 && object(raw.focus) && !Object.hasOwn(raw.focus, 'showSessionWidget')) { raw = structuredClone(raw); raw.focus.showSessionWidget = false; }
     shape(raw, ['version', 'focus', 'restrictions', 'filters', 'player']);
     if (raw.version !== 2) fail('Unsupported feature settings version.');
     // Migrate only the exact defaults shipped before the language setting existed.
@@ -38,10 +39,10 @@
       if (raw.restrictions?.entry?.message === 'Зачем вы открываете YouTube?') raw.restrictions.entry.message = defaults().restrictions.entry.message;
     }
     const focus = raw.focus;
-    shape(focus, ['openingPause', 'onOpen', 'presetId', 'schedules']);
+    shape(focus, ['openingPause', 'showSessionWidget', 'onOpen', 'presetId', 'schedules']);
     shape(focus.openingPause, ['enabled', 'seconds', 'message', 'style']);
     if (!['keep', 'ask', 'preset'].includes(focus.onOpen) || !['hidden', 'subtle', 'detailed'].includes(focus.openingPause.style)) fail('Unknown focus mode.');
-    const focusValue = {openingPause: {enabled: bool(focus.openingPause.enabled), seconds: integer(focus.openingPause.seconds, 0, 300), message: text(focus.openingPause.message), style: focus.openingPause.style}, onOpen: focus.onOpen, presetId: text(focus.presetId, 80), schedules: []};
+    const focusValue = {openingPause: {enabled: bool(focus.openingPause.enabled), seconds: integer(focus.openingPause.seconds, 0, 300), message: text(focus.openingPause.message), style: focus.openingPause.style}, showSessionWidget: bool(focus.showSessionWidget), onOpen: focus.onOpen, presetId: text(focus.presetId, 80), schedules: []};
     if (focus.onOpen === 'preset' && !focusValue.presetId) fail('Choose a preset to apply when opening YouTube.');
     if (!Array.isArray(focus.schedules) || focus.schedules.length > 50) fail('You can add up to 50 preset schedules.');
     const ids = new Set(), occupied = new Uint8Array(10080);

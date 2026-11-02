@@ -310,7 +310,8 @@ async function handle(message, sender) {
     const next = F.validate({...state.features, [data.section]: data.value});
     validatePresetReferences(next);
     await authorize(sender, data.section === 'focus' ? ['appearance', 'restrictions'] : [data.section], credential);
-    if (data.section === 'focus' && state.focusRuntime.activeKey) {
+    const automationChanged = data.section === 'focus' && ['onOpen', 'presetId', 'schedules'].some(key => JSON.stringify(next.focus[key]) !== JSON.stringify(state.features.focus[key]));
+    if (automationChanged && state.focusRuntime.activeKey) {
       if (state.focusRuntime.baseline && state.focusRuntime.returnPrevious) await setAppearance(state.focusRuntime.baseline.values);
       state.focusRuntime.activePresetId = state.focusRuntime.baseline?.id ?? state.focusRuntime.activePresetId;
       state.focusRuntime.activeKey = null; state.focusRuntime.baseline = null; state.focusRuntime.manualKey = null; await saveFocus();

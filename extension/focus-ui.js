@@ -24,6 +24,8 @@
       <form id="focus-activate-form" class="preset-apply-row"><label><span class="visually-hidden">Preset</span><select id="focus-active-preset" required></select></label><button type="submit">Apply preset</button></form>
     </section>
     <form id="focus-form">
+    <label class="check"><input id="focus-session-widget" type="checkbox" aria-describedby="focus-session-widget-help"> Show floating session widget on YouTube</label>
+    <p id="focus-session-widget-help" class="field-help">Shows session controls in the bottom-left corner. Session limits still apply when the widget is hidden.</p>
     <details class="focus-detail"><summary>When a session starts</summary><div class="detail-body">
       <label>Preset selection<select id="focus-on-open"><option value="keep">Keep current preset</option><option value="ask">Ask every time</option><option value="preset">Apply selected preset</option></select></label>
       <label id="focus-open-preset-label">Preset<select id="focus-open-preset"></select></label>
@@ -38,7 +40,7 @@
       <label>Message<textarea id="focus-pause-message" rows="2" maxlength="1000"></textarea></label>
       <label>Pause in seconds<input id="focus-pause-seconds" type="number" min="0" max="300" step="1" required></label>
       <label>Countdown<select id="focus-pause-style"><option value="hidden">Hidden</option><option value="subtle">Progress bar</option><option value="detailed">Seconds remaining</option></select></label>
-    </div></details><div class="focus-save-row"><button type="submit" class="primary">Save focus settings</button><span class="field-help">Saves the three sections above.</span></div></form>
+    </div></details><div class="focus-save-row"><button type="submit" class="primary">Save focus settings</button><span class="field-help">Saves the widget option and the three sections above.</span></div></form>
     <details class="focus-detail"><summary>Session defaults for my presets</summary><div class="detail-body">
       <p class="muted">Built-in presets use the shared session defaults. Custom presets can set a session length and idle timeout; 0 means no limit. Turn off custom defaults to use the shared values.</p>
       <div id="focus-defaults"></div>
@@ -93,7 +95,7 @@
   }
   function readFocus() {
     return {openingPause: {enabled: $('focus-pause-enabled').checked, seconds: Number($('focus-pause-seconds').value), message: stockMessage($('focus-pause-message').value) ? YFEI18n.source($('focus-pause-message').value) : $('focus-pause-message').value, style: $('focus-pause-style').value},
-      onOpen: $('focus-on-open').value, presetId: $('focus-open-preset').value,
+      showSessionWidget: $('focus-session-widget').checked, onOpen: $('focus-on-open').value, presetId: $('focus-open-preset').value,
       schedules: [...$('focus-schedules').children].map(row => ({id: row.dataset.focusSchedule, enabled: row.querySelector('[data-focus-enabled]').checked,
         days: [...row.querySelectorAll('[data-focus-day]:checked')].map(input => Number(input.dataset.focusDay)), from: row.querySelector('[data-focus-time=from]').value, to: row.querySelector('[data-focus-time=to]').value,
         presetId: row.querySelector('[data-focus-preset]').value, returnPrevious: row.querySelector('[data-focus-return]').checked}))};
@@ -145,6 +147,7 @@
     describeDefaults();
   }
   function render(focus) {
+    $('focus-session-widget').checked = focus.showSessionWidget;
     $('focus-pause-enabled').checked = focus.openingPause.enabled; $('focus-pause-seconds').value = focus.openingPause.seconds; $('focus-pause-message').value = stockMessage(focus.openingPause.message) ? t(focus.openingPause.message) : focus.openingPause.message; $('focus-pause-style').value = focus.openingPause.style;
     $('focus-on-open').value = focus.onOpen; presetSelect($('focus-open-preset'), focus.presetId); onOpenMode();
     presetSelect($('focus-active-preset'), activePresetId); $('focus-schedules').replaceChildren(); focus.schedules.forEach(scheduleRow); renderDefaults(); describeActive();

@@ -683,7 +683,9 @@ globalThis.YFE_LOCALES = Object.freeze({ru: Object.freeze({
   "Edit duration, inactivity and breaks": "Изменить время, бездействие и перерывы",
   "Appearance preset": "Набор оформления",
   "When a session starts": "При начале сеанса",
-  "Saves the three sections above.": "Сохраняет три раздела выше.",
+  "Show floating session widget on YouTube": "Показывать плавающий виджет сеанса на YouTube",
+  "Shows session controls in the bottom-left corner. Session limits still apply when the widget is hidden.": "Показывает управление сеансом в левом нижнем углу. Ограничения сеанса действуют и при скрытом виджете.",
+  "Saves the widget option and the three sections above.": "Сохраняет настройку виджета и три раздела выше.",
   "Session limits apply whenever YouTube opens.": "Ограничения сеанса действуют при каждом открытии YouTube.",
   "Automatic limits are off. You can still start a session manually.": "Автоматические ограничения выключены. Сеанс можно начать вручную."
 })});
