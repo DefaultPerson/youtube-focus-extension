@@ -1,10 +1,12 @@
 # YFE — YouTube Focus Extension
 
-YFE is a free, open-source Chrome extension for a calmer YouTube: hide Shorts, recommendations and comments, filter unwanted content, and set focus sessions. Customize the YouTube interface from a persistent side panel, with 296 appearance and behavior settings.
+YFE is a free, open-source UnTrap alternative for Chrome: hide Shorts, recommendations and comments, filter unwanted content, and set focus sessions. Customize the YouTube interface from a persistent side panel, with 296 appearance and behavior settings.
 
 English interface. Local settings. No account, subscription, analytics or backend.
 
-![YFE settings in English](docs/screenshots/settings.png)
+[![YFE motion demo: distraction controls, session limits and content filters](docs/media/yfe-demo.gif)](https://github.com/DefaultPerson/youtube-focus-extension/releases/download/v0.5.0/yfe-demo.mp4)
+
+[Watch the 18-second video](https://github.com/DefaultPerson/youtube-focus-extension/releases/download/v0.5.0/yfe-demo.mp4) · [Download the latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
 
 ## Features
 
@@ -19,13 +21,15 @@ English interface. Local settings. No account, subscription, analytics or backen
 
 ## Install in Chrome or Chromium
 
-1. Download the repository with **Code → Download ZIP**, then extract it, or clone it.
+1. Download **`yfe-0.5.0.zip`** from the [latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest) and extract it.
 2. Open `chrome://extensions` and enable **Developer mode**.
-3. Choose **Load unpacked** and select the repository's **`extension`** directory.
+3. Choose **Load unpacked** and select the extracted folder containing **`manifest.json`**.
 4. Reload any open YouTube tabs.
 5. Click the extension icon to open its side panel. Use **↗** to open the current section in a full tab.
 
 No build step or package installation is required. The extension targets desktop Chrome/Chromium 120 or later. It is not currently distributed through the Chrome Web Store.
+
+To install from source, clone this repository or use **Code → Download ZIP**, then load its **`extension`** directory instead.
 
 Appearance changes save immediately. Focus, usage limits, protection, filters and player forms have a **Save** button. Controls start with neutral defaults; choose the changes you want. Presets change appearance while filters and usage restrictions remain shared.
 
@@ -75,4 +79,4 @@ Bug reports should include your Chrome version, the YouTube page type, the setti
 
 ## License
 
-MIT. This is an independent project and is not affiliated with or endorsed by YouTube or Google.
+MIT. This is an independent project and is not affiliated with or endorsed by UnTrap, YouTube or Google.

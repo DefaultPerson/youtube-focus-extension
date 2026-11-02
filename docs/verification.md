@@ -16,4 +16,4 @@ Version 0.5.0 was checked locally in Chromium on 2026-11-02.
 
 The model and fixture checks used temporary test scripts; they are not a committed automated test suite. They do not establish that every control works across all YouTube layouts, languages and combinations. The live test page required sign-in for playback, so video playback and real advertisement skipping were not revalidated for this release.
 
-The README screenshot is captured from the real extension in a separate browser profile and contains only the English settings interface.
+The README motion demo uses captures of the real English settings interface from a separate browser profile. Filter rules and session values in the demo are examples. The MP4 is 18 seconds at 1600×900 and 30 fps; the README embeds an animated GIF preview.
