@@ -1,6 +1,6 @@
 # YFE — YouTube Focus Extension
 
-[![Release v0.6.0](docs/media/release.svg)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
+[![Release v0.6.3](docs/media/release.svg?v=0.6.3)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
 
 YFE is a free, open-source UnTrap alternative for Chrome: hide Shorts, recommendations and comments, filter unwanted content, and set focus sessions. Customize the YouTube interface from a persistent side panel, with 297 appearance and behavior settings.
 
@@ -24,7 +24,7 @@ English by default, with Russian available in settings. Local storage. No accoun
 
 Chrome/Chromium 120+. No build step. Not yet available in the Chrome Web Store.
 
-1. Download **`yfe-0.6.0-chrome.zip`** from the [latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest) and extract it.
+1. Download **`yfe-0.6.3-chrome.zip`** from the [latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest) and extract it.
 2. Open `chrome://extensions` and enable **Developer mode**.
 3. Choose **Load unpacked** and select the extracted folder containing **`manifest.json`**.
 4. Reload YouTube and click the extension icon for the side panel; **↗** opens the current section in a full tab.
