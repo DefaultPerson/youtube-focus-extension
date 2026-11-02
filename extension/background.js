@@ -7,9 +7,18 @@ const F = YTVFeatures;
 const prefix = 'ytv.value.';
 const keys = {features: 'ytv.features', protection: 'ytv.protection', runtime: 'ytv.runtime'};
 const ports = new Set();
+const portSnapshots = new WeakMap();
+let scheduledBoundary, clockCheckAt;
+let broadcastValue, broadcastKey, broadcastAccessKey;
 let state;
 let queue = Promise.resolve();
-const serial = task => { const result = queue.then(task); queue = result.catch(() => {}); return result; };
+const serial = task => {
+  const result = queue.then(async () => {
+    try { return await task(); }
+    finally { if (state) { await scheduleBoundary(); broadcast(); } }
+  });
+  queue = result.catch(() => {}); return result;
+};
 const ready = (async () => {
   await chrome.storage.local.setAccessLevel({accessLevel: 'TRUSTED_CONTEXTS'});
   await chrome.storage.session.setAccessLevel({accessLevel: 'TRUSTED_CONTEXTS'});
@@ -24,7 +33,8 @@ const ready = (async () => {
     focusRuntime: stored['ytv.focusRuntime'] ?? {activePresetId: null, activeKey: null, baseline: null, manualKey: null},
   };
   for (const key of ['baseline', 'previousAppearance']) if (state.focusRuntime[key]?.values) state.focusRuntime[key].values = YTV.migrateValues(state.focusRuntime[key].values);
-  await chrome.alarms.create('ytv-boundary', {periodInMinutes: 0.5});
+  await settle();
+  await scheduleBoundary();
 })();
 function caller(sender) {
   if (sender.id !== chrome.runtime.id) return null;
@@ -163,10 +173,47 @@ async function settle(prepare = false) {
     state.runtime.preparation = null; await saveRuntime();
   }
 }
-function snapshot() { return {version: chrome.runtime.getManifest().version, language: state.language, settings: state.settings, features: state.features, access: access(), focus: {activePresetId: state.focusRuntime.activePresetId, canRestoreAppearance: Boolean(state.focusRuntime.previousAppearance)}}; }
+// Only recurring wall-clock rules need periodic rechecks for OS clock/timezone changes.
+async function scheduleBoundary() {
+  const now = Date.now(), deadlines = [];
+  const recurring = state.settings.enabled && (state.features.focus.schedules.some(rule => rule.enabled) || state.features.restrictions.enabled && state.features.restrictions.schedules.length);
+  if (recurring) {
+    if (!clockCheckAt || clockCheckAt <= now || clockCheckAt > now + 30000) clockCheckAt = now + 30000;
+    deadlines.push(clockCheckAt);
+  } else clockCheckAt = null;
+  if (state.settings.enabled) {
+    const features = state.features, runtime = state.runtime;
+    const automation = F.presetWindow(features.focus.schedules, now);
+    deadlines.push(automation.nextAt);
+    if (state.focusRuntime.activeKey !== (automation.active?.key ?? null)) deadlines.push(now);
+    if (features.restrictions.enabled) {
+      const schedule = F.scheduleWindow(features.restrictions.schedules, now);
+      deadlines.push(schedule.nextStart, schedule.blockedUntil);
+      if (features.restrictions.temporaryUntil > now) deadlines.push(features.restrictions.temporaryUntil);
+    }
+    deadlines.push(runtime.session?.endsAt, runtime.session?.idleAt, runtime.cooldownUntil, runtime.preparation?.expiresAt);
+  }
+  const upcoming = deadlines.filter(at => Number.isFinite(at) && at > 0);
+  const next = upcoming.length ? Math.max(now, Math.min(...upcoming)) : null;
+  if (next === scheduledBoundary) return;
+  if (next === null) await chrome.alarms.clear('ytv-boundary');
+  else await chrome.alarms.create('ytv-boundary', {when: next});
+  scheduledBoundary = next;
+}
+function snapshot(gate = access()) { return {version: chrome.runtime.getManifest().version, language: state.language, settings: state.settings, features: state.features, access: gate, focus: {activePresetId: state.focusRuntime.activePresetId, canRestoreAppearance: Boolean(state.focusRuntime.previousAppearance)}}; }
 function broadcast() {
-  const value = snapshot();
-  for (const port of ports) { try { port.postMessage({type: 'snapshot', value}); } catch { ports.delete(port); } }
+  if (!ports.size) return;
+  const gate = access(), accessKey = JSON.stringify(gate);
+  if (!broadcastValue || broadcastValue.settings !== state.settings || broadcastValue.features !== state.features || broadcastValue.language !== state.language ||
+      broadcastValue.focus.activePresetId !== state.focusRuntime.activePresetId || broadcastValue.focus.canRestoreAppearance !== Boolean(state.focusRuntime.previousAppearance) || broadcastAccessKey !== accessKey) {
+    broadcastValue = snapshot(gate); broadcastAccessKey = accessKey;
+    broadcastKey = JSON.stringify(broadcastValue);
+  }
+  for (const port of ports) {
+    if (portSnapshots.get(port) === broadcastKey) continue;
+    try { port.postMessage({type: 'snapshot', value: broadcastValue}); portSnapshots.set(port, broadcastKey); }
+    catch { ports.delete(port); }
+  }
 }
 async function persistSettings(next) {
   await chrome.storage.local.set({'ytv.enabled': next.enabled, ...Object.fromEntries(Object.entries(next.values).map(([id, value]) => [prefix + id, value]))});
@@ -213,7 +260,7 @@ async function handle(message, sender) {
       const entry = state.features.restrictions;
       const now = Date.now();
       state.runtime.preparation = state.runtime.preparation ? {...state.runtime.preparation, manual: true} : {id: crypto.randomUUID(), manual: true, confirmed: !(entry.enabled && entry.entry.enabled), expiresAt: now + 900000, readyAt: now + (entry.enabled && entry.entry.enabled ? entry.entry.seconds : 0) * 1000};
-      await saveRuntime(); broadcast();
+      await saveRuntime();
     }
     if (type === 'ui' && data?.openYouTube) await chrome.tabs.create({url: 'https://www.youtube.com/'});
     return snapshot();
@@ -225,7 +272,7 @@ async function handle(message, sender) {
     if (Date.now() < gate.readyAt) reject('Wait for the pause to finish.');
     if (gate.phase === 'entry' && gate.phrase && data.phrase !== gate.phrase) reject('Enter the complete phrase.');
     if (gate.phase === 'entry' && (gate.configure || gate.choosePreset)) {
-      state.runtime.preparation.confirmed = true; await saveRuntime(); broadcast(); return snapshot();
+      state.runtime.preparation.confirmed = true; await saveRuntime(); return snapshot();
     }
     const r = state.features.restrictions, now = Date.now();
     const selected = gate.choosePreset ? data.presetId : gate.selectedPreset;
@@ -239,17 +286,17 @@ async function handle(message, sender) {
       endsAt: minutes ? now + minutes * 60000 : null, idleMinutes,
       idleAt: idleMinutes ? now + idleMinutes * 60000 : null, cooldownMinutes: r.enabled && r.session.enabled ? r.session.cooldownMinutes : 0,
       skipPhrase: r.session.skipPhrase, allowSkip: r.session.allowSkip}};
-    await saveRuntime(); broadcast(); return snapshot();
+    await saveRuntime(); return snapshot();
   }
   if (action === 'cancelEntry') {
     if (type !== 'content' || data?.preparationId !== state.runtime.preparation?.id) reject('The session setup has changed.');
-    state.runtime.preparation = null; await saveRuntime(); broadcast(); return true;
+    state.runtime.preparation = null; await saveRuntime(); return true;
   }
   if (action === 'endSession') {
     const session = state.runtime.session;
     if (!session || data?.sessionId !== session.id) reject('This session has already ended.');
     state.runtime = {...F.freshRuntime(), cooldownId: session.id, cooldownSkipPhrase: session.skipPhrase ?? state.features.restrictions.session.skipPhrase, cooldownAllowSkip: session.allowSkip ?? state.features.restrictions.session.allowSkip, cooldownUntil: Date.now() + session.cooldownMinutes * 60000};
-    await saveRuntime(); await settle(type === 'content'); broadcast(); return snapshot();
+    await saveRuntime(); await settle(type === 'content'); return snapshot();
   }
   if (action === 'skipCooldown') {
     if (type !== 'content' || access().phase !== 'cooldown') reject('The break has already ended.');
@@ -257,7 +304,7 @@ async function handle(message, sender) {
     const phrase = state.runtime.cooldownSkipPhrase;
     if (phrase && data?.phrase !== phrase) reject('Enter the complete phrase.');
     state.runtime.cooldownUntil = 0;
-    await saveRuntime(); await settle(true); broadcast(); return snapshot();
+    await saveRuntime(); await settle(true); return snapshot();
   }
   if (action === 'filterAdd') {
     if (type !== 'content' || !state.features.filters.contextButtons || !F.kinds.includes(data?.kind)) reject('Adding filter rules from YouTube is disabled.');
@@ -266,7 +313,7 @@ async function handle(message, sender) {
     next.filters[data.kind].push(data.rule);
     next.filters.enabled = true;
     state.features = F.validate(next);
-    await chrome.storage.local.set({[keys.features]: state.features}); broadcast(); return true;
+    await chrome.storage.local.set({[keys.features]: state.features}); return true;
   }
   if (type !== 'ui') reject('This action is only available in the extension settings.');
   if (action === 'readPresets') return state.presets;
@@ -275,7 +322,7 @@ async function handle(message, sender) {
   if (action === 'activatePreset') {
     if (!data || typeof data !== 'object' || Object.keys(data).some(key => !['id', 'savePrevious'].includes(key)) || typeof data.id !== 'string' || data.savePrevious !== undefined && typeof data.savePrevious !== 'boolean') reject('Invalid preset change.');
     await authorize(sender, ['appearance'], credential);
-    await activatePreset(data.id, true, data.savePrevious ?? YTV_CATALOG.presets.some(p => p.id === data.id)); broadcast(); return true;
+    await activatePreset(data.id, true, data.savePrevious ?? YTV_CATALOG.presets.some(p => p.id === data.id)); return true;
   }
   if (action === 'restoreAppearance') {
     const previous = state.focusRuntime.previousAppearance;
@@ -285,7 +332,7 @@ async function handle(message, sender) {
     const focus = {...state.focusRuntime, activePresetId: presetById(previous.id)?.id ?? null, manualKey: state.focusRuntime.activeKey};
     delete focus.previousAppearance;
     await chrome.storage.local.set({'ytv.focusRuntime': focus, ...Object.fromEntries(Object.entries(settings.values).map(([key, value]) => [prefix + key, value]))});
-    state.settings = settings; state.focusRuntime = focus; broadcast(); return true;
+    state.settings = settings; state.focusRuntime = focus; return true;
   }
   if (action === 'writeSettings' || action === 'updateSettings') {
     let next;
@@ -297,13 +344,13 @@ async function handle(message, sender) {
     await authorize(sender, settingsScopes(next), credential);
     state.focusRuntime.manualKey = state.focusRuntime.activeKey;
     state.focusRuntime.activePresetId = null; await saveFocus();
-    await persistSettings(next); broadcast(); return true;
+    await persistSettings(next); return true;
   }
   if (action === 'writePresets') {
     const validated = YTV.exportData(state.settings, data).customPresets;
     validatePresetReferences(state.features, [...YTV_CATALOG.presets, ...validated]);
     await authorize(sender, ['appearance'], credential);
-    await chrome.storage.local.set({'ytv.presets': validated}); state.presets = validated; broadcast(); return true;
+    await chrome.storage.local.set({'ytv.presets': validated}); state.presets = validated; return true;
   }
   if (action === 'writeFeature') {
     if (!['focus', 'restrictions', 'filters', 'player'].includes(data?.section)) reject('Unknown section.');
@@ -318,7 +365,7 @@ async function handle(message, sender) {
     }
     await chrome.storage.local.set({[keys.features]: next}); state.features = next;
     if (data.section === 'restrictions') { state.runtime = F.freshRuntime(); await saveRuntime(); }
-    await settle(); broadcast(); return true;
+    await settle(); return true;
   }
   if (action === 'applyImport') {
     const next = YTV.importData(data);
@@ -331,11 +378,11 @@ async function handle(message, sender) {
     state.settings = next.settings; state.presets = next.customPresets;
     if (next.features) state.features = next.features;
     state.focusRuntime = {activePresetId: null, activeKey: null, baseline: null, manualKey: null}; await saveFocus();
-    state.runtime = F.freshRuntime(); await saveRuntime(); await settle(); broadcast(); return true;
+    state.runtime = F.freshRuntime(); await saveRuntime(); await settle(); return true;
   }
   if (action === 'resetAppearance') {
     await authorize(sender, ['importReset', 'appearance', 'disable'], credential);
-    await persistSettings(YTV.defaults()); broadcast(); return true;
+    await persistSettings(YTV.defaults()); return true;
   }
   if (action === 'configureProtection') {
     const value = data;
@@ -353,7 +400,7 @@ async function handle(message, sender) {
     }
     await authorize(sender, [], credential, true);
     await chrome.storage.local.set({[keys.protection]: next}); state.protection = next;
-    await chrome.storage.session.remove('ytv.auth'); broadcast(); return protectionView();
+    await chrome.storage.session.remove('ytv.auth'); return protectionView();
   }
   if (action === 'lockProtection') { await chrome.storage.session.remove('ytv.auth'); return true; }
   reject('Unknown action.');
@@ -366,11 +413,11 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
 chrome.runtime.onConnect.addListener(port => {
   if (port.name !== 'ytv-updates' || !caller(port.sender)) { port.disconnect(); return; }
   ports.add(port); port.onDisconnect.addListener(() => ports.delete(port));
-  serial(async () => { await ready; await settle(caller(port.sender) === 'content'); try { port.postMessage({type: 'snapshot', value: snapshot()}); } catch {} });
+  serial(async () => { await ready; await settle(caller(port.sender) === 'content'); });
 });
 chrome.alarms.onAlarm.addListener(alarm => {
   if (alarm.name !== 'ytv-boundary') return;
-  void serial(async () => { await ready; await settle(); broadcast(); });
+  void serial(async () => { await ready; scheduledBoundary = null; await settle(); });
 });
 chrome.commands.onCommand.addListener(command => {
   if (command !== 'toggle-extension') return;
@@ -379,11 +426,11 @@ chrome.commands.onCommand.addListener(command => {
     if (state.protection.enabled && state.protection.scopes.disable || state.features.focus.openingPause.enabled) {
       await chrome.tabs.create({url: chrome.runtime.getURL('options.html?toggle=1')}); return;
     }
-    await persistSettings({...state.settings, enabled: !state.settings.enabled}); broadcast();
+    await persistSettings({...state.settings, enabled: !state.settings.enabled});
   });
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== 'local' || !Object.hasOwn(changes, 'yfeLanguage')) return;
-  void serial(async () => { await ready; state.language = changes.yfeLanguage.newValue === 'ru' ? 'ru' : 'en'; broadcast(); });
+  void serial(async () => { await ready; state.language = changes.yfeLanguage.newValue === 'ru' ? 'ru' : 'en'; });
 });

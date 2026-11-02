@@ -37,6 +37,7 @@
   let redirectSource = '';
   let redirectTarget = '';
   let scrollTop = 0;
+  let fullUpdate = true;
   const enabled = name => options[name] === true;
   const value = (name, defaultValue) => options[name] ?? defaultValue;
   const all = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -211,7 +212,7 @@
       }
     }
   }
-  function watched() {
+  function watchedSelector() {
     const path = location.pathname;
     let selector = '';
     if (path === '/' && enabled('home_hide_watched_videos')) selector = 'ytd-browse[page-subtype="home"] ytd-rich-item-renderer';
@@ -219,7 +220,10 @@
     if (path === '/feed/subscriptions' && enabled('subscriptions_hide_watched_videos')) selector = 'ytd-browse[page-subtype="subscriptions"] ytd-rich-item-renderer, ytd-browse[page-subtype="subscriptions"] ytd-grid-video-renderer';
     if (path === '/watch' && enabled('video_page_hide_related_watched_videos')) selector = 'ytd-watch-next-secondary-results-renderer ytd-compact-video-renderer, ytd-watch-next-secondary-results-renderer yt-lockup-view-model';
     if (channelPath.test(path) && enabled('channel_hide_watched_videos')) selector = 'ytd-browse[page-subtype="channels"] ytd-rich-item-renderer, ytd-browse[page-subtype="channels"] ytd-grid-video-renderer';
-    const next = new Set();
+    return selector;
+  }
+  function watched() {
+    const selector = watchedSelector(), next = new Set();
     if (selector) for (const card of all(selector)) {
       const progress = all('ytd-thumbnail-overlay-resume-playback-renderer #progress,yt-thumbnail-overlay-progress-bar-view-model [style*="width"],.ytThumbnailOverlayProgressBarHostWatchedProgressBarSegment,[role="progressbar"][aria-valuenow]', card);
       if (progress.some(node => {
@@ -328,7 +332,12 @@
     if (navigation !== location.href) resetNavigation();
     updateObserver();
     if (redirect()) return;
-    watched(); homeBudget(); channelTabs(); shorts();
+    const owns = marker => [...attributes.values()].some(owned => owned.has(marker));
+    if (fullUpdate || watchedSelector() || owns(watchedMarker)) watched();
+    if (fullUpdate || enabled('home_disable_infinity_scroll') || ['row_1', 'row_2'].includes(value('home_suggestions_rows_count', 'default')) || owns(budgetMarker)) homeBudget();
+    if (fullUpdate || Object.keys(tabRoutes).some(name => enabled(`channel_hide_channel_menu_button_${name}`)) || owns(tabMarker)) channelTabs();
+    if (fullUpdate || enabled('shorts_page_disable_exclude_scrolling') || carousel) shorts();
+    fullUpdate = false;
     if (Date.now() <= deadline) { sidebar(); watchPage(); searchHome(); }
     for (const [element, owned] of [...attributes]) if (!element.isConnected) for (const name of [...owned.keys()]) release(element, name);
   }
@@ -347,6 +356,7 @@
   }
   function resetNavigation() {
     navigation = location.href;
+    fullUpdate = true;
     // Navigation owns the new YouTube state; do not undo old native UI actions
     // against renderer nodes that the SPA has already reused for another video.
     ui.clear();
@@ -359,7 +369,25 @@
   }
   function onNavigation() { if (navigation !== location.href) resetNavigation(); schedule(); }
   function relevant(changes) {
-    return changes.some(change => change.type !== 'attributes' || ![watchedMarker, budgetMarker, tabMarker].includes(change.attributeName));
+    // Detached cards no longer match selectors scoped to their former page.
+    if (attributes.size && changes.some(change => change.removedNodes.length)) {
+      for (const [element, owned] of [...attributes]) if (!element.isConnected) for (const name of [...owned.keys()]) release(element, name);
+    }
+    const path = location.pathname;
+    // Automatic clicks have a bounded discovery window; preserve that fallback
+    // while late-rendered native controls are still appearing.
+    if (Date.now() <= deadline && (flagNames.some(name => name.includes('auto_') && enabled(name)) || path === '/' && value('redirect_home_to', 'home') === 'search')) return true;
+    const scopes = [watchedSelector()];
+    if (path === '/' && (enabled('home_disable_infinity_scroll') || ['row_1', 'row_2'].includes(value('home_suggestions_rows_count', 'default')))) scopes.push('ytd-rich-grid-renderer');
+    if (channelPath.test(path) && Object.keys(tabRoutes).some(name => enabled(`channel_hide_channel_menu_button_${name}`))) scopes.push('yt-tab-shape,tp-yt-paper-tab');
+    if (path.startsWith('/shorts/') && enabled('shorts_page_disable_exclude_scrolling')) scopes.push('ytd-shorts');
+    const selector = scopes.filter(Boolean).join(',');
+    if (!selector) return false;
+    return changes.some(change => {
+      const target = change.target.nodeType === 1 ? change.target : change.target.parentElement;
+      if (target?.closest(selector)) return true;
+      return change.type === 'childList' && [...change.addedNodes, ...change.removedNodes].some(node => node.nodeType === 1 && (node.matches(selector) || node.querySelector(selector)));
+    });
   }
   const documentEvents = ['yt-navigate-finish', 'yt-page-data-updated', 'DOMContentLoaded'];
   function updateObserver() {
@@ -394,6 +422,7 @@
     if (destroyed) return;
     const previous = options;
     options = config?.values && typeof config.values === 'object' ? {...config.values} : {};
+    fullUpdate = true;
     const needed = config?.enabled === true && (
       flagNames.some(enabled) || Object.keys(tabRoutes).some(name => enabled(`channel_hide_channel_menu_button_${name}`)) ||
       value('redirect_home_to', 'home') !== 'home' ||

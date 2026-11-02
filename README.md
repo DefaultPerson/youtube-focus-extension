@@ -50,7 +50,7 @@ Uses `storage`, `alarms` and `sidePanel`, with access limited to YouTube and its
 
 ## Development
 
-Plain JavaScript/CSS and Manifest V3; no runtime dependencies. `python3 scripts/package.py` creates a deterministic Chrome ZIP with integrity and source-byte checks. After changes, reload YFE and YouTube; check navigation and turning controls back off. [Verification and limits](docs/verification.md).
+Plain JavaScript/CSS and Manifest V3; no runtime dependencies. Run `python3 scripts/build-runtime.py` after changing the catalog, translations or runtime code; `--check` verifies the generated page data. `python3 scripts/package.py` checks freshness and creates a deterministic Chrome ZIP with integrity and source-byte checks. Reload YFE and YouTube after changes; check navigation and turning controls back off. [Verification and limits](docs/verification.md).
 
 ## Contributing
 

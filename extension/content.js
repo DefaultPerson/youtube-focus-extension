@@ -4,6 +4,7 @@
   const style = document.createElement('style');
   style.id = 'yt-appearance-styles';
   let settings = YTV.defaults();
+  let settingsKey = JSON.stringify(settings);
   let revision = 0;
   let thumbnailObserver = null;
   const thumbnails = new Map();
@@ -64,9 +65,7 @@
     scanThumbnails(document);
   }
   function apply() {
-    const grid = document.querySelector('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer');
-    const automaticColumns = grid ? Number.parseInt(getComputedStyle(grid).getPropertyValue('--ytd-rich-grid-items-per-row'), 10) : 4;
-    const css = YTVStyles.compileCSS(settings, location.pathname, automaticColumns);
+    const css = YTVStyles.compileCSS(settings, location.pathname);
     if (css) {
       if (style.textContent !== css) style.textContent = css;
       const parent = document.head || document.documentElement;
@@ -77,12 +76,16 @@
     }
     configureThumbnails();
   }
-  const unsubscribe = YTV.subscribe(next => { revision++; settings = next; apply(); });
+  function accept(next) {
+    const key = JSON.stringify(next);
+    if (key === settingsKey) return;
+    settingsKey = key; settings = next; apply();
+  }
+  const unsubscribe = YTV.subscribe(next => { revision++; accept(next); });
   const initialRevision = revision;
   YTV.readSettings().then(next => {
     if (revision !== initialRevision) return;
-    settings = next;
-    apply();
+    accept(next);
   }).catch(error => console.error('YFE: could not load settings.', error.message));
   document.addEventListener('DOMContentLoaded', apply, {once: true});
   document.addEventListener('yt-navigate-finish', apply);

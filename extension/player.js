@@ -82,7 +82,7 @@
     clickedAt.set(button, now);
     button.click();
   }
-  function autoplayButton() { return document.querySelector('.ytp-autonav-toggle-button[aria-checked]'); }
+  function autoplayButton() { return [...document.getElementsByClassName('ytp-autonav-toggle-button')].find(button => button.hasAttribute('aria-checked')); }
   function restoreNext() {
     const button = autoplayButton() || nextButton;
     if (nextOwned && nextOriginal === true && button?.isConnected && button.getAttribute('aria-checked') === 'false') button.click();
@@ -96,6 +96,9 @@
     clearTimeout(fallback); fallback = null;
     if (!active) return;
     if (navigation !== location.href) resetNavigation();
+    const polling = (config.skipAds || config.seekAds || config.disableNextAutoplay) && (document.getElementById('movie_player') || document.getElementsByClassName('html5-video-player').length || ['ytd-video-preview', 'ytm-video-preview', 'ytd-channel-video-player-renderer'].some(tag => document.getElementsByTagName(tag).length));
+    if (polling && timer === null) timer = setInterval(schedule, 750);
+    else if (!polling && timer !== null) { clearInterval(timer); timer = null; }
     for (const [video, state] of videos) if (!video.isConnected || !video.closest(playerSelector)) releaseVideo(video, state);
     document.querySelectorAll('video').forEach(checkVideo);
     for (const [player, original] of nativePlayers) {
@@ -123,7 +126,7 @@
           clickThrottled(button, true);
         }
       }
-      document.querySelectorAll('.ytp-autonav-endscreen-upnext-cancel-button').forEach(button => clickThrottled(button));
+      for (const button of document.getElementsByClassName('ytp-autonav-endscreen-upnext-cancel-button')) clickThrottled(button);
     }
     if (config.skipAds) {
       document.querySelectorAll('#movie_player.ad-showing, #movie_player.ad-interrupting, .html5-video-player.ad-showing, .html5-video-player.ad-interrupting').forEach(player => {
@@ -145,6 +148,13 @@
     }
   }
   function schedule() { if (active && frame === null) { frame = requestAnimationFrame(scan); fallback = setTimeout(scan, 120); } }
+  function mutations(records) {
+    if (records.some(record => {
+      const target = record.target.nodeType === 1 ? record.target : record.target.parentElement;
+      if (target?.closest(playerSelector) || nativePlayers.has(target) || [...videos.keys()].some(video => video === target || target?.contains(video))) return true;
+      return record.type === 'childList' && [...record.addedNodes, ...record.removedNodes].some(node => node.nodeType === 1 && (node.matches(playerSelector) || node.querySelector(playerSelector)));
+    })) schedule();
+  }
   function resetNavigation() {
     navigation = location.href;
     userPlayers = new WeakMap();
@@ -223,7 +233,7 @@
     if (!active) {
       active = true;
       navigation = location.href;
-      observer = new MutationObserver(schedule);
+      observer = new MutationObserver(mutations);
       observer.observe(document, {subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'controls', 'autoplay', 'aria-checked', 'disabled', 'hidden']});
       for (const name of mediaEvents) document.addEventListener(name, onMedia, true);
       for (const name of navigationEvents) document.addEventListener(name, onNavigation, true);
@@ -233,7 +243,7 @@
       window.addEventListener('popstate', resetNavigation);
     }
     if (timer !== null) clearInterval(timer);
-    timer = config.skipAds || config.seekAds || config.disableNextAutoplay ? setInterval(schedule, 750) : null;
+    timer = null;
     scan();
   }
   function destroy() {

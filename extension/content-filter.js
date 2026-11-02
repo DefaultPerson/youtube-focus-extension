@@ -24,6 +24,8 @@
   style.textContent = `[${marker}]{display:none!important}ytd-menu-popup-renderer:has([${buttonMarker}]){max-height:80vh!important;max-width:none!important;min-width:220px}[${buttonMarker}]{display:block;width:100%;padding:10px 16px;border:0;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}[${buttonMarker}]:hover{background:rgba(128,128,128,.18)}[${buttonMarker}]:disabled{opacity:.65;cursor:default}`;
   const hidden = new Map();
   const pending = new Set();
+  const pendingRoots = new Set();
+  let hasRules = false;
   let config = {enabled: false, contextButtons: false};
   let compiled = {channels: [], videos: [], comments: [], posts: []};
   let onAdd = null;
@@ -46,6 +48,7 @@
     return element?.closest(selector) ?? null;
   }
   function collect(root) {
+    if (!root.isConnected) return;
     const found = owner(root);
     if (found) pending.add(found);
     root.querySelectorAll?.(selector).forEach(element => pending.add(element));
@@ -96,20 +99,27 @@
   function matchText(rule, value) {
     return rule.type === 'regex' ? rule.value.test(value.slice(0, rulesAPI.MAX_INPUT_LENGTH)) : value.toLocaleLowerCase().includes(rule.value);
   }
+  function matchesValues(rules, values) {
+    if (!rules.length) return false;
+    const folded = rules.some(rule => rule.type !== 'regex') ? values.map(value => value.toLocaleLowerCase()) : [];
+    const clipped = rules.some(rule => rule.type === 'regex') ? values.map(value => value.slice(0, rulesAPI.MAX_INPUT_LENGTH)) : [];
+    return rules.some(rule => rule.type === 'regex' ? clipped.some(value => rule.value.test(value)) : folded.some(value => value.includes(rule.value)));
+  }
   function evaluate(element) {
     if (!element.isConnected) { restore(element); return; }
     const kind = category(element);
+    if (!compiled.channels.length && !compiled[kind].length) { restore(element); return; }
     // Nested cards inside a post/comment belong to that enclosing item.
     const parent = element.parentElement?.closest(selector);
     if (parent && category(parent) !== 'videos') { restore(element); return; }
-    const authors = names(element, kind);
+    const authors = compiled.channels.length ? names(element, kind) : [];
     const channelMatch = compiled.channels.some(rule => authors.some(author => {
       if (rule.type === 'regex') return matchText(rule, author.raw);
       if (rule.type === 'name') return author.type !== 'id' && rule.value === author.value;
       return rule.type === author.type && rule.value === author.value;
     }));
-    const values = compiled[kind].length ? (kind === 'videos' ? videoValues(element) : textValues(element)) : [];
-    if (channelMatch || compiled[kind].some(rule => values.some(value => matchText(rule, value)))) {
+    const values = !channelMatch && compiled[kind].length ? (kind === 'videos' ? videoValues(element) : textValues(element)) : [];
+    if (channelMatch || matchesValues(compiled[kind], values)) {
       if (!hidden.has(element) || element.style.getPropertyValue('display') !== 'none' || element.style.getPropertyPriority('display') !== 'important') {
         hidden.set(element, {value: element.style.getPropertyValue('display'), priority: element.style.getPropertyPriority('display')});
         element.style.setProperty('display', 'none', 'important');
@@ -170,7 +180,7 @@
           await onAdd(choice.kind, rule);
           if (destroyed || !config.enabled) return;
           const compiledRule = rulesAPI.compileRule(choice.kind, rule);
-          if (compiledRule) compiled[choice.kind].push(compiledRule);
+          if (compiledRule) { compiled[choice.kind].push(compiledRule); hasRules = true; }
           button.textContent = 'Rule saved';
           schedule(true);
         } catch (error) {
@@ -187,7 +197,14 @@
     frame = null;
     clearTimeout(fallback); fallback = null;
     if (!config.enabled || destroyed) return;
-    if (fullScan) { document.querySelectorAll(selector).forEach(element => pending.add(element)); fullScan = false; }
+    if (hasRules && fullScan) document.querySelectorAll(selector).forEach(element => pending.add(element));
+    else if (hasRules) for (const node of pendingRoots) {
+      // A burst can contain both a renderer and all of its new descendants.
+      let parent = node.parentElement;
+      while (parent && !pendingRoots.has(parent)) parent = parent.parentElement;
+      if (!parent) collect(node);
+    }
+    fullScan = false; pendingRoots.clear();
     for (const element of pending) evaluate(element);
     pending.clear();
     for (const element of hidden.keys()) if (!element.isConnected) restore(element);
@@ -203,14 +220,15 @@
     for (const record of records) {
       const element = record.target.nodeType === 1 ? record.target : record.target.parentElement;
       if (element?.closest(`[${buttonMarker}]`)) continue;
-      const menuChange = config.contextButtons && element?.closest('ytd-popup-container,tp-yt-iron-dropdown,yt-sheet-view-model');
+      const menuSelector = 'ytd-popup-container,ytd-menu-popup-renderer,tp-yt-iron-dropdown,yt-sheet-view-model';
+      const menuChange = config.contextButtons && (element?.closest(menuSelector) || record.type === 'childList' && [...record.addedNodes, ...record.removedNodes].some(node => node.nodeType === 1 && (node.matches(menuSelector) || node.querySelector(menuSelector))));
       if (!menuChange && record.type === 'attributes' && record.attributeName === 'style' && (!hidden.has(element) || (element.style.getPropertyValue('display') === 'none' && element.style.getPropertyPriority('display') === 'important'))) continue;
-      const target = owner(record.target);
+      const target = hasRules && owner(record.target);
       if (target) { pending.add(target); changed = true; }
-      if (record.type === 'childList') {
+      if (hasRules && record.type === 'childList') {
         for (const node of record.addedNodes) {
           if (node.nodeType !== 1 || node.hasAttribute(buttonMarker)) continue;
-          collect(node);
+          pendingRoots.add(node);
           changed = true;
         }
         if (record.removedNodes.length) changed = true;
@@ -240,6 +258,7 @@
     frame = null;
     clearTimeout(fallback); fallback = null;
     pending.clear();
+    pendingRoots.clear();
     fullScan = false;
     document.removeEventListener('click', click, true);
     for (const event of ['yt-navigate-finish', 'yt-page-data-updated']) document.removeEventListener(event, navigation);
@@ -257,7 +276,8 @@
     config = {enabled: next?.enabled === true, contextButtons: next?.contextButtons === true};
     onAdd = typeof addRule === 'function' ? addRule : null;
     compiled = Object.fromEntries(['channels', 'videos', 'comments', 'posts'].map(kind => [kind, (Array.isArray(next?.[kind]) ? next[kind] : []).map(rule => rulesAPI.compileRule(kind, rule)).filter(Boolean)]));
-    if (!config.enabled || !document.documentElement) return;
+    hasRules = Object.values(compiled).some(rules => rules.length);
+    if (!config.enabled || !document.documentElement || !hasRules && !config.contextButtons) return;
     (document.head || document.documentElement).append(style);
     observer = new MutationObserver(mutations);
     observer.observe(document.documentElement, {subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['href', 'title', 'aria-label', 'video-id', 'style', 'hidden', 'aria-hidden', 'opened']});

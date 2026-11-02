@@ -3,6 +3,8 @@
 from pathlib import Path
 import hashlib
 import json
+import subprocess
+import sys
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,11 +18,13 @@ FILES = (
     "focus-content.js", "focus-ui.js", "focus-entry-ui.js",
     "settings-ui.js", "settings-ui.css", "settings-redirect.js",
     "locales.js", "i18n.js", "ui-icons.js", "global-search.js",
+    "runtime-catalog.js", "runtime-locales.js",
     "icons/icon-16.png", "icons/icon-32.png", "icons/icon-48.png", "icons/icon-128.png",
 )
 
 
 def main():
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "build-runtime.py"), "--check"], check=True)
     manifest = json.loads((SOURCE / "manifest.json").read_text())
     assert f"const clientVersion = '{manifest['version']}';" in (SOURCE / "core.js").read_text(), "Client protocol and manifest versions differ"
     output = ROOT / "dist" / f"yfe-{manifest['version']}-chrome.zip"
