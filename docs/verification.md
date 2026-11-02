@@ -19,3 +19,16 @@ The model and fixture checks used temporary test scripts; they are not a committ
 The motion demo follows search, switches, session settings and filter entry using real English interface captures from a separate browser profile. Filter rules and session values are examples. The MP4 is 18 seconds at 1600×900 and 30 fps; the README embeds a GIF preview linking to a native video-player page.
 
 Version 0.5.1 adds packaged icons and store listing materials; runtime behavior is unchanged. Chrome Web Store materials are prepared only, with no submission made.
+
+Version 0.6.0 was checked in isolated Chromium and the existing Chrome installation on 2026-11-02:
+
+- All 296 appearance controls accepted a changed value and returned it correctly; original values were restored. This checks saving, not all YouTube visual effects.
+- The existing Chrome installation was running a 0.4.0 worker against newer page files. Reloading the complete 0.6.0 package aligned the catalog and worker; a client-version check now rejects stale pages with a reload instruction.
+- Migration retained all 296 appearance values, feature settings, custom presets and protection data. Only the two known legacy Russian default prompts were translated to canonical English.
+- Global search found session controls outside Appearance and focused the selected field. English/Russian switching, prompts and search placeholders were checked in the installed side panel.
+- Built-in preset cancellation kept appearance unchanged; applying and restoring a preset returned the exact previous values.
+- On live YouTube, a manually started unlimited session showed elapsed time and ended on request. A one-minute session expired into a one-minute break; the enabled End break action returned to session setup.
+- 21 isolated worker scenarios covered deadlines, inactivity, blocks, phrases, schedules, protected changes, presets, restart recovery and protocol versions.
+- The installed side panel rendered 20 navigation routes with 16px body text and no horizontal overflow at 463px; the narrow layout and search navigation were also checked at 390px.
+
+The demonstration video and earlier 0.5.x checks above document their respective versions. Chrome Web Store submission remains unperformed.

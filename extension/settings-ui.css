@@ -67,3 +67,70 @@ select, input, textarea { max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   input[type=checkbox], input[type=checkbox]::before { transition: none; }
 }
+/* A larger working surface, with section labels distinct from navigation links. */
+.app-header, .workspace { max-width: 1480px; }
+.app-header { position: sticky; top: 0; z-index: 4; background: var(--bg); gap: 24px; padding: 20px 28px; }
+.brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.app-header h1 { font-size: 24px; letter-spacing: -.5px; }
+.brand img { flex-shrink: 0; }
+.global-search { flex: 1; max-width: 640px; margin: 0 auto; }
+.global-search input { display: block; width: 100%; min-height: 46px; padding: 10px 16px; background: var(--surface); border-radius: 10px; }
+.header-actions button, #navigation-toggle, #navigation-close { display: inline-grid; place-items: center; width: 42px; height: 42px; min-height: 42px; padding: 8px; }
+.header-actions svg, .brand svg, .navigation-title svg { width: 22px; height: 22px; }
+#navigation-toggle, .navigation-title { display: none; }
+.workspace { grid-template-columns: 280px minmax(0, 1fr); }
+.sidebar { position: sticky; top: 87px; height: calc(100vh - 130px); overflow-y: auto; padding: 22px 16px; align-self: start; }
+.nav-group + .nav-group { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line); }
+.nav-heading { font-size: 13px; font-weight: 700; margin: 0 12px 10px; color: var(--muted); }
+.nav-button { display: flex; align-items: center; gap: 12px; padding: 11px 12px; font-size: 15px; border-radius: 8px; line-height: 1.4; }
+.nav-button svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--muted); }
+.nav-button[aria-current=page] { box-shadow: inset 3px 0 var(--blue); }
+.nav-button[aria-current=page] svg { color: var(--blue); }
+main { padding: 32px 40px 100px; }
+.option-row { padding: 17px 0; }
+.option-group h3 { font-size: 15px; }
+.filter-bar { justify-content: flex-end; margin-bottom: 10px; }
+.changed-filter { font-size: 14px; }
+[data-section] > h2 { margin-bottom: 18px; }
+[data-section] > form + h3 { margin-top: 36px; }
+[data-section] > form > button[type=submit] { margin-top: 10px; }
+fieldset { margin: 26px 0; padding: 22px; }
+fieldset p { font-size: 15px; }
+.language-field { display: grid; gap: 10px; max-width: 360px; margin-top: 28px; font-weight: 600; }
+.restore-appearance { padding: 20px; border-left: 3px solid var(--blue); background: var(--surface); margin: 24px 0; }
+.restore-appearance h3 { margin-top: 0; }
+.search-result { display: flex; justify-content: space-between; align-items: center; gap: 18px; text-align: left; width: 100%; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 18px 12px; }
+.search-result small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); margin-bottom: 5px; }
+.search-result strong { font-size: 16px; font-weight: 600; }
+.search-result svg { width: 21px; height: 21px; flex-shrink: 0; }
+.search-highlight { outline: 3px solid var(--blue); outline-offset: 6px; border-radius: 4px; }
+.status-bar { font-size: 14px; padding: 10px 24px; z-index: 5; }
+@media (max-width: 900px) {
+  .workspace { grid-template-columns: 240px minmax(0, 1fr); }
+  main { padding: 28px 24px 100px; }
+  .app-header { gap: 14px; padding: 16px 20px; }
+}
+@media (max-width: 720px) {
+  :root { font-size: 16px; }
+  .app-header { display: flex; flex-wrap: wrap; gap: 12px; padding: 14px 16px; }
+  .brand { flex: 1; }
+  .app-header h1 { font-size: 22px; }
+  #navigation-toggle { display: inline-grid; }
+  .global-search { flex-basis: 100%; order: 3; max-width: none; }
+  .workspace { display: block; }
+  .sidebar { display: none; position: fixed; z-index: 6; inset: 0 auto 0 0; height: 100dvh; width: min(340px, 92vw); padding: 18px 18px 70px; border-right: 1px solid var(--line); box-shadow: 20px 0 50px rgb(0 0 0 / .25); background: var(--bg); }
+  .navigation-open .sidebar { display: block; }
+  .navigation-title { display: flex; align-items: center; justify-content: space-between; font-weight: 650; margin-bottom: 20px; }
+  .sidebar nav { display: block; overflow: visible; }
+  .sidebar .nav-button { width: 100%; font-size: 16px; white-space: normal; }
+  .nav-heading { font-size: 13px; }
+  main { padding: 26px 18px 100px; }
+  h2 { font-size: 24px; line-height: 1.3; }
+  h3 { font-size: 19px; }
+  [data-section] > p, fieldset > p { font-size: 15px; }
+  fieldset { padding: 18px; margin: 26px 0; }
+  .section-heading { flex-wrap: wrap; }
+  .option-copy p { font-size: 14px; }
+  .option-row { padding: 17px 0; }
+  .status-bar { padding: 10px 16px; font-size: 13px; }
+}

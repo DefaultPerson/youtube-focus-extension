@@ -1,11 +1,13 @@
 /* Local access gate and integration of optional content controllers. */
 (() => {
   'use strict';
+  const t = text => globalThis.YFEI18n?.t(text) ?? text;
+  let sessionHost = null, sessionRoot = null, sessionTicker = null, stopSessionTranslation = null;
   let snapshot = null, host = null, root = null, gateKey = '', deadline = null, ticker = null, heartbeat = null, lastActivity = Date.now(), stopped = false, inFlight = false;
   let inertApp = null, appWasInert = false;
-  let gateObserver = null;
+  let gateObserver = null, stopGateTranslation = null;
   let filterConfig = '', playerConfig = '', focusConfig = '';
-  function el(tag, text) { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; return node; }
+  function el(tag, text) { const node = document.createElement(tag); if (text !== undefined) node.textContent = t(text); return node; }
   function pause(event) {
     if (!snapshot?.access.blocked) return;
     if (event?.target instanceof HTMLMediaElement) event.target.pause();
@@ -13,6 +15,7 @@
   }
   function removeGate() {
     gateObserver?.disconnect(); gateObserver = null;
+    stopGateTranslation?.(); stopGateTranslation = null;
     host?.remove(); host = root = null; gateKey = '';
     clearInterval(ticker); ticker = null;
     document.removeEventListener('play', pause, true);
@@ -36,7 +39,7 @@
     const status = root.querySelector('#countdown');
     if (status) {
       status.hidden = access.phase === 'setup' || access.phase === 'entry' && access.countdownStyle !== 'detailed';
-      status.textContent = access.phase === 'entry' ? remaining ? `Pause: ${remaining} s` : 'Ready to continue' : `${Math.floor(remaining / 60)} min ${remaining % 60} s remaining`;
+      status.textContent = t(access.phase === 'entry' ? remaining ? `Pause: ${remaining} s` : 'Ready to continue' : `${Math.floor(remaining / 60)} min ${remaining % 60} s remaining`);
     }
     const progress = root.querySelector('progress'); if (progress) progress.value = Math.max(0, access.seconds - remaining);
     const phraseRow = root.querySelector('#phrase-row'); if (phraseRow && access.phase === 'entry') phraseRow.hidden = remaining > 0;
@@ -47,7 +50,7 @@
   function showGate() {
     if (!document.documentElement) return;
     const gate = snapshot.access;
-    const key = [gate.phase, gate.preparationId, gate.sessionId, gate.message, gate.phrase, gate.skipPhrase, gate.countdownStyle, gate.configure, gate.choosePreset, JSON.stringify(gate.presets)].join('|');
+    const key = [snapshot.language, gate.phase, gate.preparationId, gate.sessionId, gate.message, gate.phrase, gate.skipPhrase, gate.countdownStyle, gate.configure, gate.choosePreset, gate.appearanceLocked, JSON.stringify(gate.presets)].join('|');
     if (host && key === gateKey) { holdGate(); countdown(); pause(); return; }
     removeGate(); gateKey = key;
     host = document.createElement('div'); host.id = 'ytv-access-gate';
@@ -58,8 +61,8 @@
     const panel = el('section'); panel.className = 'panel'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-modal', 'true'); panel.setAttribute('aria-labelledby', 'gate-title');
     const titles = {entry: 'Pause before YouTube', setup: 'Set up this session', temporary: 'YouTube is temporarily blocked', schedule: 'Time away from YouTube', cooldown: 'Break between sessions'};
     const title = el('h1', titles[gate.phase]); title.id = 'gate-title'; panel.append(title);
-    if (gate.phase === 'entry') panel.append(el('p', gate.message || 'Start a new session?'));
-    else if (gate.until) panel.append(el('p', `Available after ${new Date(gate.until).toLocaleString('en')}`));
+    if (gate.phase === 'entry') { const message = el('p'); message.textContent = gate.message === 'Why are you opening YouTube?' || gate.message === 'Start a YouTube session?' ? t(gate.message) : gate.message || t('Start a new session?'); message.dataset.i18nIgnore = ''; panel.append(message); }
+    else if (gate.until) panel.append(el('p', `Available after ${new Date(gate.until).toLocaleString(globalThis.YFEI18n?.language)}`));
     if (gate.phase === 'entry' && gate.countdownStyle === 'subtle') { const progress = el('progress'); progress.max = Math.max(1, gate.seconds); panel.append(progress); }
     const count = el('p'); count.id = 'countdown'; panel.append(count);
     const phrase = gate.phase === 'entry' ? gate.phrase : gate.phase === 'cooldown' ? gate.skipPhrase : '';
@@ -70,10 +73,12 @@
     }
     let select, minutes, idle;
     if (gate.phase === 'setup') {
+      if (gate.appearanceLocked) panel.append(el('p', 'Appearance is protected. This session keeps the current appearance.'));
       if (gate.choosePreset) {
         const label = el('label', 'Session preset'); select = el('select'); select.id = 'session-preset';
-        for (const p of gate.presets) { const option = el('option', p.label); option.value = p.id; select.append(option); }
+        for (const p of gate.presets) { const option = el('option', p.label); if (!YTV_CATALOG.presets.some(b => b.id === p.id)) { option.textContent = p.label; option.dataset.i18nIgnore = ''; } option.value = p.id; select.append(option); }
         select.value = gate.selectedPreset || gate.presets[0]?.id || ''; label.append(select); panel.append(label);
+        panel.append(el('p', 'Starting the session applies this preset. For built-in presets, the previous appearance is saved for restoration.'));
       }
       if (gate.configure) {
         const field = (text, id, value) => { const label = el('label', text), control = el('input'); control.type = 'number'; control.id = id; control.min = '0'; control.max = '1440'; control.required = true; control.value = value; label.append(control); panel.append(label); return control; };
@@ -101,6 +106,7 @@
     }
     const settings = el('button', 'Restriction settings'); settings.type = 'button'; settings.addEventListener('click', () => void YTV.request('openFeatures').catch(failure => { error.textContent = failure.message; })); actions.append(settings);
     panel.append(actions); backdrop.append(panel); root.append(style, backdrop); document.documentElement.append(host);
+    stopGateTranslation = globalThis.YFEI18n?.observe(root);
     holdGate(); gateObserver = new MutationObserver(holdGate);
     gateObserver.observe(document.documentElement, {childList: true, subtree: true, attributes: true, attributeFilter: ['inert']});
     document.addEventListener('play', pause, true); pause();
@@ -115,9 +121,52 @@
     countdown(); ticker = setInterval(countdown, 1000);
     (input || actions.querySelector('button:not(:disabled)'))?.focus();
   }
+  function removeSessionControl() {
+    clearInterval(sessionTicker); sessionTicker = null;
+    stopSessionTranslation?.(); stopSessionTranslation = null;
+    sessionHost?.remove(); sessionHost = sessionRoot = null;
+  }
+  function sessionCountdown() {
+    if (!sessionRoot || !snapshot) return;
+    const access = snapshot.access, now = Date.now();
+    const clock = milliseconds => { const seconds = Math.max(0, Math.floor(milliseconds / 1000)); return `${Math.floor(seconds / 60)} min ${seconds % 60} s`; };
+    sessionRoot.querySelector('#session-status').textContent = t(access.phase === 'active'
+      ? Number.isFinite(access.endsAt) ? `Session remaining: ${clock(access.endsAt - now)}` : `Session elapsed: ${clock(now - access.startedAt)}`
+      : 'Ready for a focus session');
+    const idle = sessionRoot.querySelector('#session-idle');
+    idle.textContent = access.phase === 'active' ? t(Number.isFinite(access.idleAt) ? `Inactivity timeout in: ${clock(access.idleAt - now)}` : 'Inactivity timeout is off') : '';
+    sessionRoot.querySelector('#session-action').textContent = t(access.phase === 'active' ? 'End session' : 'Start focus session');
+  }
+  function showSessionControl() {
+    if (!document.documentElement || !snapshot.settings.enabled || snapshot.access.blocked) { removeSessionControl(); return; }
+    // Embedded videos share the session, while its controls live on the main YouTube page.
+    if (window.top !== window || location.hostname !== 'www.youtube.com') return;
+    if (!sessionHost) {
+      sessionHost = el('div'); sessionHost.id = 'ytv-session-control';
+      sessionHost.style.cssText = 'position:fixed!important;bottom:16px!important;left:16px!important;z-index:2147483646!important;display:block!important;';
+      sessionRoot = sessionHost.attachShadow({mode: 'open'});
+      const style = el('style'); style.textContent = ':host{color-scheme:dark}section{max-width:min(320px,calc(100vw - 56px));padding:12px 16px;border:1px solid #586f93;border-radius:10px;background:#1a2231;color:#edf2fa;font:13px/1.5 system-ui,sans-serif;box-shadow:0 4px 20px #0005}p{margin:0 0 6px}small{display:block;opacity:.8;margin-bottom:8px}button{font:inherit;border:1px solid #586f93;border-radius:6px;padding:6px 12px;background:#23324a;color:#edf2fa;cursor:pointer}button:focus-visible{outline:3px solid #8db5ff;outline-offset:3px}.error{color:#ffb6b6}';
+      const panel = el('section'); panel.setAttribute('aria-label', t('YouTube focus session'));
+      const status = el('p'); status.id = 'session-status';
+      const idle = el('small'); idle.id = 'session-idle';
+      const error = el('p'); error.className = 'error'; error.setAttribute('role', 'alert');
+      const action = el('button'); action.id = 'session-action'; action.type = 'button';
+      action.addEventListener('click', async () => {
+        action.disabled = true; error.textContent = '';
+        try { apply(await YTV.request(snapshot.access.phase === 'active' ? 'endSession' : 'prepareSession', snapshot.access.phase === 'active' ? {sessionId: snapshot.access.sessionId} : undefined)); }
+        catch (failure) { error.textContent = t(failure.message); }
+        finally { action.disabled = false; }
+      });
+      panel.append(status, idle, action, error); sessionRoot.append(style, panel); document.documentElement.append(sessionHost);
+      stopSessionTranslation = globalThis.YFEI18n?.observe(sessionRoot);
+      sessionTicker = setInterval(sessionCountdown, 1000);
+    }
+    sessionCountdown();
+  }
   function apply(value) {
     if (stopped) return;
     snapshot = value;
+    globalThis.YFEI18n?.setContentLanguage(value.language);
     const enabled = value.settings.enabled;
     const accessible = enabled && !value.access.blocked;
     const filters = {...value.features.filters, enabled: accessible && value.features.filters.enabled};
@@ -128,9 +177,10 @@
     if (document.documentElement && JSON.stringify(filters) !== filterConfig) { filterConfig = JSON.stringify(filters); YTVContentFilter.configure(filters, (kind, rule) => YTV.request('filterAdd', {kind, rule})); }
     if (JSON.stringify(player) !== playerConfig) { playerConfig = JSON.stringify(player); YTVPlayer.configure(player); }
     if (value.access.blocked) showGate(); else removeGate();
+    showSessionControl();
     clearTimeout(deadline);
     if (value.access.nextAt) deadline = setTimeout(() => void refresh(), Math.min(86400000, Math.max(50, value.access.nextAt - Date.now() + 20)));
-    const tracksSession = enabled && (value.features.restrictions.enabled || value.features.focus.onOpen !== 'keep');
+    const tracksSession = enabled && (value.features.restrictions.enabled || value.features.focus.onOpen !== 'keep' || value.access.phase === 'active' || ['entry', 'setup'].includes(value.access.phase));
     if (tracksSession && !heartbeat) heartbeat = setInterval(() => void refresh(true), 15000);
     if (!tracksSession && heartbeat) { clearInterval(heartbeat); heartbeat = null; }
     if (value.access.phase === 'entry' && !value.access.preparationId) void refresh();
@@ -153,6 +203,6 @@
   void refresh();
   window.addEventListener('pagehide', event => {
     if (event.persisted) return;
-    stopped = true; unsubscribe(); clearTimeout(deadline); clearInterval(heartbeat); removeGate(); YTVContentFilter.destroy(); YTVPlayer.destroy(); YTVFocus.destroy();
+    stopped = true; unsubscribe(); clearTimeout(deadline); clearInterval(heartbeat); removeGate(); removeSessionControl(); YTVContentFilter.destroy(); YTVPlayer.destroy(); YTVFocus.destroy();
   });
 })();

@@ -4,46 +4,54 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>YFE — Settings</title>
+  <link rel="icon" href="icons/icon-32.png" type="image/png">
   <link rel="stylesheet" href="options.css">
   <link rel="stylesheet" href="features.css">
   <link rel="stylesheet" href="settings-ui.css">
   <script src="catalog.js" defer></script>
+  <script src="locales.js" defer></script>
+  <script src="i18n.js" defer></script>
   <script src="filter-rules.js" defer></script>
   <script src="feature-model.js" defer></script>
   <script src="core.js" defer></script>
   <script src="focus-entry-ui.js" defer></script>
   <script src="protection-ui.js" defer></script>
+  <script src="ui-icons.js" defer></script>
   <script src="settings-ui.js" defer></script>
   <script src="options.js" defer></script>
   <script src="features.js" defer></script>
   <script src="focus-ui.js" defer></script>
+  <script src="global-search.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#settings">Skip to settings</a>
   <header class="app-header">
-    <h1>YFE</h1>
+    <div class="brand"><button id="navigation-toggle" type="button" aria-label="Navigation" aria-controls="settings-navigation" aria-expanded="false"></button><img src="icons/icon-32.png" width="32" height="32" alt=""><h1>YFE</h1></div>
+    <label class="global-search"><span class="visually-hidden">Search all settings</span><input id="search" type="search" placeholder="Search all settings…" autocomplete="off" aria-controls="search-results" disabled></label>
     <div class="header-actions"><button id="open-page" type="button" title="Open settings in a new tab" aria-label="Open settings in a new tab" hidden>↗</button><button id="open-panel" type="button" title="Open side panel" aria-label="Open side panel" hidden>⇥</button></div>
   </header>
   <div class="workspace">
     <aside class="sidebar">
-      <label class="section-picker" for="section-picker">Section<select id="section-picker"></select></label>
+      <div class="navigation-title"><span>Navigation</span><button id="navigation-close" type="button" aria-label="Close navigation"></button></div>
       <nav id="settings-navigation" aria-label="All settings sections"></nav>
       <p class="local-note">Settings are saved in this browser.</p>
     </aside>
     <main id="settings" tabindex="-1">
       <div id="appearance-panel" data-section="appearance">
       <div class="filter-bar">
-        <label class="search-field"><span class="visually-hidden">Search appearance settings</span><input id="search" type="search" placeholder="Search appearance settings…" autocomplete="off" disabled></label>
         <label class="changed-filter"><input id="changed-only" type="checkbox" disabled> Changed only</label>
       </div>
       <div class="section-heading"><h2 id="section-title">Settings</h2><span id="result-count" class="muted"></span></div>
       <div id="option-groups"></div>
       <p id="empty-state" class="empty-state" hidden>No results. Change your search or turn off the filter.</p>
       </div>
+      <section id="search-panel" hidden aria-labelledby="search-title"><div class="section-heading"><h2 id="search-title">Search all settings</h2><button id="clear-search" type="button">Clear search</button></div><p id="search-count" class="muted" role="status"></p><div id="search-results"></div><p id="search-empty" class="empty-state" hidden>No settings found.</p></section>
+      <section data-section="general" hidden><h2>General settings</h2><p class="muted">Your changes are saved automatically.</p><label class="language-field" for="interface-language">Interface language<select id="interface-language"><option value="en" lang="en" translate="no">English</option><option value="ru" lang="ru" translate="no">Русский</option></select></label><p class="muted">Choose the language used in settings and on YouTube.</p></section>
       <section id="presets-panel" data-section="presets" hidden aria-labelledby="presets-title">
         <h2 id="presets-title">Presets and backup</h2>
         <p class="muted">A preset replaces your appearance settings. The extension on/off switch stays as it is.</p>
         <h3>Built-in presets</h3><div id="built-in-presets" class="preset-list"></div>
+        <div id="previous-appearance" class="restore-appearance" hidden><h3>Previous appearance</h3><p class="muted">Your appearance is saved before applying a built-in preset.</p><button id="restore-appearance" type="button">Restore previous appearance</button></div>
         <h3>My presets</h3><div id="custom-presets" class="preset-list"></div>
         <form id="save-preset" class="inline-form"><label for="preset-name">New preset name</label><div class="inline-actions"><input id="preset-name" maxlength="60" required placeholder="For example, Quiet evening"><button type="submit">Save current appearance</button></div></form>
         <h3>Settings file</h3><p class="muted">The JSON file includes appearance, presets, usage limits, filters and player settings. Settings protection, passwords and active timers are not exported. Older version 1 files only change appearance and presets.</p>

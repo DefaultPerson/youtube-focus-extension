@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const catalog = globalThis.YTV_CATALOG;
+  const clientVersion = '0.6.0';
   const options = new Map(catalog.options.map(option => [option.id, option]));
   let authorizationHandler = null;
   let entryHandler = null;
@@ -61,15 +62,19 @@
   }
   async function request(action, data) {
     if (!globalThis.chrome?.runtime?.id) throw new Error('Open the installed extension.');
-    let result = await chrome.runtime.sendMessage({app: 'ytv', action, data});
+    if (chrome.runtime.getManifest().version !== clientVersion) {
+      const error = new Error('The settings page and extension are different versions. Reload YFE at chrome://extensions, then reload this page.');
+      error.code = 'VERSION_MISMATCH'; throw error;
+    }
+    let result = await chrome.runtime.sendMessage({app: 'ytv', clientVersion, action, data});
     if (!result?.ok && result?.code === 'FOCUS_PAUSE' && entryHandler) {
       await entryHandler();
-      result = await chrome.runtime.sendMessage({app: 'ytv', action, data});
+      result = await chrome.runtime.sendMessage({app: 'ytv', clientVersion, action, data});
     }
     if (!result?.ok && result?.code === 'PROTECTION_REQUIRED' && authorizationHandler) {
       const credential = await authorizationHandler();
       if (credential === null) throw new Error('Change cancelled.');
-      result = await chrome.runtime.sendMessage({app: 'ytv', action, data, credential});
+      result = await chrome.runtime.sendMessage({app: 'ytv', clientVersion, action, data, credential});
     }
     if (!result?.ok) { const error = new Error(result?.error || 'The background service is unavailable. Reload the extension and page.'); error.code = result?.code; throw error; }
     return result.value;

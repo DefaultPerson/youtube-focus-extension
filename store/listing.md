@@ -5,14 +5,14 @@ Status: prepared locally; not submitted or published in the Chrome Web Store.
 ## Listing fields
 
 - Name: YFE — YouTube Focus Extension
-- Version: 0.5.1
+- Version: 0.6.0
 - Language: English
 - Category: Workflow & Planning
 - Price: Free
 - Homepage: https://defaultperson.github.io/youtube-focus-extension/
 - Privacy policy: https://defaultperson.github.io/youtube-focus-extension/privacy.html
 - Support: https://github.com/DefaultPerson/youtube-focus-extension/issues
-- Package: `dist/yfe-0.5.1-chrome.zip` (manifest at ZIP root)
+- Package: `dist/yfe-0.6.0-chrome.zip` (manifest at ZIP root)
 - Store icon: `extension/icons/icon-128.png`
 - Screenshots: `store/screenshots/` (1280 × 800 PNG)
 - Small promotional tile: `store/promo-440x280.png`
@@ -29,13 +29,13 @@ Make YouTube fit your focus. YFE lets you hide distractions, filter unwanted con
 • Hide Shorts, recommendations, comments, live chat and promotional shelves.
 • Customize video cards, feeds, search, channels, navigation and the watch page with 296 appearance and behavior settings.
 • Save appearance presets, choose one when starting a session, or switch presets on a schedule.
-• Set entry pauses, confirmation phrases, session and inactivity limits, breaks and weekly blocking schedules.
+• Start sessions manually, choose their duration and inactivity timeout, and follow a live timer on YouTube. Set entry pauses, confirmation phrases, breaks and weekly blocking schedules.
 • Filter channels, video cards, comments and posts by text, ID, link or a restricted regular expression. Add rules from YouTube menus.
 • Adjust player quality and autoplay behavior; experimental ad skipping depends on YouTube's current controls.
 • Protect selected settings changes with an optional local password or confirmation phrase.
-• Export and import settings as JSON. Use the side panel or open the same settings in a full tab.
+• Search across every settings section, switch between English and Russian, and export or import JSON settings. Use the side panel or open the same settings in a full tab.
 
-English interface. Desktop Chrome 120 or later. No account, subscription, analytics or developer backend. Settings stay in your browser. YFE locally reads YouTube URLs, page content, player state and recent activity to provide these features. Optional thumbnail replacement loads images from YouTube's i.ytimg.com. See the privacy policy for details.
+English by default, with Russian available in settings. Desktop Chrome 120 or later. No account, subscription, analytics or developer backend. Settings stay in your browser. YFE locally reads YouTube URLs, page content, player state and recent activity to provide these features. Optional thumbnail replacement loads images from YouTube's i.ytimg.com. See the privacy policy for details.
 
 Settings begin with neutral defaults. Appearance changes save immediately; other forms have a Save button. Filters and usage restrictions are shared across appearance presets.
 

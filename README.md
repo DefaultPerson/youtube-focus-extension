@@ -1,10 +1,10 @@
 # YFE — YouTube Focus Extension
 
-[![Release v0.5.1](docs/media/release.svg)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
+[![Release v0.6.0](docs/media/release.svg)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
 
 YFE is a free, open-source UnTrap alternative for Chrome: hide Shorts, recommendations and comments, filter unwanted content, and set focus sessions. Customize the YouTube interface from a persistent side panel, with 296 appearance and behavior settings.
 
-English interface. Local settings. No account, subscription, analytics or backend.
+English by default, with Russian available in settings. Local storage. No account, subscription, analytics or backend.
 
 [![YFE settings in action — open the product demo](docs/media/yfe-demo.gif)](https://defaultperson.github.io/youtube-focus-extension/)
 
@@ -12,18 +12,18 @@ English interface. Local settings. No account, subscription, analytics or backen
 
 - **Distraction control:** hide YouTube Shorts, home recommendations, related videos, comments, live chat, topic chips and promotional shelves.
 - **Appearance:** customize the home feed, search, subscriptions, channels, video cards, watch page, navigation, embedded player, colors and installed fonts.
-- **Focus sessions:** entry pauses, confirmation phrases, session and inactivity limits, breaks, temporary blocking and weekly schedules.
-- **Presets:** save layouts, select one when starting a session, switch presets on a schedule and optionally restore the previous layout.
+- **Focus sessions:** start a session from the panel or YouTube, choose its duration and idle timeout, and track it with a live timer. Entry pauses, confirmation phrases, breaks, temporary blocking and weekly schedules are included.
+- **Presets:** save layouts, select one when starting a session, or switch presets on a schedule. Applying a built-in preset requires confirmation and saves the previous appearance for restoration.
 - **Content filters:** hide matching channels, video cards, comments and posts using text, IDs, links or a bounded regular-expression syntax. Add rules from YouTube menus.
 - **Settings protection:** require a password or phrase for selected changes, with a single-use or five-minute confirmation.
 - **Player controls:** preferred quality, native controls, autoplay prevention and automatic next-video control. Ad skipping and seeking are experimental.
-- **One settings interface:** switches, appearance search, JSON import/export, side panel by default and an optional full settings tab.
+- **One settings interface:** global search across every section, English/Russian switching, SVG navigation, JSON import/export, side panel by default and an optional full settings tab.
 
 ## Install in Chrome or Chromium
 
 Chrome/Chromium 120+. No build step. Not yet available in the Chrome Web Store.
 
-1. Download **`yfe-0.5.1-chrome.zip`** from the [latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest) and extract it.
+1. Download **`yfe-0.6.0-chrome.zip`** from the [latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest) and extract it.
 2. Open `chrome://extensions` and enable **Developer mode**.
 3. Choose **Load unpacked** and select the extracted folder containing **`manifest.json`**.
 4. Reload YouTube and click the extension icon for the side panel; **↗** opens the current section in a full tab.

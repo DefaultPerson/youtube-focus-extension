@@ -1,11 +1,18 @@
 /* Local focus controls. Session and authorization decisions belong to the worker. */
 (() => {
   'use strict';
+  const t = text => globalThis.YFEI18n?.t(text) ?? text;
+  const stockMessage = value => ['Which settings would you like to change?', 'Какие настройки вы хотите изменить?'].includes(value);
   const el = (tag, text, className) => { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (className) node.className = className; return node; };
   const section = el('section'); section.dataset.section = 'focus'; section.hidden = location.hash !== '#focus';
   document.querySelector('main').append(section);
   section.innerHTML = `<h2>Focus and presets</h2>
     <p class="muted">Presets change how YouTube looks. Filters and limits apply to all presets. Preset session defaults take effect when a new session starts.</p>
+    <fieldset><legend>Current YouTube session</legend>
+      <p id="focus-session-status" role="status"></p><p id="focus-session-idle" class="muted"></p>
+      <div class="button-row"><button id="focus-start-session" type="button">Start session on YouTube</button><button id="focus-end-session" type="button" hidden>End session</button><button id="focus-configure-session" type="button">Configure session defaults</button></div>
+      <p class="muted">Start a session to choose its preset, duration and inactivity timeout. The session is shared across YouTube tabs.</p>
+    </fieldset>
     <p id="focus-active" role="status" class="muted"></p>
     <form id="focus-activate-form"><fieldset><legend>Choose a preset now</legend>
       <label>Preset<select id="focus-active-preset" required></select></label>
@@ -32,10 +39,10 @@
       <button id="focus-shortcuts" type="button">Open Chrome keyboard shortcuts</button>
     </fieldset>`;
   const $ = id => section.querySelector('#' + id);
-  let presets = [], customPresets = [], busy = false, loaded = false, activePresetId = '';
+  let presets = [], customPresets = [], busy = false, loaded = false, activePresetId = '', sessionAccess = null;
   const option = (id, label) => { const node = el('option', label); node.value = id; return node; };
   function presetSelect(select, id = '') {
-    select.replaceChildren(option('', 'Choose a preset'), ...presets.map(p => option(p.id, p.label)));
+    select.replaceChildren(option('', 'Choose a preset'), ...presets.map(p => { const node = option(p.id, p.label); if (!YTV_CATALOG.presets.some(b => b.id === p.id)) node.dataset.i18nIgnore = ''; return node; }));
     if (id && !presets.some(p => p.id === id)) select.append(option(id, 'Preset deleted — choose another'));
     select.value = id;
   }
@@ -61,7 +68,7 @@
       const choice = check(caption, value.days.includes(day)); choice.input.dataset.focusDay = day; days.append(choice.label);
     }
     const firstDay = days.querySelector('input');
-    function validateDays() { firstDay.setCustomValidity(days.querySelector('input:checked') ? '' : 'Select at least one day of the week.'); }
+    function validateDays() { firstDay.setCustomValidity(days.querySelector('input:checked') ? '' : t('Select at least one day of the week.')); }
     days.addEventListener('change', validateDays); validateDays(); row.append(days);
     const allDay = check('All day', value.from === value.to); row.append(allDay.label);
     const times = el('div', undefined, 'schedule-times');
@@ -74,18 +81,33 @@
     $('focus-schedules').append(row);
   }
   function readFocus() {
-    return {openingPause: {enabled: $('focus-pause-enabled').checked, seconds: Number($('focus-pause-seconds').value), message: $('focus-pause-message').value, style: $('focus-pause-style').value},
+    return {openingPause: {enabled: $('focus-pause-enabled').checked, seconds: Number($('focus-pause-seconds').value), message: stockMessage($('focus-pause-message').value) ? YFEI18n.source($('focus-pause-message').value) : $('focus-pause-message').value, style: $('focus-pause-style').value},
       onOpen: $('focus-on-open').value, presetId: $('focus-open-preset').value,
       schedules: [...$('focus-schedules').children].map(row => ({id: row.dataset.focusSchedule, enabled: row.querySelector('[data-focus-enabled]').checked,
         days: [...row.querySelectorAll('[data-focus-day]:checked')].map(input => Number(input.dataset.focusDay)), from: row.querySelector('[data-focus-time=from]').value, to: row.querySelector('[data-focus-time=to]').value,
         presetId: row.querySelector('[data-focus-preset]').value, returnPrevious: row.querySelector('[data-focus-return]').checked}))};
   }
-  function describeActive() { const name = presets.find(p => p.id === activePresetId)?.label; $('focus-active').textContent = name ? `Active preset: ${name}` : 'No active preset, or settings have been changed manually.'; }
+  function describeActive() { const preset = presets.find(p => p.id === activePresetId), name = preset && (YTV_CATALOG.presets.some(p => p.id === preset.id) ? t(preset.label) : preset.label); $('focus-active').textContent = t(name ? `Active preset: ${name}` : 'No active preset, or settings have been changed manually.'); }
+  function describeSession() {
+    const access = sessionAccess; if (!access) return;
+    const now = Date.now();
+    const clock = milliseconds => { const seconds = Math.max(0, Math.floor(milliseconds / 1000)); return `${Math.floor(seconds / 60)} min ${seconds % 60} s`; };
+    let status = 'No active session';
+    if (access.phase === 'active') status = Number.isFinite(access.endsAt) ? `Session remaining: ${clock(access.endsAt - now)}` : `Session elapsed: ${clock(now - access.startedAt)}`;
+    else if (access.phase === 'cooldown') status = `Break remaining: ${clock(access.until - now)}`;
+    else if (['entry', 'setup'].includes(access.phase)) status = 'Session setup is waiting on YouTube';
+    else if (['temporary', 'schedule'].includes(access.phase)) status = 'YouTube is currently blocked';
+    $('focus-session-status').textContent = t(status);
+    $('focus-session-idle').textContent = access.phase === 'active' ? t(Number.isFinite(access.idleAt) ? `Inactivity timeout in: ${clock(access.idleAt - now)}` : 'Inactivity timeout is off') : '';
+    $('focus-end-session').hidden = access.phase !== 'active';
+    $('focus-start-session').hidden = access.phase === 'active' || ['temporary', 'schedule', 'cooldown'].includes(access.phase);
+    $('focus-start-session').textContent = t(['entry', 'setup'].includes(access.phase) ? 'Continue session setup on YouTube' : 'Start session on YouTube');
+  }
   function renderDefaults() {
     $('focus-defaults').replaceChildren();
     if (!customPresets.length) { $('focus-defaults').append(el('p', 'Save a custom preset in “Presets and backup” first.', 'muted')); return; }
     for (const preset of customPresets) {
-      const form = el('form'), group = el('fieldset'); group.append(el('legend', preset.label));
+      const form = el('form'), group = el('fieldset'), legend = el('legend', preset.label); legend.dataset.i18nIgnore = ''; group.append(legend);
       const override = check('Custom defaults for new sessions', Boolean(preset.sessionDefaults)); group.append(override.label);
       const minutes = number(preset.sessionDefaults?.minutes ?? 20), idle = number(preset.sessionDefaults?.idleMinutes ?? 15);
       const fields = el('div', undefined, 'form-grid'); fields.append(field('Session length in minutes (0 = unlimited)', minutes), field('Idle timeout in minutes (0 = off)', idle)); group.append(fields);
@@ -100,20 +122,24 @@
     }
   }
   function render(focus) {
-    $('focus-pause-enabled').checked = focus.openingPause.enabled; $('focus-pause-seconds').value = focus.openingPause.seconds; $('focus-pause-message').value = focus.openingPause.message; $('focus-pause-style').value = focus.openingPause.style;
+    $('focus-pause-enabled').checked = focus.openingPause.enabled; $('focus-pause-seconds').value = focus.openingPause.seconds; $('focus-pause-message').value = stockMessage(focus.openingPause.message) ? t(focus.openingPause.message) : focus.openingPause.message; $('focus-pause-style').value = focus.openingPause.style;
     $('focus-on-open').value = focus.onOpen; presetSelect($('focus-open-preset'), focus.presetId); onOpenMode();
     presetSelect($('focus-active-preset'), activePresetId); $('focus-schedules').replaceChildren(); focus.schedules.forEach(scheduleRow); renderDefaults(); describeActive();
   }
   $('focus-on-open').addEventListener('change', onOpenMode);
   $('focus-add-schedule').addEventListener('click', () => scheduleRow());
   $('focus-form').addEventListener('submit', event => { event.preventDefault(); if (!$('focus-form').reportValidity()) return; const value = readFocus(); void mutate(() => YTV.request('writeFeature', {section: 'focus', value})); });
-  $('focus-activate-form').addEventListener('submit', event => { event.preventDefault(); if (!$('focus-activate-form').reportValidity()) return; const id = $('focus-active-preset').value; void mutate(async () => { await YTV.request('activatePreset', {id}); activePresetId = id; describeActive(); }); });
+  $('focus-activate-form').addEventListener('submit', event => { event.preventDefault(); if (!$('focus-activate-form').reportValidity()) return; const id = $('focus-active-preset').value; void mutate(async () => { const preset = presets.find(p => p.id === id); if (YTV_CATALOG.presets.some(p => p.id === id) && !(await globalThis.YTVUI.confirmPreset(preset))) return; await YTV.request('activatePreset', {id, savePrevious: YTV_CATALOG.presets.some(p => p.id === id)}); activePresetId = id; describeActive(); }); });
+  $('focus-start-session').addEventListener('click', () => void mutate(() => YTV.request('prepareSession', {openYouTube: true})));
+  $('focus-end-session').addEventListener('click', () => void mutate(() => YTV.request('endSession', {sessionId: sessionAccess?.sessionId})));
+  $('focus-configure-session').addEventListener('click', () => { location.hash = '#restrictions'; setTimeout(() => document.getElementById('session-enabled')?.closest('fieldset')?.scrollIntoView({block: 'start'}), 0); });
+  setInterval(() => { if (!section.hidden) describeSession(); }, 1000);
   $('focus-shortcuts').addEventListener('click', () => { void chrome.tabs.create({url: 'chrome://extensions/shortcuts'}).catch(showError); });
   section.querySelectorAll('button').forEach(node => { node.disabled = true; });
   Promise.all([YTV.readFeatures(), YTV.readPresets()]).then(([features, personal]) => {
     customPresets = personal; presets = [...YTV_CATALOG.presets, ...personal]; render(features.focus); loaded = true;
     section.querySelectorAll('button').forEach(node => { node.disabled = false; });
-    YTV.subscribeSnapshots(snapshot => { activePresetId = snapshot.focus?.activePresetId || ''; describeActive(); });
+    YTV.subscribeSnapshots(snapshot => { activePresetId = snapshot.focus?.activePresetId || ''; sessionAccess = snapshot.access; describeActive(); describeSession(); });
     window.addEventListener('ytv:imported', () => {
       void Promise.all([YTV.readFeatures(), YTV.readPresets()]).then(([features, personal]) => {
         customPresets = personal; presets = [...YTV_CATALOG.presets, ...personal]; render(features.focus);
@@ -128,4 +154,9 @@
       }).catch(showError);
     });
   }).catch(showError);
+  window.addEventListener('yfe:languagechange', () => {
+    if (stockMessage($('focus-pause-message').value)) $('focus-pause-message').value = t($('focus-pause-message').value);
+    for (const days of section.querySelectorAll('.weekdays')) days.dispatchEvent(new Event('change'));
+    describeActive(); describeSession();
+  });
 })();

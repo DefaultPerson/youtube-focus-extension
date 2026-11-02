@@ -1,6 +1,8 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
+  const t = text => YFEI18n.t(text);
+  const stockMessage = value => ['Why are you opening YouTube?', 'Зачем вы открываете YouTube?'].includes(value);
   const controls = '[data-section="restrictions"] button, [data-section="protection"] button, [data-section="filters"] button, [data-section="player"] button';
   let features, protection, busy = false, accessState;
   const scopeLabels = {appearance: 'Appearance and presets', restrictions: 'Schedules, sessions and blocks', filters: 'Filter rules', player: 'Player settings', disable: 'Extension on/off switch', importReset: 'Import and reset'};
@@ -26,7 +28,7 @@
   }
   function render() {
     const r = features.restrictions;
-    $('restriction-enabled').checked = r.enabled; $('entry-enabled').checked = r.entry.enabled; $('entry-message').value = r.entry.message; $('entry-seconds').value = r.entry.seconds; $('entry-phrase').value = r.entry.phrase;
+    $('restriction-enabled').checked = r.enabled; $('entry-enabled').checked = r.entry.enabled; $('entry-message').value = stockMessage(r.entry.message) ? t(r.entry.message) : r.entry.message; $('entry-seconds').value = r.entry.seconds; $('entry-phrase').value = r.entry.phrase;
     $('entry-countdown').value = r.entry.countdownStyle; $('allow-skip').checked = r.session.allowSkip;
     $('session-enabled').checked = r.session.enabled; $('session-minutes').value = r.session.minutes; $('idle-minutes').value = r.session.idleMinutes; $('cooldown-minutes').value = r.session.cooldownMinutes; $('cooldown-phrase').value = r.session.skipPhrase;
     $('schedule-rows').replaceChildren(); r.schedules.forEach(scheduleRow);
@@ -46,13 +48,13 @@
   function restrictionInput() {
     return {enabled: $('restriction-enabled').checked, temporaryUntil: features.restrictions.temporaryUntil,
       schedules: [...document.querySelectorAll('#schedule-rows > .schedule-row')].map(row => ({days: [...row.querySelectorAll('[data-day]:checked')].map(i => Number(i.dataset.day)), from: row.querySelector('[data-time=from]').value, to: row.querySelector('[data-time=to]').value})),
-      entry: {enabled: $('entry-enabled').checked, message: $('entry-message').value, seconds: Number($('entry-seconds').value), phrase: $('entry-phrase').value, countdownStyle: $('entry-countdown').value},
+      entry: {enabled: $('entry-enabled').checked, message: stockMessage($('entry-message').value) ? YFEI18n.source($('entry-message').value) : $('entry-message').value, seconds: Number($('entry-seconds').value), phrase: $('entry-phrase').value, countdownStyle: $('entry-countdown').value},
       session: {enabled: $('session-enabled').checked, minutes: Number($('session-minutes').value), idleMinutes: Number($('idle-minutes').value), cooldownMinutes: Number($('cooldown-minutes').value), skipPhrase: $('cooldown-phrase').value, allowSkip: $('allow-skip').checked}};
   }
   function describe(access) {
     accessState = access;
     const names = {open: 'Access allowed', active: 'Session active', temporary: 'Temporary block', schedule: 'Scheduled block', entry: 'Waiting to start a session', setup: 'Setting up a new session', cooldown: 'Break between sessions'};
-    $('session-status').textContent = names[access.phase] + (access.until ? ` until ${new Date(access.until).toLocaleString('en')}` : access.endsAt ? ` — ${Math.max(0, Math.ceil((access.endsAt - Date.now()) / 60000))} min left` : '');
+    $('session-status').textContent = names[access.phase] + (access.until ? ` until ${new Date(access.until).toLocaleString(YFEI18n.language)}` : access.endsAt ? ` — ${Math.max(0, Math.ceil((access.endsAt - Date.now()) / 60000))} min left` : '');
     $('end-session').hidden = access.phase !== 'active';
   }
   async function init() {
@@ -81,5 +83,6 @@
     $('save-status').textContent = 'Settings loaded.';
   }
   document.querySelectorAll(controls).forEach(b => b.disabled = true);
+  window.addEventListener('yfe:languagechange', () => { if (stockMessage($('entry-message').value)) $('entry-message').value = t($('entry-message').value); if (accessState) describe(accessState); });
   init().then(() => document.querySelectorAll(controls).forEach(b => b.disabled = false)).catch(showError);
 })();

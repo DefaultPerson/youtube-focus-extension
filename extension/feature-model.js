@@ -31,6 +31,12 @@
     if (raw?.version === 2 && raw.player && !Object.hasOwn(raw.player, 'seekAds')) { raw = structuredClone(raw); raw.player.seekAds = false; }
     shape(raw, ['version', 'focus', 'restrictions', 'filters', 'player']);
     if (raw.version !== 2) fail('Unsupported feature settings version.');
+    // Migrate only the exact defaults shipped before the language setting existed.
+    if (raw.focus?.openingPause?.message === 'Какие настройки вы хотите изменить?' || raw.restrictions?.entry?.message === 'Зачем вы открываете YouTube?') {
+      raw = structuredClone(raw);
+      if (raw.focus?.openingPause?.message === 'Какие настройки вы хотите изменить?') raw.focus.openingPause.message = defaults().focus.openingPause.message;
+      if (raw.restrictions?.entry?.message === 'Зачем вы открываете YouTube?') raw.restrictions.entry.message = defaults().restrictions.entry.message;
+    }
     const focus = raw.focus;
     shape(focus, ['openingPause', 'onOpen', 'presetId', 'schedules']);
     shape(focus.openingPause, ['enabled', 'seconds', 'message', 'style']);

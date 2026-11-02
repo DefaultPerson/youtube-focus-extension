@@ -15,6 +15,7 @@ const ready = (async () => {
   await chrome.storage.session.setAccessLevel({accessLevel: 'TRUSTED_CONTEXTS'});
   const stored = await chrome.storage.local.get(null);
   state = {
+    language: stored.yfeLanguage === 'ru' ? 'ru' : 'en',
     settings: YTV.normalizeSettings({enabled: stored['ytv.enabled'], values: Object.fromEntries(Object.entries(stored).filter(([key]) => key.startsWith(prefix)).map(([key, value]) => [key.slice(prefix.length), value]))}),
     presets: (stored['ytv.presets'] ?? []).map(preset => ({...preset, values: YTV.migrateValues(preset.values)})),
     features: stored[keys.features] ? F.validate(stored[keys.features]) : F.defaults(),
@@ -22,7 +23,7 @@ const ready = (async () => {
     runtime: stored[keys.runtime] ?? F.freshRuntime(),
     focusRuntime: stored['ytv.focusRuntime'] ?? {activePresetId: null, activeKey: null, baseline: null, manualKey: null},
   };
-  if (state.focusRuntime.baseline?.values) state.focusRuntime.baseline.values = YTV.migrateValues(state.focusRuntime.baseline.values);
+  for (const key of ['baseline', 'previousAppearance']) if (state.focusRuntime[key]?.values) state.focusRuntime[key].values = YTV.migrateValues(state.focusRuntime[key].values);
   await chrome.alarms.create('ytv-boundary', {periodInMinutes: 0.5});
 })();
 function caller(sender) {
@@ -82,12 +83,14 @@ async function setAppearance(values) {
   await chrome.storage.local.set(Object.fromEntries(Object.entries(next.values).map(([id, value]) => [prefix + id, value])));
   state.settings = next;
 }
-async function activatePreset(id, manual = false) {
+async function activatePreset(id, manual = false, savePrevious = false) {
   const preset = presetById(id); if (!preset) reject('Preset not found.');
-  await setAppearance(preset.values);
-  state.focusRuntime.activePresetId = id;
-  if (manual) state.focusRuntime.manualKey = state.focusRuntime.activeKey;
-  await saveFocus();
+  const settings = YTV.normalizeSettings({enabled: state.settings.enabled, values: preset.values});
+  const focus = {...state.focusRuntime, activePresetId: id};
+  if (manual) focus.manualKey = focus.activeKey;
+  if (savePrevious) focus.previousAppearance = {values: {...state.settings.values}, id: state.focusRuntime.activePresetId, savedAt: Date.now()};
+  await chrome.storage.local.set({'ytv.focusRuntime': focus, ...Object.fromEntries(Object.entries(settings.values).map(([key, value]) => [prefix + key, value]))});
+  state.settings = settings; state.focusRuntime = focus;
 }
 async function reconcilePresets() {
   const f = state.focusRuntime;
@@ -133,16 +136,17 @@ function access(now = Date.now()) {
   if (state.runtime.cooldownUntil > now) return {phase: 'cooldown', blocked: true, sessionId: state.runtime.cooldownId, until: state.runtime.cooldownUntil, nextAt: state.runtime.cooldownUntil, skipPhrase: state.runtime.cooldownSkipPhrase, allowSkip: state.runtime.cooldownAllowSkip};
   if (state.runtime.session) {
     const deadlines = [nextAt, state.runtime.session.endsAt, state.runtime.session.idleAt].filter(Number.isFinite);
-    return {phase: 'active', blocked: false, sessionId: state.runtime.session.id, nextAt: deadlines.length ? Math.min(...deadlines) : null, endsAt: state.runtime.session.endsAt, idleAt: state.runtime.session.idleAt};
+    return {phase: 'active', blocked: false, sessionId: state.runtime.session.id, startedAt: state.runtime.session.startedAt, presetId: state.focusRuntime.activePresetId, nextAt: deadlines.length ? Math.min(...deadlines) : null, endsAt: state.runtime.session.endsAt, idleAt: state.runtime.session.idleAt};
   }
-  if (r.enabled && (r.entry.enabled || r.session.enabled) || state.features.focus.onOpen !== 'keep') {
+  if (r.enabled && (r.entry.enabled || r.session.enabled) || state.features.focus.onOpen !== 'keep' || state.runtime.preparation?.manual) {
     const selected = state.features.focus.onOpen === 'preset' && !automation.active ? state.features.focus.presetId : state.focusRuntime.activePresetId;
     const values = {...r.session, ...(presetById(selected)?.sessionDefaults ?? {})};
+    const appearanceLocked = Boolean(state.runtime.preparation?.manual && state.protection.enabled && state.protection.scopes.appearance);
     return {phase: state.runtime.preparation?.confirmed ? 'setup' : 'entry', blocked: true, preparationId: state.runtime.preparation?.id ?? null, readyAt: state.runtime.preparation?.readyAt ?? null,
       message: r.enabled && r.entry.enabled ? r.entry.message : 'Start a YouTube session?', phrase: r.enabled && r.entry.enabled ? r.entry.phrase : '',
       countdownStyle: r.entry.countdownStyle, seconds: r.enabled && r.entry.enabled ? r.entry.seconds : 0,
-      configure: r.enabled && r.session.enabled, minutes: values.minutes, idleMinutes: values.idleMinutes,
-      choosePreset: state.features.focus.onOpen === 'ask', selectedPreset: selected || '', presets: presets().map(p => ({id: p.id, label: p.label, sessionDefaults: p.sessionDefaults})), nextAt};
+      configure: Boolean(r.enabled && r.session.enabled || state.runtime.preparation?.manual), minutes: values.minutes, idleMinutes: values.idleMinutes,
+      appearanceLocked, choosePreset: !appearanceLocked && (state.features.focus.onOpen === 'ask' || Boolean(state.runtime.preparation?.manual)), selectedPreset: appearanceLocked ? '' : selected || '', presets: presets().map(p => ({id: p.id, label: p.label, sessionDefaults: p.sessionDefaults})), nextAt};
   }
   return {phase: 'open', blocked: false, nextAt};
 }
@@ -150,16 +154,16 @@ async function settle(prepare = false) {
   await reconcilePresets();
   const before = JSON.stringify(state.runtime);
   const r = state.features.restrictions;
-  state.runtime = F.advance(state.runtime, {...r, enabled: state.settings.enabled && (r.enabled || state.features.focus.onOpen !== 'keep')}, Date.now());
+  state.runtime = F.advance(state.runtime, {...r, enabled: state.settings.enabled && (r.enabled || state.features.focus.onOpen !== 'keep' || state.runtime.preparation?.manual || state.runtime.session?.manual)}, Date.now());
   if (prepare && access().phase === 'entry' && !state.runtime.preparation) state.runtime.preparation = {id: crypto.randomUUID(), confirmed: !(r.enabled && r.entry.enabled), expiresAt: Date.now() + 900000, readyAt: Date.now() + (r.enabled && r.entry.enabled ? r.entry.seconds : 0) * 1000};
   if (before !== JSON.stringify(state.runtime)) await saveRuntime();
-  if (prepare && state.runtime.preparation && state.features.focus.onOpen === 'preset' && !(r.enabled && (r.entry.enabled || r.session.enabled)) && ['entry', 'setup'].includes(access().phase)) {
+  if (prepare && state.runtime.preparation && !state.runtime.preparation.manual && state.features.focus.onOpen === 'preset' && !(r.enabled && (r.entry.enabled || r.session.enabled)) && ['entry', 'setup'].includes(access().phase)) {
     const selected = access().selectedPreset; if (selected) await activatePreset(selected);
     state.runtime.session = {id: crypto.randomUUID(), startedAt: Date.now(), endsAt: null, idleAt: Date.now() + 900000, idleMinutes: 15, cooldownMinutes: 0, allowSkip: false, skipPhrase: ''};
     state.runtime.preparation = null; await saveRuntime();
   }
 }
-function snapshot() { return {settings: state.settings, features: state.features, access: access(), focus: {activePresetId: state.focusRuntime.activePresetId}}; }
+function snapshot() { return {version: chrome.runtime.getManifest().version, language: state.language, settings: state.settings, features: state.features, access: access(), focus: {activePresetId: state.focusRuntime.activePresetId, canRestoreAppearance: Boolean(state.focusRuntime.previousAppearance)}}; }
 function broadcast() {
   const value = snapshot();
   for (const port of ports) { try { port.postMessage({type: 'snapshot', value}); } catch { ports.delete(port); } }
@@ -179,6 +183,8 @@ async function handle(message, sender) {
   await ready;
   const type = caller(sender);
   if (!type || !message || message.app !== 'ytv') reject('This request source is not allowed.');
+  const readActions = ['snapshot', 'readSettings', 'readFeatures', 'readPresets', 'protectionInfo', 'uiEntryStatus'];
+  if ((!message.clientVersion && !readActions.includes(message.action)) || message.clientVersion && message.clientVersion !== chrome.runtime.getManifest().version) reject('The extension was updated. Reload YouTube and the extension settings before changing anything.', 'VERSION_MISMATCH');
   if (type === 'ui') {
     if (message.action === 'uiEntryStatus') return uiEntry(sender);
     if (message.action === 'uiEntryComplete') return uiEntry(sender, true);
@@ -198,6 +204,20 @@ async function handle(message, sender) {
     }
     return snapshot();
   }
+  if (action === 'prepareSession') {
+    if (!state.settings.enabled) reject('Turn on the extension before starting a session.');
+    if (data !== undefined && (!data || typeof data !== 'object' || Object.keys(data).some(key => key !== 'openYouTube') || data.openYouTube !== undefined && typeof data.openYouTube !== 'boolean')) reject('Invalid session request.');
+    const gate = access();
+    if (['temporary', 'schedule', 'cooldown'].includes(gate.phase)) reject('Wait for the current block or break to finish.');
+    if (['open', 'entry', 'setup'].includes(gate.phase)) {
+      const entry = state.features.restrictions;
+      const now = Date.now();
+      state.runtime.preparation = state.runtime.preparation ? {...state.runtime.preparation, manual: true} : {id: crypto.randomUUID(), manual: true, confirmed: !(entry.enabled && entry.entry.enabled), expiresAt: now + 900000, readyAt: now + (entry.enabled && entry.entry.enabled ? entry.entry.seconds : 0) * 1000};
+      await saveRuntime(); broadcast();
+    }
+    if (type === 'ui' && data?.openYouTube) await chrome.tabs.create({url: 'https://www.youtube.com/'});
+    return snapshot();
+  }
   if (action === 'startSession') {
     if (type !== 'content') reject('Start the session on a YouTube page.');
     const gate = access();
@@ -214,8 +234,8 @@ async function handle(message, sender) {
     const minutes = gate.configure ? data.minutes ?? parameters.minutes : 0;
     const idleMinutes = gate.configure ? data.idleMinutes ?? parameters.idleMinutes : 15;
     if (![minutes, idleMinutes].every(v => Number.isInteger(v) && v >= 0 && v <= 1440)) reject('Session and inactivity limits must be between 0 and 1440 minutes.');
-    if (selected) await activatePreset(selected, gate.choosePreset);
-    state.runtime = {preparation: null, cooldownUntil: 0, session: {id: crypto.randomUUID(), startedAt: now,
+    if (selected) await activatePreset(selected, gate.choosePreset, gate.choosePreset && YTV_CATALOG.presets.some(p => p.id === selected));
+    state.runtime = {preparation: null, cooldownUntil: 0, session: {id: crypto.randomUUID(), startedAt: now, manual: Boolean(state.runtime.preparation?.manual),
       endsAt: minutes ? now + minutes * 60000 : null, idleMinutes,
       idleAt: idleMinutes ? now + idleMinutes * 60000 : null, cooldownMinutes: r.enabled && r.session.enabled ? r.session.cooldownMinutes : 0,
       skipPhrase: r.session.skipPhrase, allowSkip: r.session.allowSkip}};
@@ -253,7 +273,19 @@ async function handle(message, sender) {
   if (action === 'readFeatures') return state.features;
   if (action === 'protectionInfo') return protectionView();
   if (action === 'activatePreset') {
-    await authorize(sender, ['appearance'], credential); await activatePreset(data?.id, true); broadcast(); return true;
+    if (!data || typeof data !== 'object' || Object.keys(data).some(key => !['id', 'savePrevious'].includes(key)) || typeof data.id !== 'string' || data.savePrevious !== undefined && typeof data.savePrevious !== 'boolean') reject('Invalid preset change.');
+    await authorize(sender, ['appearance'], credential);
+    await activatePreset(data.id, true, data.savePrevious ?? YTV_CATALOG.presets.some(p => p.id === data.id)); broadcast(); return true;
+  }
+  if (action === 'restoreAppearance') {
+    const previous = state.focusRuntime.previousAppearance;
+    if (!previous) reject('No previous appearance has been saved.');
+    await authorize(sender, ['appearance'], credential);
+    const settings = YTV.normalizeSettings({enabled: state.settings.enabled, values: previous.values});
+    const focus = {...state.focusRuntime, activePresetId: presetById(previous.id)?.id ?? null, manualKey: state.focusRuntime.activeKey};
+    delete focus.previousAppearance;
+    await chrome.storage.local.set({'ytv.focusRuntime': focus, ...Object.fromEntries(Object.entries(settings.values).map(([key, value]) => [prefix + key, value]))});
+    state.settings = settings; state.focusRuntime = focus; broadcast(); return true;
   }
   if (action === 'writeSettings' || action === 'updateSettings') {
     let next;
@@ -348,4 +380,9 @@ chrome.commands.onCommand.addListener(command => {
     }
     await persistSettings({...state.settings, enabled: !state.settings.enabled}); broadcast();
   });
+});
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'local' || !Object.hasOwn(changes, 'yfeLanguage')) return;
+  void serial(async () => { await ready; state.language = changes.yfeLanguage.newValue === 'ru' ? 'ru' : 'en'; broadcast(); });
 });

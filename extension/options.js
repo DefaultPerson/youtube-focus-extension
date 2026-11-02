@@ -127,22 +127,17 @@
   }
 
   function filterOptions() {
-    const query = $("search").value.trim().toLocaleLowerCase("en");
     const changedOnly = $("changed-only").checked;
     let count = 0;
     for (const { row, option } of rows.values()) {
-      const category = catalog.categories.find((item) => item.id === option.category);
-      const text = `${option.label} ${option.description || ""} ${category?.label || ""} ${(option.choices || []).map((choice) => choice.label).join(" ")}`.toLocaleLowerCase("en");
-      const match = (!query || text.includes(query)) &&
-        (query || activeCategory === "all" || option.category === activeCategory) &&
+      const match = (activeCategory === "all" || option.category === activeCategory) &&
         (!changedOnly || settings.values[option.id] !== option.default);
       row.hidden = !match;
       if (match) count += 1;
     }
     for (const group of groups) group.section.hidden = group.rows.every((row) => row.hidden);
     $("empty-state").hidden = count > 0;
-    $("section-title").textContent = query ? "Search results across all sections" :
-      activeCategory === "all" ? "Appearance" : catalog.categories.find((item) => item.id === activeCategory).label;
+    $("section-title").textContent = activeCategory === "all" ? "Appearance" : catalog.categories.find((item) => item.id === activeCategory).label;
     $("result-count").textContent = `${count} of ${catalog.options.length}`;
   }
 
@@ -186,10 +181,11 @@
         const actions = element("div", "preset-actions");
         const apply = markMutation(element("button", "", "Apply"));
         apply.type = "button";
-        apply.setAttribute("aria-label", `Apply preset: ${preset.label}`);
-        apply.addEventListener("click", () => {
+        apply.setAttribute("aria-label", `Apply preset: ${custom ? preset.label : YFEI18n.t(preset.label)}`);
+        apply.addEventListener("click", async () => {
+          if (!await YTVUI.confirmPreset(preset)) return;
           void mutate(async () => {
-            await api.request('activatePreset', {id: preset.id});
+            await api.request('activatePreset', {id: preset.id, savePrevious: !custom});
           });
         });
         actions.append(apply);
@@ -208,7 +204,8 @@
           });
           actions.append(remove);
         }
-        row.append(element("span", "", preset.label), actions);
+        const name = element("span", "", preset.label); if (custom) name.dataset.i18nIgnore = '';
+        row.append(name, actions);
         target.append(row);
       }
     }
@@ -216,18 +213,17 @@
   }
 
   function wireActions() {
-    $("search").addEventListener("input", filterOptions);
     $("changed-only").addEventListener("change", filterOptions);
+    $("restore-appearance").addEventListener("click", () => { void mutate(() => api.request('restoreAppearance'), 'Appearance restored.'); });
     window.addEventListener('ytv:navigate', ({detail}) => {
       if (detail.view !== 'appearance') return;
-      if (activeCategory !== detail.category) $("search").value = '';
       activeCategory = detail.category;
       filterOptions();
     });
     $("save-preset").addEventListener("submit", (event) => {
       event.preventDefault();
       const label = $("preset-name").value.trim();
-      if (!label) { $("preset-name").setCustomValidity("Enter a preset name."); $("preset-name").reportValidity(); return; }
+      if (!label) { $("preset-name").setCustomValidity(YFEI18n.t("Enter a preset name.")); $("preset-name").reportValidity(); return; }
       void mutate(async () => {
         const presets = await api.readPresets();
         const fresh = await api.readSettings();
@@ -278,7 +274,7 @@
       if (!await confirmAction("Reset all appearance settings?", "All appearance changes will be reset and the extension will be turned on. Custom presets will be kept.", "Reset settings")) return;
       void mutate(() => api.request('resetAppearance'));
     });
-    for (const id of ["export", "import", "reset-all"]) markMutation($(id));
+    for (const id of ["export", "import", "reset-all", "restore-appearance"]) markMutation($(id));
     $("save-preset").querySelectorAll("input, button").forEach(markMutation);
   }
 
@@ -290,11 +286,13 @@
       wireActions();
       renderPresets();
       syncControls();
+      window.addEventListener('yfe:languagechange', () => { renderPresets(); if ($('preset-name').validity.customError) $('preset-name').setCustomValidity(YFEI18n.t('Enter a preset name.')); });
       YTVUI.refresh();
       $("search").disabled = false;
       $("changed-only").disabled = false;
       $("save-status").textContent = "Settings loaded.";
       api.subscribe((next) => { settings = next; syncControls(); });
+      api.subscribeSnapshots(snapshot => { $('previous-appearance').hidden = !snapshot.focus?.canRestoreAppearance; });
       // Reload personal presets after another settings tab changes them.
       globalThis.chrome.storage.onChanged.addListener((changes, area) => {
         if (area !== "local") return;
