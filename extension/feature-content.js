@@ -169,6 +169,7 @@
     globalThis.YFEI18n?.setContentLanguage(value.language);
     const enabled = value.settings.enabled;
     const accessible = enabled && !value.access.blocked;
+    YTVChannelPlayAll.configure(accessible && value.settings.values.channel_show_play_all_button === true && !value.settings.values.channel_hide_buttons_play_all);
     const filters = {...value.features.filters, enabled: accessible && value.features.filters.enabled};
     const autoplay = value.settings.values.video_page_disable_autoplay === true;
     const player = {...(value.features.player.enabled ? value.features.player : {quality: 'auto', nativeControls: false, disableAutoplay: false, disableNextAutoplay: false, skipAds: false}), enabled: accessible && (value.features.player.enabled || autoplay), disableNextAutoplay: autoplay || value.features.player.enabled && value.features.player.disableNextAutoplay};
@@ -203,6 +204,6 @@
   void refresh();
   window.addEventListener('pagehide', event => {
     if (event.persisted) return;
-    stopped = true; unsubscribe(); clearTimeout(deadline); clearInterval(heartbeat); removeGate(); removeSessionControl(); YTVContentFilter.destroy(); YTVPlayer.destroy(); YTVFocus.destroy();
+    stopped = true; unsubscribe(); clearTimeout(deadline); clearInterval(heartbeat); removeGate(); removeSessionControl(); YTVContentFilter.destroy(); YTVPlayer.destroy(); YTVFocus.destroy(); YTVChannelPlayAll.destroy();
   });
 })();

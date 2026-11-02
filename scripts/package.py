@@ -15,7 +15,7 @@ FILES = (
     "background.js", "feature-model.js", "feature-content.js", "features.html",
     "features.css", "features.js", "protection-ui.js", "filter-rules.js",
     "content-filter.js", "player.js", "player-main.js",
-    "focus-content.js", "focus-ui.js", "focus-entry-ui.js",
+    "focus-content.js", "channel-play-all.js", "channel-identity-main.js", "focus-ui.js", "focus-entry-ui.js",
     "settings-ui.js", "settings-ui.css", "settings-redirect.js",
     "locales.js", "i18n.js", "ui-icons.js", "global-search.js",
     "runtime-catalog.js", "runtime-locales.js",

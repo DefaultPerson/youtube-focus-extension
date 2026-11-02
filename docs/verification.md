@@ -1,5 +1,15 @@
 # Release verification
 
+Version 0.6.3 adds an optional Channel Play all button (2026-11-03):
+
+- Live Chromium checks on Google and Google for Developers opened regular-video playlists with 2,035 and 4,652 entries. Videos → Shorts → Videos and navigation between channels retained the correct channel ID despite stale HTML metadata.
+- The new switch saves immediately, starts off, respects Hide channel Play all buttons, and translates between English and Russian without reloading.
+- 34 browser fixture assertions cover late/replaced headers, navigation, channel identity validation, stale metadata, language, click behavior, cleanup and duplicate prevention. The observer disconnects outside channel Videos pages and when disabled.
+- Existing worker checks passed (31 scenarios). Full/runtime catalog parity passed for 297 controls, 2,466 validation states, 9,576 CSS comparisons and 970 translation inputs. JavaScript syntax and deterministic ZIP byte checks passed.
+- The feature makes no network requests and adds no permissions. A read-only page bridge provides only the current public channel ID and path; settings never cross that bridge.
+- The existing Chrome installation was updated and the new switch enabled. Its actual button opened a visible 4,652-entry playlist. All 597 previous storage entries remained unchanged; only the new switch was added. All 39 installed extension files matched the source.
+- YouTube owns playlist availability and ordering. Shorts, live streams and unavailable videos are outside this regular-video shortcut; the button always uses newest-first order, independently of the channel's selected sort.
+
 Version 0.5.0 was checked locally in Chromium on 2026-11-02.
 
 - 296 unique appearance/behavior controls retain their types, defaults and accepted values.

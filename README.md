@@ -2,7 +2,7 @@
 
 [![Release v0.6.0](docs/media/release.svg)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
 
-YFE is a free, open-source UnTrap alternative for Chrome: hide Shorts, recommendations and comments, filter unwanted content, and set focus sessions. Customize the YouTube interface from a persistent side panel, with 296 appearance and behavior settings.
+YFE is a free, open-source UnTrap alternative for Chrome: hide Shorts, recommendations and comments, filter unwanted content, and set focus sessions. Customize the YouTube interface from a persistent side panel, with 297 appearance and behavior settings.
 
 English by default, with Russian available in settings. Local storage. No account, subscription, analytics or backend.
 
@@ -17,6 +17,7 @@ English by default, with Russian available in settings. Local storage. No accoun
 - **Content filters:** hide matching channels, video cards, comments and posts using text, IDs, links or a bounded regular-expression syntax. Add rules from YouTube menus.
 - **Settings protection:** require a password or phrase for selected changes, with a single-use or five-minute confirmation.
 - **Player controls:** preferred quality, native controls, autoplay prevention and automatic next-video control. Ad skipping and seeking are experimental.
+- **Channel Play all:** an optional button on a channel's Videos tab opens its regular-video uploads playlist, newest first, without collecting loaded cards. Shorts and live streams are excluded.
 - **One settings interface:** global search across every section, English/Russian switching, SVG navigation, JSON import/export, side panel by default and an optional full settings tab.
 
 ## Install in Chrome or Chromium

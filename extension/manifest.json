@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "YFE \u2014 YouTube Focus Extension",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "minimum_chrome_version": "120",
   "description": "Customize YouTube, hide Shorts and distractions, filter content, and manage focus sessions from a Chrome side panel.",
   "permissions": [
@@ -35,6 +35,7 @@
         "content-filter.js",
         "player.js",
         "focus-content.js",
+        "channel-play-all.js",
         "feature-content.js"
       ],
       "run_at": "document_start",
@@ -46,7 +47,8 @@
         "https://www.youtube-nocookie.com/embed/*"
       ],
       "js": [
-        "player-main.js"
+        "player-main.js",
+        "channel-identity-main.js"
       ],
       "world": "MAIN",
       "run_at": "document_start",

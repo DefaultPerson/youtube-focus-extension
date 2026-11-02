@@ -3793,6 +3793,19 @@ globalThis.YTV_CATALOG = {
       "implementation": "css"
     },
     {
+      "id": "channel_show_play_all_button",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Show channel Play all button",
+      "description": "Open all regular videos from the channel's Videos tab, newest first. Hidden when Hide channel Play all buttons is enabled.",
+      "css": [],
+      "runtime": "channel-play-all",
+      "implementation": "runtime"
+    },
+    {
       "id": "channel_hide_buttons_play_all",
       "category": "channelPage",
       "group": "sections",
