@@ -67,7 +67,7 @@ select, input, textarea { max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   input[type=checkbox], input[type=checkbox]::before { transition: none; }
 }
-/* A larger working surface, with section labels distinct from navigation links. */
+/* A shared working surface, with section labels distinct from navigation links. */
 .app-header, .workspace { max-width: 1480px; }
 .app-header { position: sticky; top: 0; z-index: 4; background: var(--bg); gap: 24px; padding: 20px 28px; }
 .brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
@@ -82,26 +82,28 @@ select, input, textarea { max-width: 100%; }
 .sidebar { position: sticky; top: 87px; height: calc(100vh - 130px); overflow-y: auto; padding: 22px 16px; align-self: start; }
 .nav-group + .nav-group { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line); }
 .nav-heading { font-size: 13px; font-weight: 700; margin: 0 12px 10px; color: var(--muted); }
-.nav-button { display: flex; align-items: center; gap: 12px; padding: 11px 12px; font-size: 15px; border-radius: 8px; line-height: 1.4; }
+.nav-button { display: flex; align-items: center; gap: 12px; padding: 11px 12px; font-size: 14px; border-radius: 8px; line-height: 1.4; }
 .nav-button svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--muted); }
 .nav-button[aria-current=page] { box-shadow: inset 3px 0 var(--blue); }
 .nav-button[aria-current=page] svg { color: var(--blue); }
 main { padding: 32px 40px 100px; }
 .option-row { padding: 17px 0; }
-.option-group h3 { font-size: 15px; }
+.option-group h3 { font-size: 14px; }
 .filter-bar { justify-content: flex-end; margin-bottom: 10px; }
 .changed-filter { font-size: 14px; }
 [data-section] > h2 { margin-bottom: 18px; }
 [data-section] > form + h3 { margin-top: 36px; }
 [data-section] > form > button[type=submit] { margin-top: 10px; }
 fieldset { margin: 26px 0; padding: 22px; }
-fieldset p { font-size: 15px; }
-.language-field { display: grid; gap: 10px; max-width: 360px; margin-top: 28px; font-weight: 600; }
+fieldset p { font-size: 14px; }
+.language-field { display: grid; gap: 8px; max-width: 360px; margin: 24px 0 12px; font-weight: 600; }
+.language-field select { font-weight: 400; }
+.language-field + .muted { margin-top: 0; max-width: 52ch; }
 .restore-appearance { padding: 20px; border-left: 3px solid var(--blue); background: var(--surface); margin: 24px 0; }
 .restore-appearance h3 { margin-top: 0; }
 .search-result { display: flex; justify-content: space-between; align-items: center; gap: 18px; text-align: left; width: 100%; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 18px 12px; }
 .search-result small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); margin-bottom: 5px; }
-.search-result strong { font-size: 16px; font-weight: 600; }
+.search-result strong { font-size: 14px; font-weight: 600; }
 .search-result svg { width: 21px; height: 21px; flex-shrink: 0; }
 .search-highlight { outline: 3px solid var(--blue); outline-offset: 6px; border-radius: 4px; }
 .status-bar { font-size: 14px; padding: 10px 24px; z-index: 5; }
@@ -111,7 +113,7 @@ fieldset p { font-size: 15px; }
   .app-header { gap: 14px; padding: 16px 20px; }
 }
 @media (max-width: 720px) {
-  :root { font-size: 16px; }
+  :root { font-size: 14px; }
   .app-header { display: flex; flex-wrap: wrap; gap: 12px; padding: 14px 16px; }
   .brand { flex: 1; }
   .app-header h1 { font-size: 22px; }
@@ -122,15 +124,46 @@ fieldset p { font-size: 15px; }
   .navigation-open .sidebar { display: block; }
   .navigation-title { display: flex; align-items: center; justify-content: space-between; font-weight: 650; margin-bottom: 20px; }
   .sidebar nav { display: block; overflow: visible; }
-  .sidebar .nav-button { width: 100%; font-size: 16px; white-space: normal; }
+  .sidebar .nav-button { width: 100%; font-size: 14px; white-space: normal; }
   .nav-heading { font-size: 13px; }
   main { padding: 26px 18px 100px; }
-  h2 { font-size: 24px; line-height: 1.3; }
-  h3 { font-size: 19px; }
-  [data-section] > p, fieldset > p { font-size: 15px; }
+  h2 { font-size: 22px; line-height: 1.3; }
+  h3 { font-size: 16px; }
+  [data-section] > p, fieldset > p { font-size: 14px; }
   fieldset { padding: 18px; margin: 26px 0; }
   .section-heading { flex-wrap: wrap; }
   .option-copy p { font-size: 14px; }
   .option-row { padding: 17px 0; }
   .status-bar { padding: 10px 16px; font-size: 13px; }
+}
+/* Session controls: live state first, optional automation below. */
+.focus-page { max-width: 820px; }
+.session-overview { padding: 20px; margin: 24px 0; background: var(--surface); border-left: 3px solid var(--blue); border-radius: 0 8px 8px 0; }
+.session-overview h3 { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+#focus-session-status { font-size: 20px; line-height: 1.35; font-weight: 650; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+#focus-session-idle:empty { display: none; }
+.button-row, .focus-save-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.field-help { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 12px 0 0; }
+.focus-block { margin: 28px 0; }
+.focus-block h3 { margin-bottom: 14px; }
+.session-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.session-summary dt { color: var(--muted); font-size: 13px; margin-bottom: 5px; }
+.session-summary dd { margin: 0; font-size: 16px; font-weight: 600; }
+#focus-configure-session { margin-top: 14px; }
+.preset-apply-row { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+.preset-apply-row > label { flex: 1 1 200px; margin: 0; }
+.preset-apply-row select { width: 100%; }
+.focus-detail { border-top: 1px solid var(--line); }
+.focus-detail > summary { padding: 17px 0; font-size: 14px; font-weight: 600; cursor: pointer; }
+.focus-detail > summary::marker { color: var(--muted); }
+.detail-body { padding: 0 0 20px; }
+.detail-body > label { display: grid; gap: 8px; margin: 16px 0; }
+.detail-body > :last-child { margin-bottom: 0; }
+.focus-save-row { padding: 6px 0 26px; }
+.focus-save-row .field-help { margin: 0; }
+.focus-detail[open] { scroll-margin-top: 140px; }
+@media (max-width: 720px) {
+  .session-overview { padding: 18px 16px; }
+  .session-summary { gap: 8px; }
+  .preset-apply-row > label { flex-basis: 100%; }
 }

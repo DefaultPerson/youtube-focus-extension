@@ -6,7 +6,7 @@
   document.body.classList.toggle('side-panel', panelMode);
   const sections = [
     ['Focus and controls', [
-      ['focus', 'Focus and presets'], ['restrictions', 'Usage limits'],
+      ['focus', 'Focus sessions'], ['restrictions', 'Usage limits'],
       ['protection', 'Settings protection'], ['filters', 'Content filters'], ['player', 'Player']
     ]],
     ['Appearance', [['appearance/all', 'All appearance settings'], ...YTV_CATALOG.categories.map(c => ['appearance/' + c.id, c.label])]],

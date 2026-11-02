@@ -25,7 +25,7 @@
         const title = label && labelText(label);
         if (!title || control.closest('[data-i18n-ignore]')) return;
         if (!control.id) control.id = 'search-target-' + (++generated);
-        const legend = control.closest('fieldset')?.querySelector('legend')?.textContent;
+        const legend = control.closest('fieldset')?.querySelector('legend')?.textContent || control.closest('details')?.querySelector('summary')?.textContent;
         entries.push({title, context: [context, legend].filter(Boolean), extra: [control.id.replaceAll('-', ' ')], route, target: control});
       });
       for (const id of ['export', 'import', 'restore-appearance', 'reset-all', 'focus-start-session']) {
@@ -41,6 +41,7 @@
     const same = location.hash === '#' + entry.route;
     location.hash = entry.route;
     if (same) YTVUI.refresh();
+    for (let parent = entry.target.parentElement; parent; parent = parent.parentElement) if (parent.tagName === 'DETAILS') parent.open = true;
     requestAnimationFrame(() => requestAnimationFrame(() => {
       entry.target.scrollIntoView({block: 'center', behavior: 'instant'});
       entry.target.focus({preventScroll: true});

@@ -669,5 +669,21 @@ globalThis.YFE_LOCALES = Object.freeze({ru: Object.freeze({
   "Invalid preset change.": "Некорректное изменение набора.",
   "Appearance is protected. This session keeps the current appearance.": "Оформление защищено. В этом сеансе сохранится текущее оформление.",
   "Starting the session applies this preset. For built-in presets, the previous appearance is saved for restoration.": "При начале сеанса применяется этот набор. Для встроенных наборов предыдущее оформление сохраняется, чтобы его можно было вернуть.",
-  "Start a YouTube session?": "Начать сеанс YouTube?"
+  "Start a YouTube session?": "Начать сеанс YouTube?",
+  "Focus sessions": "Сеансы фокуса",
+  "Choose how you spend time on YouTube. One session is shared across your tabs.": "Выбирайте, как проводить время на YouTube. Сеанс действует во всех вкладках.",
+  "You can choose a preset and adjust the time before the session starts.": "Перед началом можно выбрать набор оформления и настроить время.",
+  "New session defaults": "Настройки новых сеансов",
+  "Duration": "Длительность",
+  "Inactivity": "Бездействие",
+  "Break": "Перерыв",
+  "min": "мин",
+  "No limit": "Без ограничения",
+  "Off": "Выключено",
+  "Edit duration, inactivity and breaks": "Изменить время, бездействие и перерывы",
+  "Appearance preset": "Набор оформления",
+  "When a session starts": "При начале сеанса",
+  "Saves the three sections above.": "Сохраняет три раздела выше.",
+  "Session limits apply whenever YouTube opens.": "Ограничения сеанса действуют при каждом открытии YouTube.",
+  "Automatic limits are off. You can still start a session manually.": "Автоматические ограничения выключены. Сеанс можно начать вручную."
 })});

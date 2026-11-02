@@ -1,4 +1,4 @@
-:root { color-scheme: light dark; --bg: #fff; --surface: #f5f7fa; --ink: #1e293b; --muted: #526176; --line: #dce2eb; --blue: #215dcc; --blue-soft: #eaf0ff; --error: #b42318; --focus: #3976ec; font: 16px/1.55 system-ui, sans-serif; }
+:root { color-scheme: light dark; --bg: #fff; --surface: #f5f7fa; --ink: #1e293b; --muted: #526176; --line: #dce2eb; --blue: #215dcc; --blue-soft: #eaf0ff; --error: #b42318; --focus: #3976ec; font: 14px/1.55 system-ui, sans-serif; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: inherit; }
 button, input, select { font: inherit; }
@@ -13,8 +13,8 @@ input[type=color] { width: 52px; height: 36px; padding: 3px; cursor: pointer; }
 .protection-dialog input { display: block; width: 100%; margin: 10px 0 20px; }
 h1, h2, h3, p { margin-top: 0; }
 h1 { font-size: 23px; letter-spacing: -.6px; margin-bottom: 2px; }
-h2 { font-size: 26px; letter-spacing: -.4px; margin-bottom: 16px; }
-h3 { font-size: 19px; margin-bottom: 14px; }
+h2 { font-size: 22px; letter-spacing: -.4px; margin-bottom: 16px; }
+h3 { font-size: 16px; margin-bottom: 14px; }
 .app-header { max-width: 1280px; margin: auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 27px 36px 23px; border-bottom: 1px solid var(--line); }
 .app-header p { color: var(--muted); margin: 0; }
 .enable-control { display: flex; align-items: center; gap: 10px; font-weight: 650; white-space: nowrap; }

@@ -6,40 +6,50 @@
   const el = (tag, text, className) => { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (className) node.className = className; return node; };
   const section = el('section'); section.dataset.section = 'focus'; section.hidden = location.hash !== '#focus';
   document.querySelector('main').append(section);
-  section.innerHTML = `<h2>Focus and presets</h2>
-    <p class="muted">Presets change how YouTube looks. Filters and limits apply to all presets. Preset session defaults take effect when a new session starts.</p>
-    <fieldset><legend>Current YouTube session</legend>
+  section.className = 'focus-page';
+  section.innerHTML = `<h2>Focus sessions</h2>
+    <p class="muted">Choose how you spend time on YouTube. One session is shared across your tabs.</p>
+    <div class="session-overview" aria-labelledby="current-session-title"><h3 id="current-session-title">Current YouTube session</h3>
       <p id="focus-session-status" role="status"></p><p id="focus-session-idle" class="muted"></p>
-      <div class="button-row"><button id="focus-start-session" type="button">Start session on YouTube</button><button id="focus-end-session" type="button" hidden>End session</button><button id="focus-configure-session" type="button">Configure session defaults</button></div>
-      <p class="muted">Start a session to choose its preset, duration and inactivity timeout. The session is shared across YouTube tabs.</p>
-    </fieldset>
-    <p id="focus-active" role="status" class="muted"></p>
-    <form id="focus-activate-form"><fieldset><legend>Choose a preset now</legend>
-      <label>Preset<select id="focus-active-preset" required></select></label>
-      <button type="submit">Apply preset</button></fieldset></form>
-    <form id="focus-form"><fieldset><legend>Pause before settings</legend>
+      <div class="button-row"><button id="focus-start-session" type="button" class="primary">Start session on YouTube</button><button id="focus-end-session" type="button" hidden>End session</button></div>
+      <p class="field-help">You can choose a preset and adjust the time before the session starts.</p>
+    </div>
+    <section class="focus-block" aria-labelledby="session-defaults-title"><h3 id="session-defaults-title">New session defaults</h3>
+      <dl class="session-summary"><div><dt>Duration</dt><dd id="focus-default-duration"></dd></div><div><dt>Inactivity</dt><dd id="focus-default-idle"></dd></div><div><dt>Break</dt><dd id="focus-default-break"></dd></div></dl>
+      <p id="focus-rules-status" class="field-help"></p>
+      <button id="focus-configure-session" type="button">Edit duration, inactivity and breaks</button>
+    </section>
+    <section class="focus-block" aria-labelledby="appearance-preset-title"><h3 id="appearance-preset-title">Appearance preset</h3>
+      <p id="focus-active" role="status" class="muted"></p>
+      <form id="focus-activate-form" class="preset-apply-row"><label><span class="visually-hidden">Preset</span><select id="focus-active-preset" required></select></label><button type="submit">Apply preset</button></form>
+    </section>
+    <form id="focus-form">
+    <details class="focus-detail"><summary>When a session starts</summary><div class="detail-body">
+      <label>Preset selection<select id="focus-on-open"><option value="keep">Keep current preset</option><option value="ask">Ask every time</option><option value="preset">Apply selected preset</option></select></label>
+      <label id="focus-open-preset-label">Preset<select id="focus-open-preset"></select></label>
+      <p class="field-help">Opening another tab during an active session does not start a new session.</p>
+    </div></details>
+    <details class="focus-detail"><summary>Preset schedule</summary><div class="detail-body">
+      <p class="muted">Uses your computer’s local time. Overnight periods belong to the day they start. All day runs from midnight to midnight. A manual selection lasts until the next scheduled change.</p>
+      <div id="focus-schedules"></div><button id="focus-add-schedule" type="button">Add period</button>
+    </div></details>
+    <details class="focus-detail"><summary>Pause before settings</summary><div class="detail-body">
       <label class="check"><input id="focus-pause-enabled" type="checkbox"> Pause before opening settings</label>
       <label>Message<textarea id="focus-pause-message" rows="2" maxlength="1000"></textarea></label>
       <label>Pause in seconds<input id="focus-pause-seconds" type="number" min="0" max="300" step="1" required></label>
       <label>Countdown<select id="focus-pause-style"><option value="hidden">Hidden</option><option value="subtle">Progress bar</option><option value="detailed">Seconds remaining</option></select></label>
-    </fieldset><fieldset><legend>When a new YouTube session starts</legend>
-      <label>Preset selection<select id="focus-on-open"><option value="keep">Keep current preset</option><option value="ask">Ask every time</option><option value="preset">Apply selected preset</option></select></label>
-      <label id="focus-open-preset-label">Preset<select id="focus-open-preset"></select></label>
-      <p class="muted">Opening another tab during an active session does not start a new session.</p>
-    </fieldset><fieldset><legend>Preset schedule</legend>
-      <p class="muted">Uses your computer’s local time. Overnight periods belong to the day they start. All day runs from midnight to midnight. A manual selection lasts until the next scheduled change.</p>
-      <div id="focus-schedules"></div><button id="focus-add-schedule" type="button">Add period</button>
-    </fieldset><button type="submit" class="primary">Save focus settings</button></form>
-    <h3>Session defaults for my presets</h3>
-    <p class="muted">Built-in presets use the shared session defaults. Custom presets can set a session length and idle timeout; 0 means no limit. Turn off custom defaults to use the shared values.</p>
-    <div id="focus-defaults"></div>
-    <fieldset><legend>Keyboard shortcut</legend>
+    </div></details><div class="focus-save-row"><button type="submit" class="primary">Save focus settings</button><span class="field-help">Saves the three sections above.</span></div></form>
+    <details class="focus-detail"><summary>Session defaults for my presets</summary><div class="detail-body">
+      <p class="muted">Built-in presets use the shared session defaults. Custom presets can set a session length and idle timeout; 0 means no limit. Turn off custom defaults to use the shared values.</p>
+      <div id="focus-defaults"></div>
+    </div></details>
+    <details class="focus-detail"><summary>Keyboard shortcut</summary><div class="detail-body">
       <p>In Chrome keyboard shortcuts, find YFE and “Turn the extension on or off” (toggle-extension).</p>
       <p class="muted">Address: chrome://extensions/shortcuts</p>
       <button id="focus-shortcuts" type="button">Open Chrome keyboard shortcuts</button>
-    </fieldset>`;
+    </div></details>`;
   const $ = id => section.querySelector('#' + id);
-  let presets = [], customPresets = [], busy = false, loaded = false, activePresetId = '', sessionAccess = null;
+  let presets = [], customPresets = [], busy = false, loaded = false, activePresetId = '', sessionAccess = null, currentFeatures = null;
   const option = (id, label) => { const node = el('option', label); node.value = id; return node; };
   function presetSelect(select, id = '') {
     select.replaceChildren(option('', 'Choose a preset'), ...presets.map(p => { const node = option(p.id, p.label); if (!YTV_CATALOG.presets.some(b => b.id === p.id)) node.dataset.i18nIgnore = ''; return node; }));
@@ -53,11 +63,12 @@
   async function mutate(action) {
     if (busy || !loaded) return;
     busy = true; document.getElementById('error').hidden = true; document.getElementById('save-status').textContent = 'Saving…';
-    section.querySelectorAll('fieldset').forEach(node => { node.disabled = true; });
+    const editors = [...section.querySelectorAll('fieldset,input,select,textarea')].map(node => [node, node.disabled]);
+    for (const [node] of editors) node.disabled = true;
     section.querySelectorAll('button').forEach(node => { node.disabled = true; });
     try { await action(); document.getElementById('save-status').textContent = 'Saved in this browser.'; }
     catch (error) { showError(error); }
-    finally { busy = false; section.querySelectorAll('fieldset').forEach(node => { node.disabled = false; }); section.querySelectorAll('button').forEach(node => { node.disabled = false; }); }
+    finally { busy = false; for (const [node, disabled] of editors) if (node.isConnected) node.disabled = disabled; section.querySelectorAll('button').forEach(node => { node.disabled = false; }); }
   }
   function onOpenMode() { const usePreset = $('focus-on-open').value === 'preset'; $('focus-open-preset-label').hidden = !usePreset; $('focus-open-preset').required = usePreset; $('focus-open-preset').disabled = !usePreset; }
   function scheduleRow(value = {id: crypto.randomUUID(), enabled: true, days: [1, 2, 3, 4, 5], from: '09:00', to: '18:00', presetId: '', returnPrevious: true}) {
@@ -88,6 +99,17 @@
         presetId: row.querySelector('[data-focus-preset]').value, returnPrevious: row.querySelector('[data-focus-return]').checked}))};
   }
   function describeActive() { const preset = presets.find(p => p.id === activePresetId), name = preset && (YTV_CATALOG.presets.some(p => p.id === preset.id) ? t(preset.label) : preset.label); $('focus-active').textContent = t(name ? `Active preset: ${name}` : 'No active preset, or settings have been changed manually.'); }
+  function describeDefaults() {
+    if (!currentFeatures) return;
+    const r = currentFeatures.restrictions, automatic = r.enabled && r.session.enabled;
+    const selected = currentFeatures.focus.onOpen === 'preset' ? currentFeatures.focus.presetId : activePresetId;
+    const defaults = {...r.session, ...(presets.find(p => p.id === selected)?.sessionDefaults || {})};
+    const duration = value => value ? `${value} ${t('min')}` : t('No limit');
+    $('focus-default-duration').textContent = duration(defaults.minutes);
+    $('focus-default-idle').textContent = defaults.idleMinutes ? duration(defaults.idleMinutes) : t('Off');
+    $('focus-default-break').textContent = automatic && r.session.cooldownMinutes ? duration(r.session.cooldownMinutes) : t('Off');
+    $('focus-rules-status').textContent = t(automatic ? 'Session limits apply whenever YouTube opens.' : 'Automatic limits are off. You can still start a session manually.');
+  }
   function describeSession() {
     const access = sessionAccess; if (!access) return;
     const now = Date.now();
@@ -120,6 +142,7 @@
       }); });
       $('focus-defaults').append(form);
     }
+    describeDefaults();
   }
   function render(focus) {
     $('focus-pause-enabled').checked = focus.openingPause.enabled; $('focus-pause-seconds').value = focus.openingPause.seconds; $('focus-pause-message').value = stockMessage(focus.openingPause.message) ? t(focus.openingPause.message) : focus.openingPause.message; $('focus-pause-style').value = focus.openingPause.style;
@@ -132,14 +155,15 @@
   $('focus-activate-form').addEventListener('submit', event => { event.preventDefault(); if (!$('focus-activate-form').reportValidity()) return; const id = $('focus-active-preset').value; void mutate(async () => { const preset = presets.find(p => p.id === id); if (YTV_CATALOG.presets.some(p => p.id === id) && !(await globalThis.YTVUI.confirmPreset(preset))) return; await YTV.request('activatePreset', {id, savePrevious: YTV_CATALOG.presets.some(p => p.id === id)}); activePresetId = id; describeActive(); }); });
   $('focus-start-session').addEventListener('click', () => void mutate(() => YTV.request('prepareSession', {openYouTube: true})));
   $('focus-end-session').addEventListener('click', () => void mutate(() => YTV.request('endSession', {sessionId: sessionAccess?.sessionId})));
-  $('focus-configure-session').addEventListener('click', () => { location.hash = '#restrictions'; setTimeout(() => document.getElementById('session-enabled')?.closest('fieldset')?.scrollIntoView({block: 'start'}), 0); });
+  $('focus-configure-session').addEventListener('click', () => { location.hash = '#restrictions'; setTimeout(() => { const field = document.getElementById('session-enabled'); field?.closest('fieldset')?.scrollIntoView({block: 'center'}); field?.focus({preventScroll: true}); }, 0); });
+  section.addEventListener('invalid', event => { for (let node = event.target.parentElement; node && node !== section; node = node.parentElement) if (node.tagName === 'DETAILS') node.open = true; }, true);
   setInterval(() => { if (!section.hidden) describeSession(); }, 1000);
   $('focus-shortcuts').addEventListener('click', () => { void chrome.tabs.create({url: 'chrome://extensions/shortcuts'}).catch(showError); });
   section.querySelectorAll('button').forEach(node => { node.disabled = true; });
   Promise.all([YTV.readFeatures(), YTV.readPresets()]).then(([features, personal]) => {
-    customPresets = personal; presets = [...YTV_CATALOG.presets, ...personal]; render(features.focus); loaded = true;
+    currentFeatures = features; customPresets = personal; presets = [...YTV_CATALOG.presets, ...personal]; render(features.focus); describeDefaults(); loaded = true;
     section.querySelectorAll('button').forEach(node => { node.disabled = false; });
-    YTV.subscribeSnapshots(snapshot => { activePresetId = snapshot.focus?.activePresetId || ''; sessionAccess = snapshot.access; describeActive(); describeSession(); });
+    YTV.subscribeSnapshots(snapshot => { currentFeatures = snapshot.features; activePresetId = snapshot.focus?.activePresetId || ''; sessionAccess = snapshot.access; describeActive(); describeSession(); describeDefaults(); });
     window.addEventListener('ytv:imported', () => {
       void Promise.all([YTV.readFeatures(), YTV.readPresets()]).then(([features, personal]) => {
         customPresets = personal; presets = [...YTV_CATALOG.presets, ...personal]; render(features.focus);
@@ -157,6 +181,6 @@
   window.addEventListener('yfe:languagechange', () => {
     if (stockMessage($('focus-pause-message').value)) $('focus-pause-message').value = t($('focus-pause-message').value);
     for (const days of section.querySelectorAll('.weekdays')) days.dispatchEvent(new Event('change'));
-    describeActive(); describeSession();
+    describeActive(); describeSession(); describeDefaults();
   });
 })();
