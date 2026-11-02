@@ -33,7 +33,7 @@
       else link.removeAttribute('aria-current');
     });
     $('search-panel').hidden = true;
-    document.title = 'YFE — ' + (globalThis.YFEI18n?.t(routes.get(route)) || routes.get(route));
+    document.title = globalThis.YFEI18n?.t(routes.get(route)) || routes.get(route);
     window.dispatchEvent(new CustomEvent('ytv:navigate', {detail: {view, category}}));
   }
   async function confirmPreset(preset) {
@@ -57,7 +57,7 @@
   const language = $('interface-language');
   void YFEI18n.ready.then(() => { language.value = YFEI18n.language; });
   language.addEventListener('change', () => { void YFEI18n.setLanguage(language.value).catch(showError); });
-  window.addEventListener('yfe:languagechange', () => { language.value = YFEI18n.language; document.title = 'YFE — ' + YFEI18n.t(routes.get(currentRoute())); });
+  window.addEventListener('yfe:languagechange', () => { language.value = YFEI18n.language; document.title = YFEI18n.t(routes.get(currentRoute())); });
   window.addEventListener('hashchange', () => { refresh(); window.scrollTo(0, 0); });
   document.addEventListener('DOMContentLoaded', refresh, {once: true});
 
