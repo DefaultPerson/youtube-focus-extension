@@ -15,12 +15,13 @@ FILES = (
     "content-filter.js", "player.js", "player-main.js",
     "focus-content.js", "focus-ui.js", "focus-entry-ui.js",
     "settings-ui.js", "settings-ui.css", "settings-redirect.js",
+    "icons/icon-16.png", "icons/icon-32.png", "icons/icon-48.png", "icons/icon-128.png",
 )
 
 
 def main():
     manifest = json.loads((SOURCE / "manifest.json").read_text())
-    output = ROOT / "dist" / f"yfe-{manifest['version']}.zip"
+    output = ROOT / "dist" / f"yfe-{manifest['version']}-chrome.zip"
     output.parent.mkdir(exist_ok=True)
     sources = {name: SOURCE / name for name in FILES}
     sources["LICENSE"] = ROOT / "LICENSE"

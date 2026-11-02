@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <title>YFE focus and play icon</title>
+  <rect x="16" y="16" width="96" height="96" rx="24" fill="#215dcc"/>
+  <path d="M45 38H35v15m48-15h10v15M35 75v15h10m48-15v15H83" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M55 47v34l25-17z" fill="#fff"/>
+</svg>

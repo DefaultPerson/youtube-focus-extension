@@ -16,4 +16,6 @@ Version 0.5.0 was checked locally in Chromium on 2026-11-02.
 
 The model and fixture checks used temporary test scripts; they are not a committed automated test suite. They do not establish that every control works across all YouTube layouts, languages and combinations. The live test page required sign-in for playback, so video playback and real advertisement skipping were not revalidated for this release.
 
-The README motion demo uses captures of the real English settings interface from a separate browser profile. Filter rules and session values in the demo are examples. The MP4 is 18 seconds at 1600×900 and 30 fps; the README embeds an animated GIF preview.
+The motion demo follows search, switches, session settings and filter entry using real English interface captures from a separate browser profile. Filter rules and session values are examples. The MP4 is 18 seconds at 1600×900 and 30 fps; the README embeds a GIF preview linking to a native video-player page.
+
+Version 0.5.1 adds packaged icons and store listing materials; runtime behavior is unchanged. Chrome Web Store materials are prepared only, with no submission made.

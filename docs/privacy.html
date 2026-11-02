@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How YFE processes YouTube content and stores settings locally.">
+  <title>Privacy — YFE</title>
+  <style>
+    :root { color-scheme: light dark; font: 17px/1.65 system-ui, sans-serif; }
+    body { max-width: 760px; margin: 0 auto; padding: 40px 24px 64px; }
+    a { color: #215dcc; text-underline-offset: .18em; }
+    h1 { font-size: 2.4rem; line-height: 1.15; margin: 24px 0 12px; }
+    h2 { font-size: 1.25rem; margin-top: 32px; }
+    .meta { opacity: .7; font-size: .9rem; }
+    li + li { margin-top: 8px; }
+    code { font-size: .9em; overflow-wrap: anywhere; }
+    @media (prefers-color-scheme: dark) { a { color: #8fb6ff; } }
+  </style>
+</head>
+<body>
+  <header><a href="./">YFE — YouTube Focus Extension</a></header>
+  <main>
+    <h1>Privacy</h1>
+    <p class="meta">Effective November 2, 2026 · Extension version 0.5.1</p>
+    <p>YFE customizes YouTube and supports focus sessions. Its settings and processing stay in your browser. The extension has no developer-operated backend, account system, analytics or advertising service.</p>
+
+    <h2>Data used on your device</h2>
+    <ul>
+      <li><strong>Website content and URLs:</strong> on <code>www.youtube.com</code> and <code>www.youtube-nocookie.com/embed/*</code>, content scripts read page URLs, video/channel identifiers, titles, public author names and handles, comments, posts, page structure and player state to apply your appearance, filtering, navigation and player choices.</li>
+      <li><strong>Activity:</strong> focus controls use playback state, page visibility and recent pointer, keyboard or scroll activity to calculate inactivity. They use activity timestamps; they do not record typed keystrokes or build a browsing-history log.</li>
+      <li><strong>Settings:</strong> Chrome extension storage holds appearance choices, presets, filter rules, schedules, session timestamps and temporary blocking state. Rules may contain names, handles, text, IDs or URLs that you choose to save.</li>
+      <li><strong>Optional protection:</strong> a settings password is processed locally and saved as a salted PBKDF2-SHA256 verifier, not as the original password. Confirmation phrases are stored as readable text. Temporary authorization state stays in browser session storage. This feature is a self-control aid, not an account or security boundary.</li>
+    </ul>
+    <p>Page content is processed in memory rather than saved as a page archive. A rule you explicitly add from a YouTube menu is saved locally. Content scripts receive the configuration needed for their features through extension messages; direct access to extension storage is restricted to trusted extension contexts.</p>
+
+    <h2>Network requests and sharing</h2>
+    <p>YFE does not send settings, rules, credentials, page content or activity to its developer or an analytics service. It does not sell data, use it for advertising, transfer it to data brokers or use it to assess creditworthiness.</p>
+    <p>If you enable thumbnail replacement, your browser requests the selected video's image from YouTube's <code>i.ytimg.com</code>. YouTube receives the video ID in that image URL and normal network request information, such as your IP address. YouTube also continues to make its own normal requests. Its services follow Google's privacy policy. Installed fonts are used locally and are not downloaded. All extension code ships in the package; YFE does not load remote scripts.</p>
+    <p>YFE uses data only to provide its stated focus and customization features, in accordance with the Chrome Web Store User Data Policy, including the Limited Use requirements.</p>
+
+    <h2>Retention and your choices</h2>
+    <p>Saved settings remain in this browser profile until you change or remove them or uninstall YFE. Session state is updated as focus sessions advance; temporary authorization uses Chrome's session storage. You can edit rules and settings in the side panel. Uninstalling the extension removes its extension storage.</p>
+    <p>JSON export is optional and writes a file you control. Exports include settings, presets, rules and schedules, but exclude protection credentials, active sessions and temporary blocking deadlines. Exported files remain wherever you save them until you delete them. Do not put sensitive information in a confirmation phrase or share an export without checking its contents.</p>
+
+    <h2>Support and this website</h2>
+    <p>This policy covers the extension. Opening the project website, repository or support links uses the respective hosting service. A support issue is public: remove personal settings, names and private details before posting.</p>
+    <p class="meta">Sources and contact: <a href="https://github.com/DefaultPerson/youtube-focus-extension/issues">YFE support</a> · <a href="https://policies.google.com/privacy">Google privacy policy</a> · <a href="https://developer.chrome.com/docs/webstore/program-policies/user-data-faq">Chrome Web Store User Data Policy FAQ</a></p>
+  </main>
+</body>
+</html>

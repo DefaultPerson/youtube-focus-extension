@@ -1,12 +1,12 @@
 # YFE — YouTube Focus Extension
 
+[![Release v0.5.1](docs/media/release.svg)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
+
 YFE is a free, open-source UnTrap alternative for Chrome: hide Shorts, recommendations and comments, filter unwanted content, and set focus sessions. Customize the YouTube interface from a persistent side panel, with 296 appearance and behavior settings.
 
 English interface. Local settings. No account, subscription, analytics or backend.
 
-[![YFE motion demo: distraction controls, session limits and content filters](docs/media/yfe-demo.gif)](https://github.com/DefaultPerson/youtube-focus-extension/releases/download/v0.5.0/yfe-demo.mp4)
-
-[Watch the 18-second video](https://github.com/DefaultPerson/youtube-focus-extension/releases/download/v0.5.0/yfe-demo.mp4) · [Download the latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
+[![YFE settings in action — open the product demo](docs/media/yfe-demo.gif)](https://defaultperson.github.io/youtube-focus-extension/)
 
 ## Features
 
@@ -21,57 +21,36 @@ English interface. Local settings. No account, subscription, analytics or backen
 
 ## Install in Chrome or Chromium
 
-1. Download **`yfe-0.5.0.zip`** from the [latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest) and extract it.
+Chrome/Chromium 120+. No build step. Not yet available in the Chrome Web Store.
+
+1. Download **`yfe-0.5.1-chrome.zip`** from the [latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest) and extract it.
 2. Open `chrome://extensions` and enable **Developer mode**.
 3. Choose **Load unpacked** and select the extracted folder containing **`manifest.json`**.
-4. Reload any open YouTube tabs.
-5. Click the extension icon to open its side panel. Use **↗** to open the current section in a full tab.
+4. Reload YouTube and click the extension icon for the side panel; **↗** opens the current section in a full tab.
 
-No build step or package installation is required. The extension targets desktop Chrome/Chromium 120 or later. It is not currently distributed through the Chrome Web Store.
-
-To install from source, clone this repository or use **Code → Download ZIP**, then load its **`extension`** directory instead.
-
-Appearance changes save immediately. Focus, usage limits, protection, filters and player forms have a **Save** button. Controls start with neutral defaults; choose the changes you want. Presets change appearance while filters and usage restrictions remain shared.
-
-An optional toggle shortcut can be assigned at `chrome://extensions/shortcuts`; there is no global off button in the settings interface.
+From source, load **`extension/`**. Appearance saves immediately; other forms use **Save**. Controls start neutral, and presets share filters and restrictions. An optional toggle shortcut is available at `chrome://extensions/shortcuts`.
 
 ## Privacy and permissions
 
-| Permission or access | Purpose |
-| --- | --- |
-| `storage` | Save settings, presets, filter rules and session state locally. |
-| `alarms` | Apply time limits and scheduled changes. |
-| `sidePanel` | Display the settings beside your browser tab. |
-| `www.youtube.com` | Apply your chosen appearance, filtering and player changes. |
-| `www.youtube-nocookie.com/embed/*` | Apply embedded-player appearance controls. |
-
-There are no accounts, tracking SDKs, remote scripts or external model APIs. Optional thumbnail replacement requests video frames from YouTube's `i.ytimg.com`; YouTube itself continues to make its normal network requests. Fonts are taken from your computer and are not downloaded.
-
-Passwords are stored as salted PBKDF2-SHA256 verification values. Confirmation phrases are intentionally readable. Settings exports exclude protection credentials, active sessions and temporary blocking deadlines. Browser content scripts cannot read extension storage directly.
+Uses `storage`, `alarms` and `sidePanel`, with access limited to YouTube and its privacy-enhanced embeds. Page content, activity and settings are processed locally; nothing is sent to the developer. Optional thumbnail replacement requests images from YouTube. No accounts, analytics or remote code. [Full privacy policy](https://defaultperson.github.io/youtube-focus-extension/privacy.html).
 
 ## Limits
 
-- YouTube changes its markup regularly. Some controls may need selector updates; not every combination has been verified on every layout or language.
-- Session limits are not a cumulative daily allowance. Settings protection is a self-control aid, not protection against someone who can uninstall the extension or edit browser data.
-- Filters hide matching cards and comments; they do not block the video currently open in the player.
-- Regular expressions exclude groups, alternation, unrestricted repetition and backreferences to avoid long-running patterns.
-- Ad skipping depends on player state and available controls; it does not guarantee removal of all advertisements.
-- Mobile YouTube, summaries, translation and cloud synchronization are not included.
-- There is no artificial preset or filter-rule quota; Chrome storage limits still apply. JSON imports are limited to 10 MB.
+- YouTube markup changes; not every setting combination, layout or language is verified. Ad skipping is experimental and cannot remove every ad.
+- Session limits are per session. Protection can be bypassed by uninstalling YFE or editing browser data. Filters hide cards/comments, not the currently playing video.
+
+<details>
+<summary>Other limits</summary>
+
+- Regex rules exclude groups, alternation, unrestricted repetition and backreferences.
+- No mobile YouTube, summaries, translation or cloud sync.
+- No artificial preset/rule quota; Chrome storage limits apply. JSON imports: 10 MB maximum.
+
+</details>
 
 ## Development
 
-The extension uses plain JavaScript, CSS and Manifest V3. There are no runtime dependencies.
-
-```sh
-python3 scripts/package.py
-```
-
-The packaging script creates a deterministic ZIP and SHA-256 manifest in `dist/`, checks ZIP integrity, and compares every archived file with its source. Generated packages and local browser data are ignored by Git.
-
-For UI changes, reload the extension in `chrome://extensions`, reopen its panel and reload YouTube. Check the home, search and watch pages, including SPA navigation and turning the affected control back off. Keep screenshots limited to the extension and use a clean browser profile.
-
-See [release verification](docs/verification.md) for the checks performed and their limits.
+Plain JavaScript/CSS and Manifest V3; no runtime dependencies. `python3 scripts/package.py` creates a deterministic Chrome ZIP with integrity and source-byte checks. After changes, reload YFE and YouTube; check navigation and turning controls back off. [Verification and limits](docs/verification.md).
 
 ## Contributing
 
