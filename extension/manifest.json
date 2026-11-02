@@ -1,0 +1,66 @@
+{
+  "manifest_version": 3,
+  "name": "YFE \u2014 YouTube Focus Extension",
+  "version": "0.5.0",
+  "minimum_chrome_version": "120",
+  "description": "Customize YouTube, hide Shorts and distractions, filter content, and manage focus sessions from a Chrome side panel.",
+  "permissions": [
+    "storage",
+    "alarms",
+    "sidePanel"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://www.youtube-nocookie.com/embed/*"
+      ],
+      "js": [
+        "catalog.js",
+        "core.js",
+        "styles.js",
+        "content.js",
+        "filter-rules.js",
+        "content-filter.js",
+        "player.js",
+        "focus-content.js",
+        "feature-content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://www.youtube-nocookie.com/embed/*"
+      ],
+      "js": [
+        "player-main.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "action": {
+    "default_title": "YFE \u2014 YouTube Focus Extension"
+  },
+  "side_panel": {
+    "default_path": "options.html?panel=1"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+  },
+  "commands": {
+    "toggle-extension": {
+      "description": "Toggle YFE"
+    }
+  }
+}

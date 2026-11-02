@@ -1,0 +1,18 @@
+fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 18px; margin: 22px 0; }
+legend { font-weight: 650; padding: 0 6px; }
+form > label, fieldset > label { display: grid; gap: 7px; margin: 16px 0; }
+.check { display: flex !important; align-items: center; gap: 10px; }
+textarea { box-sizing: border-box; width: 100%; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); padding: 10px; font: inherit; resize: vertical; }
+input[type=number] { max-width: 170px; }
+.form-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+.form-grid > label { display: grid; gap: 6px; flex: 1 1 150px; }
+.schedule-row { background: var(--surface); border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+.weekdays { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.weekdays label { display: flex; gap: 5px; align-items: center; }
+.schedule-times { display: flex; align-items: end; gap: 10px; flex-wrap: wrap; }
+.schedule-times label { display: grid; gap: 4px; }
+section > h2 { margin-bottom: 18px; }
+#protection-scopes label { margin: 12px 0; }
+.protection-dialog input { display: block; width: 100%; margin: 10px 0 20px; }
+.sidebar nav { display: flex; flex-direction: column; }
+@media (max-width: 720px) { .sidebar nav { flex-direction: row; overflow: auto; } .sidebar .nav-button { width: auto; flex-shrink: 0; } }

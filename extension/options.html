@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YFE — Settings</title>
+  <link rel="stylesheet" href="options.css">
+  <link rel="stylesheet" href="features.css">
+  <link rel="stylesheet" href="settings-ui.css">
+  <script src="catalog.js" defer></script>
+  <script src="filter-rules.js" defer></script>
+  <script src="feature-model.js" defer></script>
+  <script src="core.js" defer></script>
+  <script src="focus-entry-ui.js" defer></script>
+  <script src="protection-ui.js" defer></script>
+  <script src="settings-ui.js" defer></script>
+  <script src="options.js" defer></script>
+  <script src="features.js" defer></script>
+  <script src="focus-ui.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#settings">Skip to settings</a>
+  <header class="app-header">
+    <h1>YFE</h1>
+    <div class="header-actions"><button id="open-page" type="button" title="Open settings in a new tab" aria-label="Open settings in a new tab" hidden>↗</button><button id="open-panel" type="button" title="Open side panel" aria-label="Open side panel" hidden>⇥</button></div>
+  </header>
+  <div class="workspace">
+    <aside class="sidebar">
+      <label class="section-picker" for="section-picker">Section<select id="section-picker"></select></label>
+      <nav id="settings-navigation" aria-label="All settings sections"></nav>
+      <p class="local-note">Settings are saved in this browser.</p>
+    </aside>
+    <main id="settings" tabindex="-1">
+      <div id="appearance-panel" data-section="appearance">
+      <div class="filter-bar">
+        <label class="search-field"><span class="visually-hidden">Search appearance settings</span><input id="search" type="search" placeholder="Search appearance settings…" autocomplete="off" disabled></label>
+        <label class="changed-filter"><input id="changed-only" type="checkbox" disabled> Changed only</label>
+      </div>
+      <div class="section-heading"><h2 id="section-title">Settings</h2><span id="result-count" class="muted"></span></div>
+      <div id="option-groups"></div>
+      <p id="empty-state" class="empty-state" hidden>No results. Change your search or turn off the filter.</p>
+      </div>
+      <section id="presets-panel" data-section="presets" hidden aria-labelledby="presets-title">
+        <h2 id="presets-title">Presets and backup</h2>
+        <p class="muted">A preset replaces your appearance settings. The extension on/off switch stays as it is.</p>
+        <h3>Built-in presets</h3><div id="built-in-presets" class="preset-list"></div>
+        <h3>My presets</h3><div id="custom-presets" class="preset-list"></div>
+        <form id="save-preset" class="inline-form"><label for="preset-name">New preset name</label><div class="inline-actions"><input id="preset-name" maxlength="60" required placeholder="For example, Quiet evening"><button type="submit">Save current appearance</button></div></form>
+        <h3>Settings file</h3><p class="muted">The JSON file includes appearance, presets, usage limits, filters and player settings. Settings protection, passwords and active timers are not exported. Older version 1 files only change appearance and presets.</p>
+        <div class="inline-actions"><button id="export" type="button">Export JSON</button><button id="import" type="button">Import JSON</button><input id="import-file" type="file" accept=".json,application/json" hidden></div>
+        <div class="reset-area"><h3>Reset appearance</h3><p class="muted">Restore the default appearance and turn the extension on. Saved presets will be kept.</p><button id="reset-all" class="danger" type="button">Reset all appearance settings…</button></div>
+      </section>
+      <section data-section="restrictions" hidden>
+        <h2>Usage limits</h2><p id="session-status" class="muted" role="status"></p><button id="end-session" type="button" hidden>End session</button>
+        <form id="restrictions-form">
+          <label class="check"><input id="restriction-enabled" type="checkbox"> Enable usage limits</label>
+          <fieldset><legend>Block schedule</legend><p class="muted">Uses your computer’s local time. Overnight periods belong to the selected start day. Matching start and end times mean a full day; overlapping periods are combined.</p><div id="schedule-rows"></div><button id="add-schedule" type="button">Add period</button></fieldset>
+          <fieldset><legend>Before a new session</legend>
+            <label class="check"><input id="entry-enabled" type="checkbox"> Pause and confirm before starting</label>
+            <label>Message<textarea id="entry-message" maxlength="1000" rows="2"></textarea></label>
+            <label>Pause in seconds<input id="entry-seconds" type="number" min="0" max="300" required></label>
+            <label>Countdown display<select id="entry-countdown"><option value="hidden">Hidden</option><option value="subtle">Progress bar</option><option value="detailed">Seconds</option></select></label>
+            <label>Phrase to type (optional)<textarea id="entry-phrase" maxlength="1000" rows="2"></textarea></label>
+          </fieldset>
+          <fieldset><legend>Session length</legend>
+            <label class="check"><input id="session-enabled" type="checkbox"> Limit session time</label>
+            <div class="form-grid"><label>Time limit in minutes (0 = unlimited)<input id="session-minutes" type="number" min="0" max="1440" required></label><label>Idle timeout in minutes (0 = off)<input id="idle-minutes" type="number" min="0" max="1440" required></label><label>Break after each session, in minutes<input id="cooldown-minutes" type="number" min="0" max="1440" required></label></div>
+            <label class="check"><input id="allow-skip" type="checkbox"> Allow ending a break early</label>
+            <label>Phrase to end a break (leave blank for none)<textarea id="cooldown-phrase" maxlength="1000" rows="2"></textarea></label>
+            <p class="muted">All tabs share one session. Time runs from the moment it starts. Playback, including background playback, resets the idle timer. Before starting, you can adjust the length and idle timeout for that session only. When session limits are off, the entry confirmation returns after 15 minutes of inactivity.</p>
+          </fieldset>
+          <button type="submit" class="primary">Save usage limits</button><p class="muted">Saving these settings ends the current session.</p>
+        </form>
+        <fieldset><legend>Block now</legend><div class="inline-actions"><label>Minutes<input id="temporary-minutes" type="number" min="1" max="10080" value="30"></label><button id="temporary-start" type="button">Start block</button><button id="temporary-stop" type="button">End temporary block</button></div><p class="muted">The block schedule still applies. Settings protection also applies to this action.</p></fieldset>
+      </section>
+      <section data-section="protection" hidden>
+        <h2>Settings protection</h2><p class="muted">Require confirmation for changes within the extension. The Chrome user can still remove the extension or change its data using developer tools.</p>
+        <form id="protection-form">
+          <label class="check"><input id="protection-enabled" type="checkbox"> Enable settings protection</label>
+          <label>Method<select id="protection-method"><option value="password">Password</option><option value="phrase">Confirmation phrase</option></select></label>
+          <label>New password or phrase<input id="new-credential" type="password" maxlength="200" autocomplete="new-password"></label>
+          <label>Repeat new password or phrase<input id="repeat-credential" type="password" maxlength="200" autocomplete="new-password"></label>
+          <p class="muted">Use 8–200 characters. Leave both fields blank to keep the current credential. A phrase is shown during confirmation. A password is never shown and only a verification value is stored. Forgotten passwords cannot be reset by email.</p>
+          <label>After confirmation<select id="protection-duration"><option value="single">Allow one change</option><option value="5m">Allow changes in this tab for 5 minutes</option></select></label>
+          <fieldset><legend>Protect these settings</legend><div id="protection-scopes"></div></fieldset>
+          <div class="inline-actions"><button type="submit" class="primary">Save protection settings</button><button id="lock-protection" type="button">Lock again</button></div>
+          <p class="muted">Changing or turning off protection requires valid authorization.</p>
+        </form>
+      </section>
+      <section data-section="filters" hidden>
+        <h2>Content filters</h2>
+        <form id="filters-form">
+          <label class="check"><input id="filters-enabled" type="checkbox"> Enable content filters</label>
+          <label class="check"><input id="filter-buttons" type="checkbox"> Show filter buttons on YouTube</label>
+          <p class="muted">One rule per line. Channels: exact name, @handle, ID or URL. Videos: part of a title, ID or URL. Comments and posts: part of the text, ID or URL. Text matching ignores case; channel IDs are case-sensitive. The video you are watching is not blocked. On watch pages, filters apply to recommendations and comments.</p>
+          <p class="muted">Regular expressions: /pattern/i with the flags i, m, s, u. Literals, character classes, dots, anchors and up to four ? quantifiers are supported. Groups, |, *, +, {…} and backreferences are not allowed, so a rule cannot freeze the page.</p>
+          <label>Channels<textarea id="filter-channels" rows="5" spellcheck="false"></textarea></label>
+          <label>Videos<textarea id="filter-videos" rows="5" spellcheck="false"></textarea></label>
+          <label>Comments<textarea id="filter-comments" rows="5" spellcheck="false"></textarea></label>
+          <label>Posts<textarea id="filter-posts" rows="5" spellcheck="false"></textarea></label>
+          <button type="submit" class="primary">Save filters</button>
+        </form>
+      </section>
+      <section data-section="player" hidden>
+        <h2>Player</h2>
+        <form id="player-form">
+          <label class="check"><input id="player-enabled" type="checkbox"> Enable player settings</label>
+          <label>Preferred quality<select id="player-quality"></select></label><p class="muted">If the preferred quality is unavailable, an available quality is used. Turning this off restores automatic quality selection by YouTube.</p>
+          <label class="check"><input id="native-controls" type="checkbox"> Use native video controls</label>
+          <label class="check"><input id="disable-autoplay" type="checkbox"> Stop videos from playing automatically when opened</label>
+          <label class="check"><input id="disable-next" type="checkbox"> Stop the next video from playing automatically</label>
+          <label class="check"><input id="skip-ads" type="checkbox"> Click the ad skip button when available</label>
+          <label class="check"><input id="seek-ads" type="checkbox"> Try to seek past separate ad videos</label>
+          <p class="muted">Experimental: seeking is attempted only when an ad is detected and its video supports seeking. Ads embedded in the main stream and ads that prevent seeking may remain. Native controls and quality selection depend on the current YouTube player.</p>
+          <button type="submit" class="primary">Save player settings</button>
+        </form>
+      </section>
+    </main>
+  </div>
+  <footer class="status-bar"><p id="save-status" role="status" aria-live="polite">Loading settings…</p><p id="error" role="alert" hidden></p></footer>
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-description"><form method="dialog"><h2 id="confirm-title"></h2><p id="confirm-description"></p><div class="dialog-actions"><button value="cancel" autofocus>Cancel</button><button id="confirm-action" value="confirm" class="primary">Confirm</button></div></form></dialog>
+</body>
+</html>

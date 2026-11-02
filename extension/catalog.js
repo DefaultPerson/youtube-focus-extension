@@ -1,0 +1,4545 @@
+/* Appearance controls and independently authored platform CSS. */
+globalThis.YTV_CATALOG = {
+  "categories": [
+    {
+      "id": "homePage",
+      "label": "Home",
+      "groups": [
+        {
+          "id": "redirects",
+          "label": "Destinations"
+        },
+        {
+          "id": "suggestions",
+          "label": "Recommendations"
+        }
+      ]
+    },
+    {
+      "id": "navigationSidebar",
+      "label": "Navigation sidebar",
+      "groups": [
+        {
+          "id": "homeSection",
+          "label": "Main navigation"
+        },
+        {
+          "id": "librarySection",
+          "label": "Your library"
+        },
+        {
+          "id": "subscriptionsSection",
+          "label": "Subscribed channels"
+        },
+        {
+          "id": "exploreSection",
+          "label": "Explore"
+        },
+        {
+          "id": "moreFromYouTubeSection",
+          "label": "YouTube services"
+        },
+        {
+          "id": "helperButtonsSection",
+          "label": "Help and settings"
+        },
+        {
+          "id": "sections",
+          "label": "Sections"
+        },
+        {
+          "id": "other",
+          "label": "General"
+        }
+      ]
+    },
+    {
+      "id": "header",
+      "label": "Top bar",
+      "groups": [
+        {
+          "id": "searchBar",
+          "label": "Search field"
+        },
+        {
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+          "id": "buttons",
+          "label": "Buttons"
+        },
+        {
+          "id": "other",
+          "label": "General"
+        }
+      ]
+    },
+    {
+      "id": "videoPage",
+      "label": "Watch page",
+      "groups": [
+        {
+          "id": "sidebar",
+          "label": "Related content"
+        },
+        {
+          "id": "player",
+          "label": "Playback"
+        },
+        {
+          "id": "details",
+          "label": "Details"
+        },
+        {
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "id": "playerButtons",
+          "label": "Player controls"
+        },
+        {
+          "id": "buttonsUnderPlayer",
+          "label": "Video actions"
+        },
+        {
+          "id": "undefined",
+          "label": "Layout"
+        },
+        {
+          "id": "comments",
+          "label": "Comments"
+        }
+      ]
+    },
+    {
+      "id": "videoCard",
+      "label": "Video cards",
+      "groups": [
+        {
+          "id": "thumbnail",
+          "label": "Thumbnail images"
+        },
+        {
+          "id": "title",
+          "label": "Titles"
+        },
+        {
+          "id": "details",
+          "label": "Details"
+        },
+        {
+          "id": "badges",
+          "label": "Badges"
+        }
+      ]
+    },
+    {
+      "id": "searchPage",
+      "label": "Search results",
+      "groups": [
+        {
+          "id": "results",
+          "label": "Results"
+        },
+        {
+          "id": "buttons",
+          "label": "Buttons"
+        },
+        {
+          "id": "ads",
+          "label": "Advertisements"
+        }
+      ]
+    },
+    {
+      "id": "subscriptionsPage",
+      "label": "Subscriptions",
+      "groups": [
+        {
+          "id": "other",
+          "label": "General"
+        }
+      ]
+    },
+    {
+      "id": "channelPage",
+      "label": "Channel pages",
+      "groups": [
+        {
+          "id": "redirects",
+          "label": "Destinations"
+        },
+        {
+          "id": "header",
+          "label": "Channel header"
+        },
+        {
+          "id": "horizontalMenuBar",
+          "label": "Channel tabs"
+        },
+        {
+          "id": "sections",
+          "label": "Sections"
+        }
+      ]
+    },
+    {
+      "id": "shortsPage",
+      "label": "Shorts",
+      "groups": [
+        {
+          "id": "redirects",
+          "label": "Destinations"
+        },
+        {
+          "id": "other",
+          "label": "General"
+        },
+        {
+          "id": "details",
+          "label": "Details"
+        },
+        {
+          "id": "buttons",
+          "label": "Buttons"
+        }
+      ]
+    },
+    {
+      "id": "youPage",
+      "label": "Your library",
+      "groups": [
+        {
+          "id": "sections",
+          "label": "Sections"
+        }
+      ]
+    },
+    {
+      "id": "embed",
+      "label": "Embedded player",
+      "groups": [
+        {
+          "id": "player",
+          "label": "Playback"
+        }
+      ]
+    },
+    {
+      "id": "appearance",
+      "label": "Colors and fonts",
+      "groups": [
+        {
+          "id": "all",
+          "label": "Interface"
+        }
+      ]
+    }
+  ],
+  "options": [
+    {
+      "id": "redirect_home_to",
+      "category": "homePage",
+      "group": "redirects",
+      "type": "enum",
+      "default": "home",
+      "choices": [
+        {
+          "value": "home",
+          "label": "Home"
+        },
+        {
+          "value": "subscriptions",
+          "label": "Subscriptions"
+        },
+        {
+          "value": "watch_later",
+          "label": "Watch later"
+        },
+        {
+          "value": "search",
+          "label": "Search field"
+        },
+        {
+          "value": "history",
+          "label": "History"
+        },
+        {
+          "value": "liked",
+          "label": "Liked videos"
+        },
+        {
+          "value": "library",
+          "label": "You"
+        }
+      ],
+      "label": "Home destination",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "home_hide_suggestions",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide recommended videos",
+      "css": [
+        "ytd-browse[page-subtype=\"home\"] ytd-rich-grid-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "home_suggestions_rows_count",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "enum",
+      "default": "default",
+      "choices": [
+        {
+          "value": "default",
+          "label": "YouTube default"
+        },
+        {
+          "value": "row_1",
+          "label": "One row"
+        },
+        {
+          "value": "row_2",
+          "label": "Two rows"
+        }
+      ],
+      "label": "Number of recommendation rows",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "home_suggestions_columns_count",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "enum",
+      "default": "default",
+      "choices": [
+        {
+          "value": "default",
+          "label": "YouTube default"
+        },
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "6",
+          "label": "6"
+        },
+        {
+          "value": "7",
+          "label": "7"
+        },
+        {
+          "value": "8",
+          "label": "8"
+        },
+        {
+          "value": "9",
+          "label": "9"
+        },
+        {
+          "value": "10",
+          "label": "10"
+        },
+        {
+          "value": "11",
+          "label": "11"
+        },
+        {
+          "value": "12",
+          "label": "12"
+        },
+        {
+          "value": "13",
+          "label": "13"
+        },
+        {
+          "value": "14",
+          "label": "14"
+        },
+        {
+          "value": "15",
+          "label": "15"
+        }
+      ],
+      "label": "Videos in each recommendation row",
+      "css": [],
+      "implementation": "custom"
+    },
+    {
+      "id": "home_disable_infinity_scroll",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Stop home feed after its first batch",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "home_hide_header_with_categories",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide topic chips",
+      "css": [
+        "ytd-browse[page-subtype=\"home\"] ytd-feed-filter-chip-bar-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "home_hide_watched_videos",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide watched home recommendations",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "home_hide_suggestion_mixes",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide mixes",
+      "css": [
+        "ytd-browse[page-subtype=\"home\"] ytd-rich-item-renderer:has(a[href*=\"list=RD\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "home_hide_trending_etc",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide featured topic shelves",
+      "css": [
+        "ytd-browse[page-subtype=\"home\"] ytd-rich-section-renderer:has(ytd-rich-shelf-renderer:not([is-shorts])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "home_hide_shorts_row",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts shelves",
+      "css": [
+        "ytd-browse[page-subtype=\"home\"] ytd-rich-section-renderer:has(:is(ytd-reel-shelf-renderer,[is-shorts],ytm-shorts-lockup-view-model)){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "home_hide_banners_ads_with_close",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide promotional banners",
+      "css": [
+        "ytd-browse[page-subtype=\"home\"] :is(ytd-banner-promo-renderer,ytd-statement-banner-renderer,ytd-brand-video-singleton-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "home_hide_ads_first_slot",
+      "category": "homePage",
+      "group": "suggestions",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide feed advertisements",
+      "css": [
+        "ytd-browse[page-subtype=\"home\"] ytd-rich-item-renderer:has(:is(ytd-ad-slot-renderer,ytd-in-feed-ad-layout-renderer,ytd-display-ad-renderer)){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_explore_hide_explore_title",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Explore heading",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href^=\"/feed/trending\"]) > #header{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_section_explore",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Explore section",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href^=\"/feed/trending\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_explore_hide_trending_buttton",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Trending link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/feed/trending\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_explore_hide_music_buttton",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Music link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_explore_hide_movies_buttton",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Movies link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/feed/storefront\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_explore_hide_live_buttton",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Live link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/channel/UC4R8DWoMoI7CAwX8_LjQHig\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_explore_hide_gaming_buttton",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Gaming link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/gaming\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_explore_hide_news_buttton",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide News link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/channel/UCYfdidRxbB8Qhf0Nx7ioOYw\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_explore_hide_sports_buttton",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Sports link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/channel/UCEgdi0XIXXZ-qJOFPf4JSKw\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_explore_hide_learning_buttton",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Learning link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/learning\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_explore_hide_podcasts_buttton",
+      "category": "navigationSidebar",
+      "group": "exploreSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Podcasts link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/podcasts\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_helper_buttons_hide_settings_button",
+      "category": "navigationSidebar",
+      "group": "helperButtonsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Settings link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/account\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_section_helper_buttons",
+      "category": "navigationSidebar",
+      "group": "helperButtonsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide help and settings section",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href^=\"/reporthistory\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_helper_buttons_hide_report_history_button",
+      "category": "navigationSidebar",
+      "group": "helperButtonsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide reporting history",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/reporthistory\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_helper_buttons_hide_help_button",
+      "category": "navigationSidebar",
+      "group": "helperButtonsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Help link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[title=\"Help\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_helper_buttons_hide_feedback_button",
+      "category": "navigationSidebar",
+      "group": "helperButtonsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Send feedback link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[title=\"Send feedback\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_home",
+      "category": "navigationSidebar",
+      "group": "homeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Home link",
+      "css": [
+        ":is(ytd-guide-entry-renderer,ytd-mini-guide-entry-renderer):has(a[href=\"/\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_home_section",
+      "category": "navigationSidebar",
+      "group": "homeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide main navigation section",
+      "css": [
+        "ytd-guide-section-renderer:has(ytd-guide-entry-renderer a[href=\"/\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_shorts",
+      "category": "navigationSidebar",
+      "group": "homeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts link",
+      "css": [
+        ":is(ytd-guide-entry-renderer,ytd-mini-guide-entry-renderer):has(a[href=\"/shorts/\"]),:is(ytd-guide-entry-renderer,ytd-mini-guide-entry-renderer):has(a[href=\"/shorts\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_subscriptions",
+      "category": "navigationSidebar",
+      "group": "homeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Subscriptions link",
+      "css": [
+        ":is(ytd-guide-entry-renderer,ytd-mini-guide-entry-renderer):has(a[href=\"/feed/subscriptions\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_youtube_music",
+      "category": "navigationSidebar",
+      "group": "homeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Music link in main navigation",
+      "css": [
+        "ytd-guide-section-renderer:first-child ytd-guide-entry-renderer:has(a[href^=\"https://music.youtube.com\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_more_section_hide_kids_button",
+      "category": "navigationSidebar",
+      "group": "homeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Kids link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href*=\"youtubekids.com\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_you",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide You link",
+      "css": [
+        ":is(ytd-guide-entry-renderer,ytd-mini-guide-entry-renderer):has(a[href=\"/feed/you\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_section_library",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide personal library section",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/feed/history\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_your_channel",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Your channel link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[title=\"Your channel\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_history",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide History link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href=\"/feed/history\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_playlists",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Playlists link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href=\"/feed/playlists\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_your_videos",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Your videos link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href*=\"studio.youtube.com\"]):has(a[title=\"Your videos\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_your_movies",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Your movies link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href^=\"/feed/storefront\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_watch_later",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Watch later link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href*=\"list=WL\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_downloads",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Downloads link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href=\"/feed/downloads\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_your_clips",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Your clips link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href=\"/feed/clips\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_liked_videos",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Liked videos link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href*=\"list=LL\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_library_button_show_more",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide library expansion button",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/feed/history\"]) #expander-item{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_auto_expand_playlists",
+      "category": "navigationSidebar",
+      "group": "librarySection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Expand personal playlists",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "sidebar_hide_section_more_from_youtube",
+      "category": "navigationSidebar",
+      "group": "moreFromYouTubeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide YouTube services section",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/premium\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_more_section_hide_title",
+      "category": "navigationSidebar",
+      "group": "moreFromYouTubeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide YouTube services heading",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/premium\"]) > #header{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_more_section_hide_premium_button",
+      "category": "navigationSidebar",
+      "group": "moreFromYouTubeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Premium link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href=\"/premium\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_more_section_hide_studio_button",
+      "category": "navigationSidebar",
+      "group": "moreFromYouTubeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Studio link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href*=\"studio.youtube.com\"]):not(:has(a[title=\"Your videos\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_more_section_hide_music_button",
+      "category": "navigationSidebar",
+      "group": "moreFromYouTubeSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Music link in services",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/premium\"]) ytd-guide-entry-renderer:has(a[href*=\"music.youtube.com\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_entire_sidebar",
+      "category": "navigationSidebar",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide navigation sidebar",
+      "css": [
+        "ytd-app :is(tp-yt-app-drawer#guide,ytd-mini-guide-renderer){display:none!important;}",
+        "ytd-app ytd-page-manager{margin-left:0!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_auto_collapse_sidebar",
+      "category": "navigationSidebar",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Collapse navigation sidebar",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "header_hide_sidebar_burger",
+      "category": "navigationSidebar",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide navigation toggle",
+      "css": [
+        "ytd-masthead #guide-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_icons",
+      "category": "navigationSidebar",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide navigation icons",
+      "css": [
+        ":is(ytd-guide-entry-renderer,ytd-mini-guide-entry-renderer) :is(yt-icon,yt-img-shadow#img){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_section_sign_in",
+      "category": "navigationSidebar",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide sidebar sign-in prompt",
+      "css": [
+        "ytd-guide-signin-promo-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_section_footer",
+      "category": "navigationSidebar",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide sidebar footer links",
+      "css": [
+        "ytd-guide-renderer #footer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_section_subscriptions",
+      "category": "navigationSidebar",
+      "group": "subscriptionsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide subscribed channel list",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_subscriptions_hide_title",
+      "category": "navigationSidebar",
+      "group": "subscriptionsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide subscribed channel heading",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) > #header{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_auto_expand_subscriptions",
+      "category": "navigationSidebar",
+      "group": "subscriptionsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Expand subscribed channel list",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "sidebar_hide_subscriptionns_notifications_dots",
+      "category": "navigationSidebar",
+      "group": "subscriptionsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel update dots",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) #newness-dot{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_subscriptionns_live_icon",
+      "category": "navigationSidebar",
+      "group": "subscriptionsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel live indicators",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) :is(.guide-entry-badge,yt-icon#badge){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_subscriptions_icons",
+      "category": "navigationSidebar",
+      "group": "subscriptionsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide subscribed channel avatars",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) yt-img-shadow{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_grayscale_subscriptions_icons",
+      "category": "navigationSidebar",
+      "group": "subscriptionsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Grayscale subscribed channel avatars",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) yt-img-shadow{filter:grayscale(1)!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_subscriptions_button_show_more",
+      "category": "navigationSidebar",
+      "group": "subscriptionsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel list expansion button",
+      "css": [
+        "ytd-guide-section-renderer:has(a[href=\"/feed/channels\"]) #expander-item{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_button_browse_channels",
+      "category": "navigationSidebar",
+      "group": "subscriptionsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Browse channels link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href=\"/feed/guide_builder\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "sidebar_hide_all_subscriptions_button",
+      "category": "navigationSidebar",
+      "group": "subscriptionsSection",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide All subscriptions link",
+      "css": [
+        "ytd-guide-entry-renderer:has(a[href=\"/feed/channels\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_create_button",
+      "category": "header",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Create button",
+      "css": [
+        "ytd-masthead :is(ytd-topbar-menu-button-renderer,yt-button-view-model):has(button[aria-label=\"Create\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_upload_button",
+      "category": "header",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Upload button",
+      "css": [
+        "ytd-masthead :is(a[href=\"/upload\"],button[aria-label=\"Upload\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_notifications_bell",
+      "category": "header",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide notification button",
+      "css": [
+        "ytd-masthead ytd-notification-topbar-button-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_button_sign_in",
+      "category": "header",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide header sign-in button",
+      "css": [
+        "ytd-masthead ytd-button-renderer:has(a[href*=\"accounts.google.com\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_logo",
+      "category": "header",
+      "group": "logo",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide YouTube logo",
+      "css": [
+        "ytd-masthead ytd-topbar-logo-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_logo_color",
+      "category": "header",
+      "group": "logo",
+      "type": "enum",
+      "default": "default",
+      "choices": [
+        {
+          "value": "default",
+          "label": "YouTube default"
+        },
+        {
+          "value": "monochrome",
+          "label": "Single color"
+        },
+        {
+          "value": "grayscale",
+          "label": "Grayscale"
+        }
+      ],
+      "label": "Logo color style",
+      "css": [],
+      "implementation": "custom"
+    },
+    {
+      "id": "header_disable_logo_link",
+      "category": "header",
+      "group": "logo",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Disable logo navigation",
+      "css": [
+        "ytd-topbar-logo-renderer a{pointer-events:none!important;cursor:default!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_logo_country_code",
+      "category": "header",
+      "group": "logo",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide logo region code",
+      "css": [
+        "ytd-masthead ytd-topbar-logo-renderer #country-code{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_logo_wordmark",
+      "category": "header",
+      "group": "logo",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide logo text",
+      "css": [
+        "ytd-masthead ytd-topbar-logo-renderer :is(g#youtube-paths,path[id=\"youtube-paths\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_top_header",
+      "category": "header",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide top bar",
+      "css": [
+        "ytd-masthead{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_notifications_counter",
+      "category": "header",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide unread notification count",
+      "css": [
+        "ytd-notification-topbar-button-renderer #notification-count{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_search_bar",
+      "category": "header",
+      "group": "searchBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide search field",
+      "css": [
+        "ytd-masthead :is(ytd-searchbox,yt-searchbox){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_bar_hide_suggestions",
+      "category": "header",
+      "group": "searchBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide search suggestions",
+      "css": [
+        ":is(ytd-searchbox-spt,yt-searchbox-spt,.gstl_50,.ytSearchboxComponentSuggestionsContainer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_bar_hide_previous_searches",
+      "category": "header",
+      "group": "searchBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide search history suggestions",
+      "css": [
+        ":is(yt-searchbox-suggestion,ytd-searchbox-suggestion):has([aria-label*=\"Remove\"]),.sbdd_b .sbqs_c:has(.sbqs_h){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "header_hide_voice_search_button",
+      "category": "header",
+      "group": "searchBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide voice search button",
+      "css": [
+        "ytd-masthead #voice-search-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_all_buttons_under_player",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video action toolbar",
+      "css": [
+        "ytd-watch-metadata #actions,ytd-video-primary-info-renderer #menu{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_button_join",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel membership button",
+      "css": [
+        "ytd-watch-metadata #sponsor-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_button_subscribe",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Subscribe button",
+      "css": [
+        "ytd-watch-metadata :is(ytd-subscribe-button-renderer,yt-subscribe-button-view-model){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_button_like_dislike",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video rating buttons",
+      "css": [
+        "ytd-watch-metadata :is(segmented-like-dislike-button-view-model,ytd-segmented-like-dislike-button-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_video_likes_counter",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video like count",
+      "css": [
+        "ytd-watch-metadata :is(like-button-view-model .yt-spec-button-shape-next__button-text-content,ytd-toggle-button-renderer#like-button #text){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_disable_like_animation",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Disable Like button animation",
+      "css": [
+        "ytd-watch-metadata :is(like-button-view-model,ytd-toggle-button-renderer#like-button) :is(yt-animated-icon,animated-rolling-number){animation:none!important;transition:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_button_share",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Share action",
+      "css": [
+        "ytd-watch-metadata :is(yt-button-view-model,ytd-button-renderer):has(button[aria-label=\"Share\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_button_thanks",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Thanks action",
+      "css": [
+        "ytd-watch-metadata :is(yt-button-view-model,ytd-button-renderer):has(button[aria-label=\"Thanks\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_button_clip",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Clip action",
+      "css": [
+        "ytd-watch-metadata :is(yt-button-view-model,ytd-button-renderer):has(button[aria-label=\"Clip\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_button_download",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Download action",
+      "css": [
+        "ytd-watch-metadata :is(ytd-download-button-renderer,yt-download-button-view-model){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_button_save",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Save action",
+      "css": [
+        "ytd-watch-metadata :is(yt-button-view-model,ytd-button-renderer):has(button[aria-label=\"Save to playlist\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_button_more",
+      "category": "videoPage",
+      "group": "buttonsUnderPlayer",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide additional video actions",
+      "css": [
+        "ytd-watch-metadata ytd-menu-renderer #button-shape:has(button[aria-label=\"More actions\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "metrics_hide_comments_count",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide total comment count",
+      "css": [
+        "ytd-comments-header-renderer #count{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comments",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide comment section",
+      "css": [
+        "ytd-watch-flexy ytd-comments{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comment_teaser",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide comment preview",
+      "css": [
+        "ytd-watch-metadata ytd-comments-entry-point-header-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comment_add_textfield",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide new comment field",
+      "css": [
+        "ytd-comments ytd-comment-simplebox-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comments_sort_button",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide comment sorting",
+      "css": [
+        "ytd-comments-header-renderer #sort-menu{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comments_profile_pictures",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide commenter avatars",
+      "css": [
+        "ytd-comments :is(ytd-comment-renderer,ytd-comment-view-model) #author-thumbnail{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_grayscale_comments_profile_pictures",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Grayscale commenter avatars",
+      "css": [
+        "ytd-comments :is(ytd-comment-renderer,ytd-comment-view-model) #author-thumbnail{filter:grayscale(1)!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comments_usernames",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide commenter names",
+      "css": [
+        "ytd-comments :is(#author-text,#author-comment-badge){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comments_published_time",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide comment dates",
+      "css": [
+        "ytd-comments :is(#published-time-text,.published-time-text){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comment_likes_count",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide comment like counts",
+      "css": [
+        "ytd-comments :is(#vote-count-middle,#vote-count-left){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comment_button_like",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide comment Like buttons",
+      "css": [
+        "ytd-comments #like-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comment_button_dislike",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide comment Dislike buttons",
+      "css": [
+        "ytd-comments #dislike-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comment_button_reply",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Reply buttons",
+      "css": [
+        "ytd-comments #reply-button-end{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comment_creator_heart",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide creator hearts",
+      "css": [
+        "ytd-comments ytd-creator-heart-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_comments_replies",
+      "category": "videoPage",
+      "group": "comments",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide comment reply threads",
+      "css": [
+        "ytd-comments ytd-comment-replies-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_auto_expand_description",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Expand video description",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "video_page_hide_description",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video description",
+      "css": [
+        "ytd-watch-metadata #description,ytd-video-secondary-info-renderer #description{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_minimal_description",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Limit description to its text",
+      "css": [
+        "ytd-watch-metadata #description :is(ytd-horizontal-card-list-renderer,ytd-video-description-infocards-section-renderer,ytd-video-description-transcript-section-renderer,ytd-metadata-row-container-renderer,ytd-reel-shelf-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_video_views_counter",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video view count",
+      "css": [
+        "ytd-watch-metadata #info :is(.view-count,yt-formatted-string#info > span:first-child),ytd-watch-metadata #info-container > #info > span:first-child,ytd-video-view-count-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_video_published_time",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video publication date",
+      "css": [
+        "ytd-watch-metadata #info-container > #info > span:nth-child(3),ytd-video-primary-info-renderer #date{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_video_description_hashtags",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide description hashtags",
+      "css": [
+        "ytd-watch-metadata #description a[href^=\"/hashtag/\"]{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_shorts_in_description",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts in description",
+      "css": [
+        "ytd-watch-metadata #description ytd-reel-shelf-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_description_hide_transcript_block",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide transcript section",
+      "css": [
+        "ytd-watch-metadata #description ytd-video-description-transcript-section-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_description_hide_channel_info",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel description card",
+      "css": [
+        "ytd-watch-metadata #description ytd-video-description-infocards-section-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_description_hide_videos_button",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide description Videos link",
+      "css": [
+        "ytd-watch-metadata #description a[href$=\"/videos\"]{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_description_hide_about_button",
+      "category": "videoPage",
+      "group": "description",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide description About link",
+      "css": [
+        "ytd-watch-metadata #description a[href$=\"/about\"]{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_video_title",
+      "category": "videoPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide watch-page title",
+      "css": [
+        "ytd-watch-metadata h1,ytd-video-primary-info-renderer h1{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_creator_avatar",
+      "category": "videoPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide creator avatar",
+      "css": [
+        "ytd-watch-metadata ytd-video-owner-renderer #avatar{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_Grayscale_creator_avatar",
+      "category": "videoPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Grayscale creator avatar",
+      "css": [
+        "ytd-watch-metadata ytd-video-owner-renderer #avatar{filter:grayscale(1)!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_creator_username",
+      "category": "videoPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide creator name",
+      "css": [
+        "ytd-watch-metadata ytd-video-owner-renderer #channel-name{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_creator_subscribers_counter",
+      "category": "videoPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide creator subscriber count",
+      "css": [
+        "ytd-watch-metadata #owner-sub-count{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_doctor_license",
+      "category": "videoPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide medical credentials panel",
+      "css": [
+        "ytd-watch-flexy ytd-info-panel-content-renderer:has(a[href*=\"health\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_badge_fundraiser",
+      "category": "videoPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide fundraising badge",
+      "css": [
+        "ytd-watch-metadata ytd-badge-supported-renderer:has(.badge-style-type-fundraiser){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_badge_verified",
+      "category": "videoPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide creator verification badge",
+      "css": [
+        "ytd-watch-metadata ytd-badge-supported-renderer:has(.badge-style-type-verified){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_metadata_row",
+      "category": "videoPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide additional metadata rows",
+      "css": [
+        "ytd-watch-metadata ytd-metadata-row-container-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_merch_shelf",
+      "category": "videoPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide merchandise shelf",
+      "css": [
+        "ytd-watch-flexy :is(ytd-merch-shelf-renderer,ytd-shopping-carousel-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_end_screen_suggestions",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player end-screen recommendations",
+      "css": [
+        "#movie_player :is(.ytp-endscreen-content,.ytp-autonav-endscreen){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_end_screen_infos",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide end-screen cards",
+      "css": [
+        "#movie_player :is(.ytp-ce-element,.ytp-cards-teaser){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_shadow_around_player_bar",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player bottom gradient",
+      "css": [
+        "#movie_player .ytp-gradient-bottom{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_video_time",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player time display",
+      "css": [
+        "#movie_player .ytp-time-display{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_video_watermark",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel watermark",
+      "css": [
+        "#movie_player .ytp-watermark{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_most_replayed_on_hover",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide replay popularity graph",
+      "css": [
+        "#movie_player :is(.ytp-heat-map-container,.ytp-heat-map-svg){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_disable_autoplay",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Disable automatic next video",
+      "css": [],
+      "runtime": "player",
+      "implementation": "runtime"
+    },
+    {
+      "id": "video_page_auto_theater_mode",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Enter Theater mode",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "video_player_remove_corner_radius",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Square player corners",
+      "css": [
+        "ytd-watch-flexy :is(#ytd-player,#movie_player,video.html5-main-video){border-radius:0!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_includes_paid_promotion",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide paid promotion overlay",
+      "css": [
+        "#movie_player .ytp-paid-content-overlay{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_grayscale_video_player",
+      "category": "videoPage",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Grayscale video playback",
+      "css": [
+        "#movie_player video.html5-main-video{filter:grayscale(1)!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_play_pause_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player Play button",
+      "css": [
+        "#movie_player :is(.ytp-play-button,.ytp-large-play-button){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_replay_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player Replay button",
+      "css": [
+        "#movie_player .ytp-play-button[data-title-no-tooltip=\"Replay\"]{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_play_next_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player Next button",
+      "css": [
+        "#movie_player .ytp-next-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_volume_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player volume controls",
+      "css": [
+        "#movie_player .ytp-volume-area{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_chapters_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player chapter title",
+      "css": [
+        "#movie_player .ytp-chapter-container{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_autoplay_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player Autoplay toggle",
+      "css": [
+        "#movie_player .ytp-autonav-toggle-button-container{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_subtitles_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player subtitle toggle",
+      "css": [
+        "#movie_player .ytp-subtitles-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_settings_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player settings button",
+      "css": [
+        "#movie_player .ytp-settings-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_miniplayer_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Miniplayer button",
+      "css": [
+        "#movie_player .ytp-miniplayer-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_theater_mode_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Theater mode button",
+      "css": [
+        "#movie_player .ytp-size-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_airplay_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Cast and AirPlay buttons",
+      "css": [
+        "#movie_player :is(.ytp-remote-button,.ytp-airplay-button){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_full_screen_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide player fullscreen button",
+      "css": [
+        "#movie_player .ytp-fullscreen-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_player_hide_more_from_button",
+      "category": "videoPage",
+      "group": "playerButtons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide More videos button",
+      "css": [
+        "#movie_player .ytp-more-videos-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_center_content",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Center watch-page columns",
+      "css": [
+        "ytd-watch-flexy #columns{justify-content:center!important;margin-inline:auto!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_related_categories",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide related-video topic chips",
+      "css": [
+        "ytd-watch-flexy #secondary yt-related-chip-cloud-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_related_videos",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide related videos",
+      "css": [
+        "ytd-watch-flexy #secondary ytd-watch-next-secondary-results-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_live_chat",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide live chat",
+      "css": [
+        "ytd-watch-flexy :is(ytd-live-chat-frame,ytd-live-chat-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_sidebar_disable_infinite_scrolling",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Stop loading more related videos",
+      "css": [
+        "ytd-watch-next-secondary-results-renderer ytd-continuation-item-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_playlist_panel",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide watch-page playlist",
+      "css": [
+        "ytd-watch-flexy ytd-playlist-panel-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_related_watched_videos",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide watched related videos",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "video_page_hide_fundraiser",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide watch-page fundraiser",
+      "css": [
+        "ytd-watch-flexy :is(ytd-donation-shelf-renderer,ytd-fundraiser-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_related_playlists",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide related playlists",
+      "css": [
+        "ytd-watch-next-secondary-results-renderer :is(ytd-compact-playlist-renderer,ytd-compact-radio-renderer,yt-lockup-view-model:has(a[href^=\"/playlist?\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_auto_shows_chapters_in_sidebar",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Open video chapter sidebar",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "video_page_hide_shorts_from_sidebar",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide related Shorts",
+      "css": [
+        "ytd-watch-flexy #secondary :is(ytd-reel-shelf-renderer,ytm-shorts-lockup-view-model,ytd-rich-shelf-renderer[is-shorts]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_fixed_sidebar",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Keep related sidebar in view",
+      "css": [
+        "ytd-watch-flexy #secondary-inner{position:sticky!important;top:64px!important;max-height:calc(100vh - 80px)!important;overflow-y:auto!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_hide_suggestions_ads",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide related-video advertisements",
+      "css": [
+        "ytd-watch-flexy #secondary :is(ytd-ad-slot-renderer,ytd-display-ad-renderer,ytd-promoted-sparkles-web-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_page_panels_max_height",
+      "category": "videoPage",
+      "group": "sidebar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Limit watch sidebar panel height",
+      "css": [
+        "ytd-watch-flexy :is(ytd-playlist-panel-renderer,ytd-live-chat-frame,ytd-engagement-panel-section-list-renderer){max-height:calc(100vh - 100px)!important;overflow-y:auto!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "hide_video_card_badges",
+      "category": "videoCard",
+      "group": "badges",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video card badges",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(ytd-badge-supported-renderer,yt-badge-view-model){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "hide_video_card_live_badges",
+      "category": "videoCard",
+      "group": "badges",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Live badges",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(.badge-style-type-live-now,.yt-badge-shape--live){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "hide_video_card_fundraiser_badges",
+      "category": "videoCard",
+      "group": "badges",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide fundraising badges",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) .badge-style-type-fundraiser{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "hide_video_card_verified_badges",
+      "category": "videoCard",
+      "group": "badges",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide verification badges",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(.badge-style-type-verified,.badge-style-type-verified-artist){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "hide_video_card_hide_author_avatar",
+      "category": "videoCard",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video card channel avatars",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(#avatar-link,.yt-content-metadata-view-model__avatar){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "hide_video_card_grayscale_author_avatar",
+      "category": "videoCard",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Grayscale video card avatars",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(#avatar-link,.yt-content-metadata-view-model__avatar){filter:grayscale(1)!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "hide_video_card_author_name",
+      "category": "videoCard",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video card channel names",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) ytd-channel-name,yt-lockup-view-model .yt-content-metadata-view-model__metadata-row a[href^=\"/@\"]{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "metrics_hide_views",
+      "category": "videoCard",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video card view counts",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #metadata-line > span:first-child,yt-lockup-view-model .yt-content-metadata-view-model__metadata-row:last-child .yt-content-metadata-view-model__metadata-text:first-child{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "metrics_hide_time_since_video_published",
+      "category": "videoCard",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video card publication dates",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #metadata-line > span:nth-child(2),yt-lockup-view-model .yt-content-metadata-view-model__metadata-row:last-child .yt-content-metadata-view-model__metadata-text:nth-child(2){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_card_hide_video_duration",
+      "category": "videoCard",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video duration badges",
+      "css": [
+        ":is(ytd-thumbnail,yt-thumbnail-view-model) :is(ytd-thumbnail-overlay-time-status-renderer,yt-thumbnail-badge-view-model){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_card_hide_menu_button",
+      "category": "videoCard",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video card action menus",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,yt-lockup-view-model) :is(ytd-menu-renderer,.yt-lockup-view-model__menu-button){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "hide_video_card_description",
+      "category": "videoCard",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video card descriptions",
+      "css": [
+        ":is(ytd-video-renderer,ytd-rich-item-renderer) :is(#description-text,.metadata-snippet-container){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "hide_video_card_chapters",
+      "category": "videoCard",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video card chapters",
+      "css": [
+        "ytd-video-renderer :is(ytd-macro-markers-list-renderer,ytd-expandable-metadata-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_card_hide_thumbnail",
+      "category": "videoCard",
+      "group": "thumbnail",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video card images",
+      "css": [
+        ":is(ytd-thumbnail,yt-thumbnail-view-model,ytm-shorts-lockup-view-model) img{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_card_replace_thumbnail",
+      "category": "videoCard",
+      "group": "thumbnail",
+      "type": "enum",
+      "default": "hqdefault",
+      "choices": [
+        {
+          "value": "hqdefault",
+          "label": "Original thumbnail"
+        },
+        {
+          "value": "hq1",
+          "label": "Video frame 1"
+        },
+        {
+          "value": "hq2",
+          "label": "Video frame 2"
+        },
+        {
+          "value": "hq3",
+          "label": "Video frame 3"
+        }
+      ],
+      "label": "Thumbnail image frame",
+      "css": [],
+      "runtime": "thumbnails",
+      "implementation": "runtime"
+    },
+    {
+      "id": "video_card_mirror_thumbnail",
+      "category": "videoCard",
+      "group": "thumbnail",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Mirror video thumbnails",
+      "css": [
+        ":is(ytd-thumbnail,yt-thumbnail-view-model,ytm-shorts-lockup-view-model) img{transform:scaleX(-1)!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_card_blur_thumbnail",
+      "category": "videoCard",
+      "group": "thumbnail",
+      "type": "enum",
+      "default": "0",
+      "choices": [
+        {
+          "value": "0",
+          "label": "0"
+        },
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "6",
+          "label": "6"
+        },
+        {
+          "value": "7",
+          "label": "7"
+        },
+        {
+          "value": "8",
+          "label": "8"
+        },
+        {
+          "value": "9",
+          "label": "9"
+        },
+        {
+          "value": "10",
+          "label": "10"
+        }
+      ],
+      "label": "Thumbnail blur strength",
+      "css": [],
+      "implementation": "custom"
+    },
+    {
+      "id": "video_card_grayscale_thumbnail",
+      "category": "videoCard",
+      "group": "thumbnail",
+      "type": "enum",
+      "default": "0",
+      "choices": [
+        {
+          "value": "0",
+          "label": "0"
+        },
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "6",
+          "label": "6"
+        },
+        {
+          "value": "7",
+          "label": "7"
+        },
+        {
+          "value": "8",
+          "label": "8"
+        },
+        {
+          "value": "9",
+          "label": "9"
+        },
+        {
+          "value": "10",
+          "label": "10"
+        }
+      ],
+      "label": "Thumbnail grayscale strength",
+      "css": [],
+      "implementation": "custom"
+    },
+    {
+      "id": "video_card_opacity_thumbnail",
+      "category": "videoCard",
+      "group": "thumbnail",
+      "type": "enum",
+      "default": "0",
+      "choices": [
+        {
+          "value": "0",
+          "label": "0"
+        },
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "6",
+          "label": "6"
+        },
+        {
+          "value": "7",
+          "label": "7"
+        },
+        {
+          "value": "8",
+          "label": "8"
+        },
+        {
+          "value": "9",
+          "label": "9"
+        },
+        {
+          "value": "10",
+          "label": "10"
+        }
+      ],
+      "label": "Thumbnail transparency",
+      "css": [],
+      "implementation": "custom"
+    },
+    {
+      "id": "video_card_disable_play_on_hover",
+      "category": "videoCard",
+      "group": "thumbnail",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide thumbnail hover previews",
+      "css": [
+        ":is(ytd-video-preview,ytd-moving-thumbnail-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_card_remove_corner_radius",
+      "category": "videoCard",
+      "group": "thumbnail",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Square video thumbnails",
+      "css": [
+        ":is(ytd-thumbnail,yt-thumbnail-view-model,ytm-shorts-lockup-view-model),:is(ytd-thumbnail,yt-thumbnail-view-model,ytm-shorts-lockup-view-model) img{border-radius:0!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_card_hide_includes_paid_promotion",
+      "category": "videoCard",
+      "group": "thumbnail",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide thumbnail promotion labels",
+      "css": [
+        ":is(ytd-thumbnail,yt-thumbnail-view-model) :is(ytd-thumbnail-overlay-paid-content-renderer,.ytThumbnailOverlayBadgeViewModelHostPaidPromotion){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_card_display_full_title",
+      "category": "videoCard",
+      "group": "title",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Show complete video titles",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #video-title,yt-lockup-view-model .yt-lockup-metadata-view-model__title{display:block!important;-webkit-line-clamp:unset!important;max-height:none!important;white-space:normal!important;overflow:visible!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_card_hide_title",
+      "category": "videoCard",
+      "group": "title",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide video card titles",
+      "css": [
+        ":is(ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer) #video-title,yt-lockup-view-model .yt-lockup-metadata-view-model__title{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "video_card_title_case",
+      "category": "videoCard",
+      "group": "title",
+      "type": "enum",
+      "default": "default",
+      "choices": [
+        {
+          "value": "default",
+          "label": "YouTube default"
+        },
+        {
+          "value": "lowerCase",
+          "label": "lowercase"
+        },
+        {
+          "value": "upperCase",
+          "label": "UPPERCASE"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize words"
+        }
+      ],
+      "label": "Video title letter case",
+      "css": [],
+      "implementation": "custom"
+    },
+    {
+      "id": "search_hide_ads_promoted_websites",
+      "category": "searchPage",
+      "group": "ads",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide sponsored website results",
+      "css": [
+        "ytd-search :is(ytd-promoted-sparkles-web-renderer,ytd-search-pyv-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_hide_ads_promoted_videos",
+      "category": "searchPage",
+      "group": "ads",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide sponsored video results",
+      "css": [
+        "ytd-search :is(ytd-ad-slot-renderer,ytd-promoted-video-renderer,ytd-in-feed-ad-layout-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_hide_ads_suggested_products",
+      "category": "searchPage",
+      "group": "ads",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide product advertisements",
+      "css": [
+        "ytd-search :is(ytd-shopping-carousel-renderer,ytd-product-shelf-renderer,ytd-promoted-sparkles-text-search-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_page_hide_about_these_results",
+      "category": "searchPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide About these results button",
+      "css": [
+        "ytd-search :is(#about-these-results,button[aria-label=\"About these results\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_page_hide_filters",
+      "category": "searchPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide search filter button",
+      "css": [
+        "ytd-search #filter-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_page_hide_search_categories",
+      "category": "searchPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide search topic chips",
+      "css": [
+        "ytd-search ytd-feed-filter-chip-bar-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_hide_results_channels",
+      "category": "searchPage",
+      "group": "results",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel search results",
+      "css": [
+        "ytd-search ytd-channel-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_hide_results_playlists",
+      "category": "searchPage",
+      "group": "results",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide playlist search results",
+      "css": [
+        "ytd-search :is(ytd-playlist-renderer,yt-lockup-view-model:has(a[href^=\"/playlist?\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_hide_results_mixes",
+      "category": "searchPage",
+      "group": "results",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide mix search results",
+      "css": [
+        "ytd-search :is(ytd-radio-renderer,ytd-playlist-renderer:has(a[href*=\"list=RD\"]),yt-lockup-view-model:has(a[href*=\"list=RD\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_hide_results_shorts",
+      "category": "searchPage",
+      "group": "results",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts search results",
+      "css": [
+        "ytd-search :is(ytd-reel-shelf-renderer,ytm-shorts-lockup-view-model,ytd-video-renderer:has(a[href^=\"/shorts/\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_hide_results_for_you",
+      "category": "searchPage",
+      "group": "results",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide personalized result shelves",
+      "css": [
+        "ytd-search ytd-shelf-renderer:has(#title[title=\"For you\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_hide_results_people_also_search",
+      "category": "searchPage",
+      "group": "results",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide related search suggestions",
+      "css": [
+        "ytd-search :is(ytd-horizontal-card-list-renderer,ytd-search-refinement-card-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_hide_watched_videos",
+      "category": "searchPage",
+      "group": "results",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide watched search results",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "search_page_disable_infinite_scrolling",
+      "category": "searchPage",
+      "group": "results",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Stop loading more search results",
+      "css": [
+        "ytd-search ytd-continuation-item-renderer{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_page_hide_right_sidebar",
+      "category": "searchPage",
+      "group": "results",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide search sidebar",
+      "css": [
+        "ytd-search #secondary{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "search_page_sort_by",
+      "category": "searchPage",
+      "group": "results",
+      "type": "enum",
+      "default": "relevance",
+      "choices": [
+        {
+          "value": "relevance",
+          "label": "Relevance"
+        },
+        {
+          "value": "uploadDate",
+          "label": "Upload date"
+        },
+        {
+          "value": "viewCount",
+          "label": "View count"
+        },
+        {
+          "value": "rating",
+          "label": "Rating"
+        }
+      ],
+      "label": "Default search ordering",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "subscriptions_hide_watched_videos",
+      "category": "subscriptionsPage",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide watched subscriptions",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "subscriptions_hide_live_videos",
+      "category": "subscriptionsPage",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide live subscriptions",
+      "css": [
+        "ytd-browse[page-subtype=\"subscriptions\"] :is(ytd-rich-item-renderer,ytd-grid-video-renderer):has(:is(.badge-style-type-live-now,ytd-thumbnail-overlay-time-status-renderer[overlay-style=\"LIVE\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "subscriptions_hide_upcoming_videos",
+      "category": "subscriptionsPage",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide upcoming subscriptions",
+      "css": [
+        "ytd-browse[page-subtype=\"subscriptions\"] :is(ytd-rich-item-renderer,ytd-grid-video-renderer):has(:is(ytd-upcoming-event-data-renderer,[overlay-style=\"UPCOMING\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "subscriptions_hide_shorts",
+      "category": "subscriptionsPage",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts subscriptions",
+      "css": [
+        "ytd-browse[page-subtype=\"subscriptions\"] :is(ytd-rich-section-renderer:has(ytm-shorts-lockup-view-model),ytd-rich-item-renderer:has(a[href^=\"/shorts/\"]),ytd-reel-shelf-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_channel_banner",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel banner",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-image-banner-view-model,#banner){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_grayscale_channel_banner",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Grayscale channel banner",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-image-banner-view-model,#banner){filter:grayscale(1)!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_page_hide_channel_avatar",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel avatar",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-view-model .yt-page-header-view-model__page-header-headline-image,ytd-c4-tabbed-header-renderer #avatar){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_page_grayscale_channel_avatar",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Grayscale channel avatar",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-view-model .yt-page-header-view-model__page-header-headline-image,ytd-c4-tabbed-header-renderer #avatar){filter:grayscale(1)!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_channel_name",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel name",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-dynamic-text-view-model h1,ytd-channel-name#channel-name){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_channel_name_badge",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel verification badge",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-renderer,ytd-c4-tabbed-header-renderer) :is(ytd-badge-supported-renderer,yt-icon[aria-label*=\"Verified\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_channel_id",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel handle",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(#channel-handle,yt-page-header-view-model .yt-content-metadata-view-model__metadata-row:first-child > .yt-content-metadata-view-model__metadata-text:first-child){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_channel_subscribers_counter",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide subscriber count",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(#subscriber-count,yt-page-header-view-model .yt-content-metadata-view-model__metadata-row:first-child > .yt-content-metadata-view-model__metadata-text:nth-child(2)){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_channel_videos_counter",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel video count",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(#videos-count,yt-page-header-view-model .yt-content-metadata-view-model__metadata-row:first-child > .yt-content-metadata-view-model__metadata-text:nth-child(3)){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_tagline",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel introduction",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(.yt-description-preview-view-model, #channel-tagline){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_links",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel external links",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-channel-external-link-view-model,#links-container){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_button_subscribe",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel Subscribe button",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-renderer,ytd-c4-tabbed-header-renderer) :is(yt-subscribe-button-view-model,ytd-subscribe-button-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_button_purchase",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel purchase button",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-page-header-renderer,ytd-c4-tabbed-header-renderer) :is(ytd-button-renderer,yt-button-view-model):has(button[aria-label=\"Buy\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_button_join",
+      "category": "channelPage",
+      "group": "header",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel Join button",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(#sponsor-button,yt-button-view-model:has(button[aria-label=\"Join\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_home",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Home tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_channel_menu_buttons_row",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel tab bar",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-tab-group-shape,tp-yt-paper-tabs){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_videos",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Videos tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_shorts",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_live",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Live tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_releases",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Releases tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_podcasts",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Podcasts tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_playlists",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Playlists tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_community",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Posts tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_store",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Store tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_channels",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Channels tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_channel_menu_button_search",
+      "category": "channelPage",
+      "group": "horizontalMenuBar",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel search tab",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(yt-tab-shape[tab-title=\"Search\"],button[aria-label=\"Search this channel\"],#channel-search-button){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "redirect_channel_to",
+      "category": "channelPage",
+      "group": "redirects",
+      "type": "enum",
+      "default": "home",
+      "choices": [
+        {
+          "value": "home",
+          "label": "Home"
+        },
+        {
+          "value": "videos",
+          "label": "Videos"
+        },
+        {
+          "value": "shorts",
+          "label": "Shorts"
+        },
+        {
+          "value": "live",
+          "label": "Live"
+        },
+        {
+          "value": "releases",
+          "label": "Releases"
+        },
+        {
+          "value": "podcasts",
+          "label": "Podcasts"
+        },
+        {
+          "value": "playlists",
+          "label": "Playlists"
+        },
+        {
+          "value": "community",
+          "label": "Posts"
+        }
+      ],
+      "label": "Channel landing tab",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "channel_hide_home_tab_section_for_you",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel personalized shelf",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] ytd-shelf-renderer:has(#title[title=\"For you\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_home_tab_section_videos",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel Videos shelf",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] ytd-shelf-renderer:has(#title[title=\"Videos\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_home_tab_section_popular_videos",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel popular videos shelf",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] ytd-shelf-renderer:has(#title[title=\"Popular videos\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_home_tab_section_playlist",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel playlist shelves",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] ytd-shelf-renderer:has(:is(ytd-grid-playlist-renderer,yt-lockup-view-model a[href^=\"/playlist?\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_home_tab_section_shorts",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel Shorts shelf",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(ytd-reel-shelf-renderer,ytd-rich-section-renderer:has(ytm-shorts-lockup-view-model),ytd-shelf-renderer:has(a[href*=\"/shorts\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_home_tab_section_our_members",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel members shelf",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(ytd-member-recognition-shelf-renderer,ytd-shelf-renderer:has(#title[title=\"Our members\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_home_tab_section_featured_channels",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide featured channel shelves",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] ytd-shelf-renderer:has(ytd-grid-channel-renderer){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_home_tab_section_releases",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel releases shelf",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] ytd-shelf-renderer:has(#title[title=\"Releases\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_home_tab_section_live",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel live shelves",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] ytd-shelf-renderer:has(a[href$=\"/streams\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "channel_hide_buttons_play_all",
+      "category": "channelPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide channel Play all buttons",
+      "css": [
+        "ytd-browse[page-subtype=\"channels\"] :is(#play-all-button,ytd-button-renderer:has(a[href*=\"playnext=1\"])){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_play_exclude_button",
+      "category": "shortsPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts Play button",
+      "css": [
+        "ytd-shorts :is(.ytp-play-button,#play-pause-button,button[aria-label=\"Pause\"],button[aria-label=\"Play\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_mute_exclude_button",
+      "category": "shortsPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts mute button",
+      "css": [
+        "ytd-shorts :is(#mute-button,.ytp-mute-button,button[aria-label=\"Mute\"],button[aria-label=\"Unmute\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_subscribe_exclude_button",
+      "category": "shortsPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts Subscribe button",
+      "css": [
+        "ytd-shorts :is(ytd-subscribe-button-renderer,yt-subscribe-button-view-model){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_like_exclude_button",
+      "category": "shortsPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts Like button",
+      "css": [
+        "ytd-shorts #like-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_dislike_exclude_button",
+      "category": "shortsPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts Dislike button",
+      "css": [
+        "ytd-shorts #dislike-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_comments_exclude_button",
+      "category": "shortsPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts Comments button",
+      "css": [
+        "ytd-shorts #comments-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_share_exclude_button",
+      "category": "shortsPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts Share button",
+      "css": [
+        "ytd-shorts #share-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_more_exclude_button",
+      "category": "shortsPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts More button",
+      "css": [
+        "ytd-shorts :is(#menu-button,#overflow-menu-button){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_sound_exclude_button",
+      "category": "shortsPage",
+      "group": "buttons",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts audio link",
+      "css": [
+        "ytd-shorts :is(#pivot-button,yt-reel-sound-metadata-view-model){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_exclude_description",
+      "category": "shortsPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts description",
+      "css": [
+        "ytd-shorts :is(#description,.ytReelMetapanelViewModelDescription){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_channel_exclude_avatar",
+      "category": "shortsPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts channel avatar",
+      "css": [
+        "ytd-shorts :is(#channel-avatar,yt-reel-channel-bar-view-model yt-avatar-shape){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_channel_user_exclude_name",
+      "category": "shortsPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts channel name",
+      "css": [
+        "ytd-shorts :is(#channel-name,#channel-title,.ytReelChannelBarViewModelChannelName){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_likes_exclude_count",
+      "category": "shortsPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts like count",
+      "css": [
+        "ytd-shorts #like-button :is(.yt-spec-button-shape-next__button-text-content,#text){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_comments_exclude_count",
+      "category": "shortsPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts comment count",
+      "css": [
+        "ytd-shorts #comments-button :is(.yt-spec-button-shape-next__button-text-content,#text){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_hide_dislike_share_exclude_labels",
+      "category": "shortsPage",
+      "group": "details",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Shorts Dislike and Share labels",
+      "css": [
+        "ytd-shorts :is(#dislike-button,#share-button) :is(.yt-spec-button-shape-next__button-text-content,#text){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "shorts_page_disable_exclude_scrolling",
+      "category": "shortsPage",
+      "group": "other",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Stop Shorts scrolling",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "redirect_shorts_to_exclude_player",
+      "category": "shortsPage",
+      "group": "redirects",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Open Shorts in the standard player",
+      "css": [],
+      "runtime": "focus",
+      "implementation": "runtime"
+    },
+    {
+      "id": "you_page_hide_your_avatar",
+      "category": "youPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide personal page avatar",
+      "css": [
+        "ytd-browse[page-subtype=\"you\"] :is(yt-page-header-view-model .yt-page-header-view-model__page-header-headline-image,#avatar),ytd-browse[page-subtype=\"library\"] #avatar{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "you_page_hide_section_history",
+      "category": "youPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide personal history shelf",
+      "css": [
+        ":is(ytd-browse[page-subtype=\"you\"],ytd-browse[page-subtype=\"library\"]) ytd-shelf-renderer:has(a[href=\"/feed/history\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "you_page_hide_section_watch_later",
+      "category": "youPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Watch later shelf",
+      "css": [
+        ":is(ytd-browse[page-subtype=\"you\"],ytd-browse[page-subtype=\"library\"]) ytd-shelf-renderer:has(a[href*=\"list=WL\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "you_page_hide_section_playlists",
+      "category": "youPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide personal playlist shelves",
+      "css": [
+        ":is(ytd-browse[page-subtype=\"you\"],ytd-browse[page-subtype=\"library\"]) ytd-shelf-renderer:has(a[href=\"/feed/playlists\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "you_page_hide_section_liked_videos",
+      "category": "youPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Liked videos shelf",
+      "css": [
+        ":is(ytd-browse[page-subtype=\"you\"],ytd-browse[page-subtype=\"library\"]) ytd-shelf-renderer:has(a[href*=\"list=LL\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "you_page_hide_section_your_clips",
+      "category": "youPage",
+      "group": "sections",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide personal clips shelf",
+      "css": [
+        ":is(ytd-browse[page-subtype=\"you\"],ytd-browse[page-subtype=\"library\"]) ytd-shelf-renderer:has(a[href=\"/feed/clips\"]){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_hide_end_screen_suggestions",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded end-screen recommendations",
+      "css": [
+        ".html5-video-player :is(.ytp-endscreen-content,.ytp-autonav-endscreen){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_hide_end_screen_infos",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded end-screen cards",
+      "css": [
+        ".html5-video-player :is(.ytp-ce-element,.ytp-cards-teaser){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_hide_shadow_around_player_bar",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded bottom gradient",
+      "css": [
+        ".html5-video-player .ytp-gradient-bottom{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_hide_top_shadow",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded top gradient",
+      "css": [
+        ".html5-video-player .ytp-gradient-top{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_pause_recommenndations",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded pause recommendations",
+      "css": [
+        ".html5-video-player .ytp-pause-overlay-container{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_video_title",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded video title",
+      "css": [
+        ".html5-video-player .ytp-title-text{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_video_time",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded time display",
+      "css": [
+        ".html5-video-player .ytp-time-display{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_channel_avatar",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded channel avatar",
+      "css": [
+        ".html5-video-player .ytp-title-channel{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_video_watermark",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded channel watermark",
+      "css": [
+        ".html5-video-player .ytp-watermark{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_watch_on_youtube_button",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide Watch on YouTube link",
+      "css": [
+        ".html5-video-player .ytp-impression-link{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_button_youtube",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded YouTube button",
+      "css": [
+        ".html5-video-player .ytp-youtube-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_play_pause_button",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded Play button",
+      "css": [
+        ".html5-video-player :is(.ytp-play-button,.ytp-large-play-button){display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_volume_button",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded volume controls",
+      "css": [
+        ".html5-video-player .ytp-volume-area{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_subtitles_button",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded subtitle toggle",
+      "css": [
+        ".html5-video-player .ytp-subtitles-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_settings_button",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded settings button",
+      "css": [
+        ".html5-video-player .ytp-settings-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_player_hide_full_screen_button",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded fullscreen button",
+      "css": [
+        ".html5-video-player .ytp-fullscreen-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_hide_button_share",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded Share button",
+      "css": [
+        ".html5-video-player .ytp-share-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_hide_button_more_from",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded More videos button",
+      "css": [
+        ".html5-video-player .ytp-more-videos-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "embed_hide_button_action_dots",
+      "category": "embed",
+      "group": "player",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Hide embedded overflow menu",
+      "css": [
+        ".html5-video-player .ytp-overflow-button{display:none!important;}"
+      ],
+      "implementation": "css"
+    },
+    {
+      "id": "appearance_font",
+      "category": "appearance",
+      "group": "all",
+      "type": "enum",
+      "default": "default",
+      "choices": [
+        {
+          "value": "default",
+          "label": "YouTube default"
+        },
+        {
+          "value": "Alegreya",
+          "label": "Alegreya"
+        },
+        {
+          "value": "Alegreya Sans",
+          "label": "Alegreya Sans"
+        },
+        {
+          "value": "Comfortaa",
+          "label": "Comfortaa"
+        },
+        {
+          "value": "Cormorant",
+          "label": "Cormorant"
+        },
+        {
+          "value": "Eczar",
+          "label": "Eczar"
+        },
+        {
+          "value": "Fira Sans",
+          "label": "Fira Sans"
+        },
+        {
+          "value": "Fraunces",
+          "label": "Fraunces"
+        },
+        {
+          "value": "IBM Plex Sans",
+          "label": "IBM Plex Sans"
+        },
+        {
+          "value": "Inconsolata",
+          "label": "Inconsolata"
+        },
+        {
+          "value": "Inknut Antiqua",
+          "label": "Inknut Antiqua"
+        },
+        {
+          "value": "Inter",
+          "label": "Inter"
+        },
+        {
+          "value": "Libre Baskerville",
+          "label": "Libre Baskerville"
+        },
+        {
+          "value": "Manrope",
+          "label": "Manrope"
+        },
+        {
+          "value": "Merriweather",
+          "label": "Merriweather"
+        },
+        {
+          "value": "Montserrat",
+          "label": "Montserrat"
+        },
+        {
+          "value": "Neuton",
+          "label": "Neuton"
+        },
+        {
+          "value": "Open Sans",
+          "label": "Open Sans"
+        },
+        {
+          "value": "Oswald",
+          "label": "Oswald"
+        },
+        {
+          "value": "PT Serif",
+          "label": "PT Serif"
+        },
+        {
+          "value": "Raleway",
+          "label": "Raleway"
+        },
+        {
+          "value": "Roboto Condensed",
+          "label": "Roboto Condensed"
+        },
+        {
+          "value": "Roboto Mono",
+          "label": "Roboto Mono"
+        },
+        {
+          "value": "Roboto Slab",
+          "label": "Roboto Slab"
+        },
+        {
+          "value": "Rubik",
+          "label": "Rubik"
+        },
+        {
+          "value": "Source Sans Pro",
+          "label": "Source Sans Pro"
+        },
+        {
+          "value": "Source Serif Pro",
+          "label": "Source Serif Pro"
+        },
+        {
+          "value": "Spectral",
+          "label": "Spectral"
+        },
+        {
+          "value": "Arial",
+          "label": "Arial"
+        },
+        {
+          "value": "Verdana",
+          "label": "Verdana"
+        },
+        {
+          "value": "Georgia",
+          "label": "Georgia"
+        },
+        {
+          "value": "monospace",
+          "label": "monospace"
+        }
+      ],
+      "label": "Interface font",
+      "css": [],
+      "implementation": "custom",
+      "description": "Uses fonts installed on your computer. No fonts are downloaded."
+    },
+    {
+      "id": "appearance_color",
+      "category": "appearance",
+      "group": "all",
+      "type": "color",
+      "default": "default",
+      "choices": [],
+      "label": "Interface accent color",
+      "css": [],
+      "implementation": "custom"
+    },
+    {
+      "id": "appearance_primary_bg_color",
+      "category": "appearance",
+      "group": "all",
+      "type": "color",
+      "default": "default",
+      "choices": [],
+      "label": "Page background color",
+      "css": [],
+      "implementation": "custom"
+    }
+  ],
+  "presets": [
+    {
+      "id": "clean",
+      "label": "Less clutter",
+      "values": {
+        "home_hide_shorts_row": true,
+        "search_hide_results_shorts": true,
+        "sidebar_hide_button_shorts": true,
+        "video_page_hide_related_videos": true,
+        "video_page_hide_comments": true
+      }
+    },
+    {
+      "id": "quiet",
+      "label": "Quiet thumbnails",
+      "values": {
+        "video_card_grayscale_thumbnail": "10",
+        "video_card_blur_thumbnail": "2"
+      }
+    },
+    {
+      "id": "reading",
+      "label": "Just the video",
+      "values": {
+        "video_page_hide_related_videos": true,
+        "video_page_hide_comments": true,
+        "video_page_hide_live_chat": true,
+        "video_page_center_content": true
+      }
+    }
+  ]
+};

@@ -1,0 +1,38 @@
+# Local settings, credentials and browser profiles
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crx
+*.db
+*.sqlite*
+*cookies*
+*storage-state*
+*user-data*
+*browser-profile*
+.auth/
+.agent-browser/
+
+# Research, private notes, local verification and generated packages
+/research/
+/archive/
+/dist/
+/catalog-build.json
+/verification.json
+*.har
+*.log
+*.bak
+*.tmp
+
+# Editor, OS and tooling caches
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+__pycache__/
+*.py[cod]
+.pytest_cache/
+node_modules/
