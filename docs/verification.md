@@ -16,7 +16,7 @@ Version 0.5.0 was checked locally in Chromium on 2026-11-02.
 
 The model and fixture checks used temporary test scripts; they are not a committed automated test suite. They do not establish that every control works across all YouTube layouts, languages and combinations. The live test page required sign-in for playback, so video playback and real advertisement skipping were not revalidated for this release.
 
-The motion demo follows search, switches, session settings and filter entry using real English interface captures from a separate browser profile. Filter rules and session values are examples. The MP4 is 18 seconds at 1600×900 and 30 fps; the README embeds a GIF preview linking to a native video-player page.
+The motion demo was refreshed from YFE 0.6.2 on 2026-11-03. It follows global search, the Shorts switch, session defaults and filter entry using real English interface captures from a separate browser profile. Filter rules and session values are examples. The MP4 is 18 seconds at 1600×900 and 30 fps; the README embeds a GIF preview linking to a native video-player page.
 
 Version 0.5.1 adds packaged icons and store listing materials; runtime behavior is unchanged. Chrome Web Store materials are prepared only, with no submission made.
 
@@ -31,7 +31,7 @@ Version 0.6.0 was checked in isolated Chromium and the existing Chrome installat
 - 21 isolated worker scenarios covered deadlines, inactivity, blocks, phrases, schedules, protected changes, presets, restart recovery and protocol versions.
 - The installed side panel rendered 20 navigation routes with 16px body text and no horizontal overflow at 463px; the narrow layout and search navigation were also checked at 390px.
 
-The demonstration video and earlier 0.5.x checks above document their respective versions. Chrome Web Store submission remains unperformed.
+The earlier 0.5.x checks above document their respective versions. Chrome Web Store submission remains unperformed.
 
 Version 0.6.1 was checked on 2026-11-02:
 

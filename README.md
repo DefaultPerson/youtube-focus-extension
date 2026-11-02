@@ -6,7 +6,7 @@ YFE is a free, open-source UnTrap alternative for Chrome: hide Shorts, recommend
 
 English by default, with Russian available in settings. Local storage. No account, subscription, analytics or backend.
 
-[![YFE settings in action — open the product demo](docs/media/yfe-demo.gif)](https://defaultperson.github.io/youtube-focus-extension/)
+[![YFE 0.6.2 in action — global search, focus sessions and content filters](docs/media/yfe-demo.gif?v=0.6.2)](https://defaultperson.github.io/youtube-focus-extension/?v=0.6.2)
 
 ## Features
 
