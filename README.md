@@ -1,6 +1,6 @@
 # YouTube Focus Extension[YFE]
 
-[![Release v0.8.0](docs/media/release.svg?v=0.8.0)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
+[![Release v0.9.0](docs/media/release.svg?v=0.9.0)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
 
 YFE is a free, open-source **YouTube focus extension and Shorts blocker** for desktop browsers. Hide Shorts, recommendations and comments, filter channels and keywords, and set focus sessions from a persistent settings panel. This independent **UnTrap alternative** includes 298 appearance and behavior settings. Chrome/Chromium and Firefox/Zen share the same feature code; browser acceptance status is recorded in the verification notes.
 
@@ -26,7 +26,7 @@ English by default, with Russian available in settings. Local storage. No accoun
 
 Chrome/Chromium 120+. No build step. Not yet available in the Chrome Web Store.
 
-1. Download **`yfe-0.8.0-chrome.zip`** from the [latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest) and extract it.
+1. Download **`yfe-0.9.0-chrome.zip`** from the [latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest) and extract it.
 2. Open `chrome://extensions` and enable **Developer mode**.
 3. Choose **Load unpacked** and select the extracted folder containing **`manifest.json`**.
 4. Reload YouTube and click the extension icon for the side panel; **↗** opens the current section in a full tab.
@@ -37,11 +37,11 @@ From source, load **`extension/`**. Appearance saves immediately; other forms us
 
 Firefox 153+ or desktop Zen based on Firefox 153+. This minimum keeps document-specific message authorization; older engines are not supported. All 298 controls and every Chrome feature module are included, with a native Firefox sidebar. Tested on Firefox 159 and Zen 1.24b; see [verification and limits](docs/verification.md).
 
-1. From source, run **`python3 scripts/package.py firefox`** and extract **`dist/yfe-0.9.0-firefox.zip`** into a separate folder.
+1. Download **`yfe-0.9.0-firefox.zip`** from the [latest release](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest) and extract it into a separate folder. From source, build it with **`python3 scripts/package.py firefox`**.
 2. Open **`about:debugging#/runtime/this-firefox`**, select **Load Temporary Add-on**, and choose the extracted **`manifest.json`**.
 3. Reload YouTube and click YFE's toolbar icon to open its sidebar; **↗** opens the same section in a full tab.
 
-The ZIP is an unsigned test package. Temporary loading lasts until the browser restarts; permanent installation requires a Mozilla-signed distribution, which is not included or published. Do not load the Chrome source manifest in Firefox. Set the optional shortcut in **Manage Extension Shortcuts** in `about:addons`.
+The ZIP is an unsigned test package. Version 0.9.0 and its reproducible source archive were submitted to Mozilla Add-ons on November 3, 2026; review and signing are pending. Temporary loading lasts until the browser restarts; a signed XPI is not yet available. Do not load the Chrome source manifest in Firefox. Set the optional shortcut in **Manage Extension Shortcuts** in `about:addons`.
 
 ## Privacy and permissions
 

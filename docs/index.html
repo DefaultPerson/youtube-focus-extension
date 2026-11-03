@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Free, open-source YouTube focus extension for Chrome. Hide Shorts and recommendations, filter channels and keywords, and set focus sessions. An UnTrap alternative.">
+  <meta name="description" content="Free, open-source YouTube focus extension for Chrome and Firefox/Zen. Hide Shorts, filter channels and keywords, and set focus sessions. An UnTrap alternative.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'">
   <title>YFE — YouTube Focus Extension &amp; Shorts Blocker</title>
@@ -18,7 +18,7 @@
   <meta property="og:image:alt" content="YFE's settings panel beside YouTube, with appearance controls and focus sessions">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="YFE — YouTube Focus Extension &amp; Shorts Blocker">
-  <meta name="twitter:description" content="A free, open-source UnTrap alternative for Chrome. Hide Shorts, filter unwanted content, and focus on the videos you choose.">
+  <meta name="twitter:description" content="A free, open-source UnTrap alternative for Chrome and Firefox/Zen. Hide Shorts, filter unwanted content, and focus on the videos you choose.">
   <meta name="twitter:image" content="https://defaultperson.github.io/youtube-focus-extension/media/poster.png?v=0.6.3-sidepanel">
   <link rel="icon" href="media/icon-32.png">
   <link rel="stylesheet" href="player.css">
@@ -31,10 +31,11 @@
         "@id": "https://defaultperson.github.io/youtube-focus-extension/#extension",
         "name": "YFE — YouTube Focus Extension",
         "url": "https://defaultperson.github.io/youtube-focus-extension/",
-        "description": "A free, open-source YouTube focus extension for Chrome: hide Shorts and recommendations, filter channels and keywords, and manage focus sessions.",
+        "description": "A free, open-source YouTube focus extension for Chrome and Firefox/Zen: hide Shorts and recommendations, filter channels and keywords, and manage focus sessions.",
         "applicationCategory": "BrowserApplication",
         "operatingSystem": "Windows, macOS, Linux",
-        "softwareRequirements": "Chrome or Chromium 120 or later",
+        "softwareRequirements": "Chrome/Chromium 120+ or Firefox/Zen with Firefox 153+",
+        "softwareVersion": "0.9.0",
         "isAccessibleForFree": true,
         "license": "https://opensource.org/license/mit",
         "downloadUrl": "https://github.com/DefaultPerson/youtube-focus-extension/releases/latest",
@@ -63,8 +64,8 @@
     <section class="intro" aria-labelledby="title">
       <p class="eyebrow">Free · Open source · Local settings</p>
       <h1 id="title">YouTube Focus Extension</h1>
-      <p class="lead">Hide Shorts and recommendations. Filter unwanted channels and keywords. Choose the videos you want to watch, with 298 appearance and behavior settings in one Chrome side panel.</p>
-      <p>YFE is an independent, free UnTrap alternative for desktop Chrome and Chromium.</p>
+      <p class="lead">Hide Shorts and recommendations. Filter unwanted channels and keywords. Choose the videos you want to watch, with 298 appearance and behavior settings in one persistent panel.</p>
+      <p>YFE is an independent, free UnTrap alternative for desktop Chrome, Chromium, Firefox and Zen.</p>
       <div class="actions"><a class="release primary" href="https://github.com/DefaultPerson/youtube-focus-extension/releases/latest">Get the latest release</a><a href="#install">Installation guide</a></div>
     </section>
     <video id="demo" controls autoplay muted playsinline preload="metadata" poster="media/poster.png?v=0.6.3-sidepanel" aria-label="YFE 0.6.3 demo: use the side panel beside YouTube, hide the Shorts link, add Play all, and open focus sessions">
@@ -91,6 +92,9 @@
         <li>Reload YouTube and click YFE's toolbar icon to open the side panel.</li>
       </ol>
       <p>English is the default language; Russian is available in settings. No build step is needed for the release package.</p>
+      <h3>Test in Firefox or Zen</h3>
+      <p>Firefox 153+ or Zen with a Firefox 153+ base. Download the Firefox ZIP from the <a href="https://github.com/DefaultPerson/youtube-focus-extension/releases/latest">latest release</a>, extract it, and load its <code>manifest.json</code> using <strong>Load Temporary Add-on</strong> at <code>about:debugging#/runtime/this-firefox</code>. Click YFE's toolbar icon for the native sidebar.</p>
+      <p>The Firefox ZIP is unsigned and its temporary installation ends on restart. Version 0.9.0 has been submitted to Mozilla Add-ons; review and signing are pending.</p>
     </section>
     <section class="content-section questions" aria-labelledby="questions">
       <h2 id="questions">Before you install</h2>

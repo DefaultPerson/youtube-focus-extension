@@ -1,6 +1,6 @@
 # Browser store submission materials
 
-Status: prepared locally; not submitted or published in the Chrome Web Store.
+Status: Firefox 0.9.0 submitted to Mozilla Add-ons on November 3, 2026; Awaiting Review, signing and publication pending. Chrome materials are prepared only; not submitted or published in the Chrome Web Store.
 
 ## Chrome Web Store listing fields
 
@@ -101,17 +101,18 @@ YouTube layouts, consent screens and regional content vary. Ad skipping is exper
 - Confirm account declarations, distribution choices and final privacy certifications in the actual dashboard before submitting.
 - Keep this package unsubmitted until publication is explicitly authorized.
 
-## Firefox and Zen test distribution
+## Firefox and Zen distribution
 
 - Package: `dist/yfe-0.9.0-firefox.zip`, built with `python3 scripts/package.py firefox`; unsigned test ZIP, not a signed XPI.
 - Target: desktop Firefox 153+ and Zen with a Firefox 153+ base; the minimum preserves `runtime.MessageSender.documentId` authorization.
-- Identity: `yfe@defaultperson.github.io`; keep this ID for future signed updates, subject to Mozilla's uniqueness check on first submission.
+- Identity: `yfe@defaultperson.github.io`; accepted by AMO. Keep this ID for future signed updates.
 - Panel: the same settings in Firefox's sidebar; the background is an event page. All feature modules are shared with Chrome.
 - Temporary test loading: extract the ZIP, open `about:debugging#/runtime/this-firefox`, choose **Load Temporary Add-on**, select `manifest.json`, then reload YouTube. Loading lasts until restart.
-- Tested locally on Firefox 159 and Zen 1.24b; see `docs/verification.md` for scenarios and limits. Signed permanent distribution, AMO submission and Firefox-specific store screenshots are pending.
+- Tested locally on Firefox 159 and Zen 1.24b; see `docs/verification.md` for scenarios and limits. AMO accepted version `6658052`, file `5202148`, with zero validation errors or warnings. Listed submission: `yfe-youtube-focus-extension`; status Awaiting Review. Signed permanent distribution and public store availability remain pending.
+- Listing: English (US) default; categories Appearance and Photos, Music & Videos; tags `youtube`, `content blocker`; MIT; project homepage and GitHub Issues support. Icon and the actual Firefox screenshot in `store/firefox-screenshots/` are uploaded.
 - Reuse the feature description and privacy policy with Firefox/sidebar terminology. Optional thumbnail requests expose the requested video ID and normal request metadata to YouTube; opt-in Google Fonts requests expose the selected font and normal request metadata to Google. No account, telemetry or developer backend is used.
 - The Firefox manifest declares no required data collection. No page text, filter rules, activity timestamps or protection credentials are transmitted.
-- For Mozilla review, provide this repository's source and reproduce with `python3 scripts/build-runtime.py` followed by `python3 scripts/package.py firefox`. The runtime catalog and translations are generated from the canonical source data.
+- Mozilla received `dist/yfe-0.9.0-source.zip`, including the instructions in `store/AMO-SOURCE.md`. Reproduce with `python3 scripts/build-runtime.py` followed by `python3 scripts/package.py firefox`. The runtime catalog and translations are generated from the canonical source data. The isolated rebuild matched the upload byte for byte; the downloaded AMO source matched SHA-256.
 
 ## Sources
 
