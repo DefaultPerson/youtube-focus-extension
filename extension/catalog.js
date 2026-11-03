@@ -4501,7 +4501,19 @@ globalThis.YTV_CATALOG = {
       "label": "Interface font",
       "css": [],
       "implementation": "custom",
-      "description": "Uses fonts installed on your computer. No fonts are downloaded."
+      "description": "Uses installed fonts unless Google Fonts downloads are enabled."
+    },
+    {
+      "id": "appearance_google_fonts",
+      "category": "appearance",
+      "group": "all",
+      "type": "boolean",
+      "default": false,
+      "choices": [],
+      "label": "Download the selected font from Google Fonts",
+      "description": "Optional: connects to fonts.googleapis.com and fonts.gstatic.com for the selected Google font. Page text is never sent. Default and system fonts stay local; unavailable fonts use a local fallback.",
+      "css": [],
+      "implementation": "custom"
     },
     {
       "id": "appearance_color",

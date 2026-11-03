@@ -1,8 +1,13 @@
-/* Isolated-world, local-only appearance controller. */
+/* Isolated-world appearance controller with optional Google Fonts downloads. */
 (() => {
   'use strict';
   const style = document.createElement('style');
   style.id = 'yt-appearance-styles';
+  const localFonts = new Set(['default', 'Arial', 'Verdana', 'Georgia', 'monospace']);
+  const googleFonts = new Set(YTV_CATALOG.options.find(option => option.id === 'appearance_font').choices
+    .map(choice => choice.value).filter(font => !localFonts.has(font)));
+  const fontWeights = {'Alegreya Sans': '400;500;700', Neuton: '400;700', 'PT Serif': '400;700', 'Source Sans Pro': '400;600;700', 'Source Serif Pro': '400;600;700'};
+  let fontLink = null;
   let settings = YTV.defaults();
   let settingsKey = JSON.stringify(settings);
   let revision = 0;
@@ -11,6 +16,30 @@
   let scheduled = false;
   const pendingRoots = new Set();
   const imageSelector = ':is(ytd-thumbnail,yt-thumbnail-view-model,ytm-shorts-lockup-view-model) img';
+
+  function configureFont() {
+    const font = settings.values.appearance_font;
+    const active = settings.enabled && settings.values.appearance_google_fonts === true &&
+      YTVStyles.pageCategory(location.pathname) !== 'embed' && googleFonts.has(font);
+    if (!active) {
+      fontLink?.remove();
+      fontLink = null;
+      return;
+    }
+    const query = new URLSearchParams({family: `${font}:wght@${fontWeights[font] || '400;500;600;700'}`, display: 'swap'});
+    const href = `https://fonts.googleapis.com/css2?${query}`;
+    if (fontLink?.href !== href) {
+      fontLink?.remove();
+      fontLink = document.createElement('link');
+      fontLink.id = 'yt-appearance-google-font';
+      fontLink.rel = 'stylesheet';
+      fontLink.referrerPolicy = 'no-referrer';
+      fontLink.crossOrigin = 'anonymous';
+      fontLink.href = href;
+    }
+    const parent = document.head || document.documentElement;
+    if (parent && !fontLink.isConnected) parent.append(fontLink);
+  }
 
   function replaceImage(img) {
     if (!(img instanceof HTMLImageElement) || !img.matches(imageSelector)) return;
@@ -74,6 +103,7 @@
       style.remove();
       style.textContent = '';
     }
+    configureFont();
     configureThumbnails();
   }
   function accept(next) {

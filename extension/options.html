@@ -90,10 +90,18 @@
           <label>Repeat new password or phrase<input id="repeat-credential" type="password" maxlength="200" autocomplete="new-password"></label>
           <p class="muted">Use 8–200 characters. Leave both fields blank to keep the current credential. A phrase is shown during confirmation. A password is never shown and only a verification value is stored. Forgotten passwords cannot be reset by email.</p>
           <label>After confirmation<select id="protection-duration"><option value="single">Allow one change</option><option value="5m">Allow changes in this tab for 5 minutes</option></select></label>
+          <label>Recovery delay (minutes)<input id="recovery-minutes" type="number" min="1" max="43200" step="1" required value="1440"></label>
+          <p class="muted">For forgotten passwords: 1–43200 minutes, 1440 = 24 hours. Changing this delay requires authorization. Saving protection settings cancels any pending reset.</p>
           <fieldset><legend>Protect these settings</legend><div id="protection-scopes"></div></fieldset>
           <div class="inline-actions"><button type="submit" class="primary">Save protection settings</button><button id="lock-protection" type="button">Lock again</button></div>
           <p class="muted">Changing or turning off protection requires valid authorization.</p>
         </form>
+        <fieldset><legend>Forgotten password</legend>
+          <p class="muted">Request a delayed reset without your password. Protection stays active while you wait, then turns off automatically. Other settings are kept. You can cancel before the deadline; closing Chrome does not cancel the request.</p>
+          <p id="recovery-status" role="status" aria-live="polite"></p>
+          <p id="recovery-deadline" hidden><span>Protection turns off at:</span> <time id="recovery-time"></time></p>
+          <div class="inline-actions"><button id="request-recovery" type="button">Request password reset</button><button id="cancel-recovery" type="button" hidden>Cancel reset request</button></div>
+        </fieldset>
       </section>
       <section data-section="filters" hidden>
         <h2>Content filters</h2>
@@ -131,5 +139,6 @@
   </div>
   <footer class="status-bar"><p id="save-status" role="status" aria-live="polite">Loading settings…</p><p id="error" role="alert" hidden></p></footer>
   <dialog id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-description"><form method="dialog"><h2 id="confirm-title"></h2><p id="confirm-description"></p><div class="dialog-actions"><button value="cancel" autofocus>Cancel</button><button id="confirm-action" value="confirm" class="primary">Confirm</button></div></form></dialog>
+  <dialog id="recovery-dialog" aria-labelledby="recovery-title"><form method="dialog"><h2 id="recovery-title">Request password reset?</h2><p>Protection will turn off after the saved recovery delay. Until then, protected settings still require your password. You can cancel the request in Settings protection.</p><p><span>Waiting time (minutes):</span> <strong id="recovery-wait"></strong></p><div class="dialog-actions"><button value="cancel" autofocus>Cancel</button><button value="confirm">Request reset</button></div></form></dialog>
 </body>
 </html>

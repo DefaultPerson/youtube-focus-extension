@@ -28,7 +28,7 @@ const ready = (async () => {
     settings: YTV.normalizeSettings({enabled: stored['ytv.enabled'], values: Object.fromEntries(Object.entries(stored).filter(([key]) => key.startsWith(prefix)).map(([key, value]) => [key.slice(prefix.length), value]))}),
     presets: (stored['ytv.presets'] ?? []).map(preset => ({...preset, values: YTV.migrateValues(preset.values)})),
     features: stored[keys.features] ? F.validate(stored[keys.features]) : F.defaults(),
-    protection: stored[keys.protection] ?? F.protectionDefaults(),
+    protection: {...F.protectionDefaults(), ...stored[keys.protection]},
     runtime: stored[keys.runtime] ?? F.freshRuntime(),
     focusRuntime: stored['ytv.focusRuntime'] ?? {activePresetId: null, activeKey: null, baseline: null, manualKey: null},
   };
@@ -48,7 +48,14 @@ function caller(sender) {
 function reject(message, code = 'INVALID') { const error = new Error(message); error.code = code; throw error; }
 function protectionView() {
   const p = state.protection;
-  return {enabled: p.enabled, method: p.method, phrase: p.method === 'phrase' ? p.phrase : '', duration: p.duration, scopes: {...p.scopes}};
+  return {enabled: p.enabled, method: p.method, phrase: p.method === 'phrase' ? p.phrase : '', duration: p.duration, scopes: {...p.scopes}, recoveryMinutes: p.recoveryMinutes, recovery: p.recovery ? {...p.recovery} : null, resetAt: p.resetAt};
+}
+async function settleRecovery() {
+  const p = state.protection;
+  if (!p.enabled || p.method !== 'password' || !p.recovery || Date.now() < p.recovery.readyAt) return;
+  const next = {...p, enabled: false, verifier: null, phrase: '', recovery: null, resetAt: Date.now()};
+  await chrome.storage.local.set({[keys.protection]: next}); state.protection = next;
+  await chrome.storage.session.remove('ytv.auth');
 }
 async function digest(credential, salt) {
   const encoder = new TextEncoder();
@@ -161,6 +168,7 @@ function access(now = Date.now()) {
   return {phase: 'open', blocked: false, nextAt};
 }
 async function settle(prepare = false) {
+  await settleRecovery();
   await reconcilePresets();
   const before = JSON.stringify(state.runtime);
   const r = state.features.restrictions;
@@ -176,6 +184,7 @@ async function settle(prepare = false) {
 // Only recurring wall-clock rules need periodic rechecks for OS clock/timezone changes.
 async function scheduleBoundary() {
   const now = Date.now(), deadlines = [];
+  if (state.protection.enabled && state.protection.method === 'password') deadlines.push(state.protection.recovery?.readyAt);
   const recurring = state.settings.enabled && (state.features.focus.schedules.some(rule => rule.enabled) || state.features.restrictions.enabled && state.features.restrictions.schedules.length);
   if (recurring) {
     if (!clockCheckAt || clockCheckAt <= now || clockCheckAt > now + 30000) clockCheckAt = now + 30000;
@@ -319,6 +328,22 @@ async function handle(message, sender) {
   if (action === 'readPresets') return state.presets;
   if (action === 'readFeatures') return state.features;
   if (action === 'protectionInfo') return protectionView();
+  if (action === 'requestRecovery') {
+    const p = state.protection;
+    if (!p.enabled || p.method !== 'password') reject('Password protection must be enabled before requesting a reset.');
+    if (!p.recovery) {
+      const requestedAt = Date.now();
+      const next = {...p, recovery: {id: crypto.randomUUID(), requestedAt, readyAt: requestedAt + p.recoveryMinutes * 60000}};
+      await chrome.storage.local.set({[keys.protection]: next}); state.protection = next;
+    }
+    return protectionView();
+  }
+  if (action === 'cancelRecovery') {
+    if (!state.protection.recovery || data?.id !== state.protection.recovery.id) reject('The reset request has changed. Refresh the settings.');
+    const next = {...state.protection, recovery: null};
+    await chrome.storage.local.set({[keys.protection]: next}); state.protection = next;
+    return protectionView();
+  }
   if (action === 'activatePreset') {
     if (!data || typeof data !== 'object' || Object.keys(data).some(key => !['id', 'savePrevious'].includes(key)) || typeof data.id !== 'string' || data.savePrevious !== undefined && typeof data.savePrevious !== 'boolean') reject('Invalid preset change.');
     await authorize(sender, ['appearance'], credential);
@@ -388,7 +413,9 @@ async function handle(message, sender) {
     const value = data;
     if (!value || typeof value.enabled !== 'boolean' || !['phrase', 'password'].includes(value.method) || !['single', '5m'].includes(value.duration) || !value.scopes || Object.keys(value.scopes).length !== F.scopes.length || !F.scopes.every(s => typeof value.scopes[s] === 'boolean')) reject('Invalid settings protection configuration.');
     if (value.enabled && !Object.values(value.scopes).some(Boolean)) reject('Choose at least one section to protect.');
-    const next = {...F.protectionDefaults(), enabled: value.enabled, method: value.method, duration: value.duration, scopes: {...value.scopes}};
+    const recoveryMinutes = value.recoveryMinutes ?? state.protection.recoveryMinutes;
+    if (!Number.isInteger(recoveryMinutes) || recoveryMinutes < 1 || recoveryMinutes > 43200) reject('Recovery delay must be from 1 to 43200 minutes.');
+    const next = {...F.protectionDefaults(), enabled: value.enabled, method: value.method, duration: value.duration, scopes: {...value.scopes}, recoveryMinutes};
     const replacement = typeof value.newCredential === 'string' ? value.newCredential : '';
     if (next.enabled) {
       if (!replacement && state.protection.enabled && state.protection.method === value.method) { next.verifier = state.protection.verifier; next.phrase = state.protection.phrase; }

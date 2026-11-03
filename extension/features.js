@@ -13,7 +13,7 @@
     document.querySelectorAll(controls).forEach(b => b.disabled = true);
     try { await action(); features = await YTV.readFeatures(); $('save-status').textContent = 'Saved in this browser.'; }
     catch (error) { showError(error); }
-    finally { busy = false; document.querySelectorAll(controls).forEach(b => b.disabled = false); }
+    finally { busy = false; document.querySelectorAll(controls).forEach(b => b.disabled = false); renderRecovery(); }
   }
   function scheduleRow(value = {days: [1, 2, 3, 4, 5], from: '09:00', to: '18:00'}) {
     const row = document.createElement('div'); row.className = 'schedule-row';
@@ -43,6 +43,21 @@
     $('protection-enabled').checked = protection.enabled; $('protection-method').value = protection.method; $('protection-duration').value = protection.duration;
     for (const scope of YTVFeatures.scopes) $('scope-' + scope).checked = protection.scopes[scope];
     $('new-credential').value = ''; $('repeat-credential').value = '';
+    $('recovery-minutes').value = protection.recoveryMinutes;
+    renderRecovery();
+  }
+  function renderRecovery() {
+    if (!protection) return;
+    const pending = protection.recovery;
+    const available = protection.enabled && protection.method === 'password';
+    $('request-recovery').hidden = Boolean(pending);
+    $('request-recovery').disabled = busy || !available;
+    $('cancel-recovery').hidden = !pending;
+    $('cancel-recovery').disabled = busy;
+    $('recovery-deadline').hidden = !pending;
+    $('recovery-status').textContent = t(pending ? 'Reset requested. Your password still protects settings until the deadline.' : protection.resetAt && !protection.enabled ? 'Password reset completed. Settings protection is off; your other settings were kept.' : available ? 'No reset requested. The saved recovery delay applies.' : 'Enable password protection to use delayed recovery.');
+    $('recovery-time').textContent = pending ? new Date(pending.readyAt).toLocaleString(YFEI18n.language) : '';
+    $('recovery-time').dateTime = pending ? new Date(pending.readyAt).toISOString() : '';
   }
   function write(section, value) { return YTV.request('writeFeature', {section, value}); }
   function restrictionInput() {
@@ -71,9 +86,28 @@
     $('protection-form').addEventListener('submit', e => { e.preventDefault(); void mutate(async () => {
       if ($('new-credential').value !== $('repeat-credential').value) throw new Error('The password or phrase does not match its confirmation.');
       protection = await YTV.request('configureProtection', {enabled: $('protection-enabled').checked, method: $('protection-method').value, duration: $('protection-duration').value,
-        scopes: Object.fromEntries(YTVFeatures.scopes.map(scope => [scope, $('scope-' + scope).checked])), newCredential: $('new-credential').value}); renderProtection();
+        scopes: Object.fromEntries(YTVFeatures.scopes.map(scope => [scope, $('scope-' + scope).checked])), recoveryMinutes: Number($('recovery-minutes').value), newCredential: $('new-credential').value}); renderProtection();
     }); });
     $('lock-protection').addEventListener('click', () => void mutate(() => YTV.request('lockProtection')));
+    $('request-recovery').addEventListener('click', () => {
+      $('recovery-wait').textContent = protection.recoveryMinutes;
+      const dialog = $('recovery-dialog'); dialog.returnValue = 'cancel'; dialog.showModal();
+    });
+    $('recovery-dialog').querySelector('form').addEventListener('submit', event => {
+      event.preventDefault();
+      const confirmed = event.submitter?.value === 'confirm';
+      $('recovery-dialog').close(confirmed ? 'confirm' : 'cancel');
+      if (confirmed) void mutate(async () => { protection = await YTV.request('requestRecovery'); renderRecovery(); });
+    });
+    $('cancel-recovery').addEventListener('click', () => void mutate(async () => { protection = await YTV.request('cancelRecovery', {id: protection.recovery?.id}); renderRecovery(); }));
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area !== 'local' || !Object.hasOwn(changes, 'ytv.protection')) return;
+      void YTV.request('protectionInfo').then(value => {
+        const completed = value.resetAt && value.resetAt !== protection?.resetAt;
+        protection = value;
+        if (completed) renderProtection(); else renderRecovery();
+      }).catch(showError);
+    });
     $('end-session').addEventListener('click', () => void mutate(() => YTV.request('endSession', {sessionId: accessState?.sessionId})));
     YTV.subscribeSnapshots(snapshot => describe(snapshot.access));
     window.addEventListener('ytv:imported', () => { void YTV.readFeatures().then(value => { features = value; render(); }).catch(showError); });
@@ -84,6 +118,6 @@
     $('save-status').textContent = 'Settings loaded.';
   }
   document.querySelectorAll(controls).forEach(b => b.disabled = true);
-  window.addEventListener('yfe:languagechange', () => { if (stockMessage($('entry-message').value)) $('entry-message').value = t($('entry-message').value); if (accessState) describe(accessState); });
-  init().then(() => document.querySelectorAll(controls).forEach(b => b.disabled = false)).catch(showError);
+  window.addEventListener('yfe:languagechange', () => { if (stockMessage($('entry-message').value)) $('entry-message').value = t($('entry-message').value); if (accessState) describe(accessState); renderRecovery(); });
+  init().then(() => { document.querySelectorAll(controls).forEach(b => b.disabled = false); renderRecovery(); }).catch(showError);
 })();

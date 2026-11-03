@@ -5,14 +5,14 @@ Status: prepared locally; not submitted or published in the Chrome Web Store.
 ## Listing fields
 
 - Name: YFE — YouTube Focus Extension
-- Version: 0.6.0
+- Version: 0.8.0
 - Language: English
 - Category: Workflow & Planning
 - Price: Free
 - Homepage: https://defaultperson.github.io/youtube-focus-extension/
 - Privacy policy: https://defaultperson.github.io/youtube-focus-extension/privacy.html
 - Support: https://github.com/DefaultPerson/youtube-focus-extension/issues
-- Package: `dist/yfe-0.6.0-chrome.zip` (manifest at ZIP root)
+- Package: `dist/yfe-0.8.0-chrome.zip` (manifest at ZIP root)
 - Store icon: `extension/icons/icon-128.png`
 - Screenshots: `store/screenshots/` (1280 × 800 PNG)
 - Small promotional tile: `store/promo-440x280.png`
@@ -54,7 +54,7 @@ Help users focus on YouTube by customizing its interface, filtering distracting 
 | Permission or site access | Justification |
 | --- | --- |
 | `storage` | Store appearance settings, presets, filter rules, schedules, session deadlines and optional protection verification data in this browser. Session storage holds temporary authorization state. No Chrome storage sync is used. |
-| `alarms` | Reconcile session and inactivity deadlines, breaks, blocking schedules and scheduled appearance presets while the settings panel is closed. |
+| `alarms` | Reconcile session and inactivity deadlines, breaks, blocking schedules and scheduled appearance presets and delayed password resets while the settings panel is closed. |
 | `sidePanel` | Show the settings beside the current browser tab when the user clicks the toolbar icon. |
 | `https://www.youtube.com/*` | Run packaged content scripts on YouTube pages and frames to apply chosen appearance, navigation, content-filter, focus and player settings. Read relevant page URLs, visible metadata, page content and player/activity state locally. |
 | `https://www.youtube-nocookie.com/embed/*` | Run the same packaged content scripts in privacy-enhanced YouTube embeds to apply applicable embedded-player appearance, focus and player settings. |
@@ -63,7 +63,7 @@ The site patterns are content-script match patterns, not a separate `host_permis
 
 ### Remote code
 
-Select **No, I am not using remote code**. All executable JavaScript and CSS ship in the package. The player bridge is a packaged MAIN-world content script. Thumbnail requests load images, not executable code. No external scripts, dynamic code evaluation or WebAssembly are used.
+Select **No, I am not using remote code**. All JavaScript ships in the package. Optional Google Fonts downloads load font CSS and font files, not JavaScript or WebAssembly. The player bridge is a packaged MAIN-world content script. Thumbnail requests load images, not executable code. No external scripts, dynamic code evaluation or WebAssembly are used.
 
 ### Data usage
 
@@ -77,9 +77,9 @@ Disclose local handling; do not select a blanket “no user data” statement. S
 | User activity | Playback, visibility and timestamps of recent pointer/keyboard/scroll activity, used locally for session inactivity. No keystroke text is recorded. |
 | Website content | Titles, public author labels, comment/post text, page structure and player state needed for chosen controls and filters. |
 
-Health information, financial/payment information, personal communications and location are not collected for extension features. Optional thumbnail loads expose normal request metadata, including IP address, to YouTube's image service; YFE does not derive or store location.
+Health information, financial/payment information, personal communications and location are not collected for extension features. Optional thumbnail loads expose normal request metadata, including IP address, to YouTube's image service. Opt-in Google Fonts requests expose the selected font and normal request metadata to Google; YFE does not derive or store location.
 
-Certify: data is not sold or transferred for unrelated purposes; it is used only for the stated focus/customization purpose; it is not used for creditworthiness or lending. No data goes to the developer. Optional YouTube image requests and user-created local JSON exports are disclosed in the policy. Reconcile any changed dashboard wording with this policy before a future submission.
+Certify: data is not sold or transferred for unrelated purposes; it is used only for the stated focus/customization purpose; it is not used for creditworthiness or lending. No data goes to the developer. Optional YouTube image requests, Google Fonts downloads and user-created local JSON exports are disclosed in the policy. Reconcile any changed dashboard wording with this policy before a future submission.
 
 ## Reviewer instructions
 
@@ -90,7 +90,8 @@ No login, payment, activation, external service account or developer credentials
 3. In **Content filters**, enable filtering, add a visible card's title or channel handle to the matching rule box, and click **Save filters**. Observe matching cards disappear. Remove the rule and save to restore them.
 4. In **Usage limits**, enable **Enable usage limits** and **Limit session time**, set a one-minute session and one-minute break, then click **Save usage limits**. Return to YouTube, complete the start-session prompt and observe the break overlay after the minute. Disable **Enable usage limits** and save to clear the restriction.
 5. In **Presets and backup**, export JSON, change an appearance setting, then import the exported file. Confirm the appearance is restored. Exports omit protection credentials and active session state.
-6. Optional: in **Settings protection**, enable a password for one scope and save. Attempt a protected change and confirm a password prompt appears. Test passwords are local self-control credentials, not YouTube credentials.
+6. In **Settings protection**, enable a test password, set the recovery delay to one minute and save. Request a reset, cancel it and confirm protection remains enabled. Request it again and wait one minute: protection turns off while other settings remain. Test passwords are local self-control credentials, not YouTube credentials.
+7. Select **Inter** under **Interface font**, then enable **Download the selected font from Google Fonts**. Confirm the font loads on YouTube; turn off downloads to return to installed-font fallback. Default and system fonts do not create font requests.
 
 YouTube layouts, consent screens and regional content vary. Ad skipping is experimental and is not an acceptance prerequisite. No remote service needs to be configured.
 

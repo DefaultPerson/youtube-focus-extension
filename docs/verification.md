@@ -1,5 +1,14 @@
 # Release verification
 
+Version 0.8.0 adds delayed password recovery and optional Google Fonts downloads (2026-11-03):
+
+- Recovery defaults to 24 hours and accepts 1–43200 minutes. The worker owns the saved deadline; requests cannot shorten it or authorize protected changes. Cancellation keeps protection enabled. Expiry removes the password verifier and authorization grants while keeping other settings. Changing protection cancels a pending request.
+- Fifteen serialized worker checks passed for migration, validation, duplicate/stale requests, cancellation, unauthorized page messages, early alarms, clock changes and restart recovery. All 62 existing worker/model checks passed. Generated catalog/runtime parity covers 298 controls, 114 enum choices, 2,474 validation states and 9,604 CSS comparisons across 14 page paths.
+- Fourteen Chromium UI checks passed, including the forgotten-password link, request confirmation/cancellation, English/Russian labels and the 390px layout. A real one-minute wait, including extension reload, ended with automatic reset and a visible completion message; every non-protection storage record stayed equal. Long waits and system-clock transitions were simulated in worker checks, not waited out in the browser.
+- Google Fonts is off by default. All 27 catalog families returned valid live CSS2 responses for their requested weights. Ten Chromium fixture checks verified real Google CSS/font requests, Inter glyph rendering, no page referrer or text parameter, SPA reuse, removal, local system fonts, language/search/layout and offline fallback. These use a YouTube-origin DOM fixture, not YouTube's own markup.
+- On a real YouTube watch page in the existing Chrome profile, Inter font faces loaded and the visible video title used Inter; turning downloads off removed the stylesheet and downloaded faces. The separate test profile's real YouTube page remained blank, so live page acceptance used the connected profile. All 39 installed files matched 0.8.0, and all 598 previous storage records were restored exactly after the temporary font changes.
+- No new permissions or JavaScript dependencies were added. Font requests are documented in the privacy policy and store materials. The README title and centered motion link were updated; the demo itself is unchanged. Chrome Web Store submission was not performed.
+
 Version 0.7.0 adds default playback speed, automatic fullscreen and extended regex filters (2026-11-03):
 
 - Speed choices cover 0.25–4× in 0.25 steps, with a neutral Keep YouTube speed option. Fullscreen starts off, requires Chrome's playback gesture when necessary, and respects exiting for the current video. No new permissions or dependencies were added.

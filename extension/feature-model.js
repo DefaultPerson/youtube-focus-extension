@@ -96,7 +96,7 @@
       filters, player: Object.fromEntries(Object.entries(p).map(([key, value]) => [key, ['quality', 'playbackSpeed'].includes(key) ? value : bool(value)]))};
   }
   function protectionDefaults() {
-    return {enabled: false, method: 'password', phrase: '', verifier: null, duration: 'single', scopes: Object.fromEntries(scopes.map(s => [s, true]))};
+    return {enabled: false, method: 'password', phrase: '', verifier: null, duration: 'single', recoveryMinutes: 1440, recovery: null, resetAt: 0, scopes: Object.fromEntries(scopes.map(s => [s, true]))};
   }
   const minutes = time => { const [h, m] = time.split(':').map(Number); return h * 60 + m; };
   function validateSchedule(s) {

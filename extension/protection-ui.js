@@ -12,12 +12,18 @@
   const buttons = document.createElement('div'); buttons.className = 'dialog-actions';
   const cancel = document.createElement('button'); cancel.value = 'cancel'; cancel.textContent = 'Cancel';
   const submit = document.createElement('button'); submit.value = 'confirm'; submit.textContent = 'Confirm';
-  buttons.append(cancel, submit); form.append(title, message, label, input, buttons); dialog.append(form); document.body.append(dialog);
+  const recover = document.createElement('button'); recover.value = 'recover'; recover.textContent = 'Forgot password?';
+  buttons.append(cancel, submit); form.append(title, message, label, input, buttons, recover); dialog.append(form); document.body.append(dialog);
   YTV.setAuthorizationHandler(async () => {
     const protection = await YTV.request('protectionInfo');
     message.textContent = protection.method === 'phrase' ? `Enter the phrase: ${protection.phrase}` : 'Enter your password to apply this change.';
     input.type = protection.method === 'phrase' ? 'text' : 'password'; input.value = '';
+    recover.hidden = protection.method !== 'password';
     dialog.returnValue = 'cancel'; dialog.showModal(); input.focus();
-    return new Promise(resolve => dialog.addEventListener('close', () => { const result = dialog.returnValue === 'confirm' ? input.value : null; input.value = ''; resolve(result); }, {once: true}));
+    return new Promise(resolve => dialog.addEventListener('close', () => {
+      const result = dialog.returnValue === 'confirm' ? input.value : null; input.value = '';
+      if (dialog.returnValue === 'recover') { location.hash = 'protection'; requestAnimationFrame(() => document.getElementById('request-recovery')?.focus()); }
+      resolve(result);
+    }, {once: true}));
   });
 })();

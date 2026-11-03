@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const catalog = globalThis.YTV_CATALOG;
-  const clientVersion = '0.7.0';
+  const clientVersion = '0.8.0';
   const options = new Map(catalog.options.map(option => [option.id, option]));
   let authorizationHandler = null;
   let entryHandler = null;
