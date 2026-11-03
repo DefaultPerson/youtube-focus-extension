@@ -1,6 +1,8 @@
-/* One settings document, shared by the Chrome side panel and a full tab. */
+/* One settings document, shared by the browser sidebar and a full tab. */
 (() => {
   'use strict';
+  const platform = globalThis.YFEPlatform;
+  const api = platform.api;
   const $ = id => document.getElementById(id);
   const panelMode = new URL(location.href).searchParams.get('panel') === '1';
   document.body.classList.toggle('side-panel', panelMode);
@@ -78,14 +80,14 @@
   $('open-page').hidden = !panelMode;
   $('open-page').replaceChildren(YFEIcons('external')); $('open-panel').replaceChildren(YFEIcons('panel'));
   $('open-page').addEventListener('click', () => {
-    void chrome.tabs.create({url: chrome.runtime.getURL('options.html#' + currentRoute())}).catch(showError);
+    void api.tabs.create({url: api.runtime.getURL('options.html#' + currentRoute())}).catch(showError);
   });
   $('open-panel').hidden = panelMode;
-  $('open-panel').disabled = true;
+  $('open-panel').disabled = !platform.isFirefox;
   let windowId;
-  void chrome.windows.getCurrent().then(window => { windowId = window.id; $('open-panel').disabled = false; }).catch(showError);
+  if (!platform.isFirefox) void api.windows.getCurrent().then(window => { windowId = window.id; $('open-panel').disabled = false; }).catch(showError);
   $('open-panel').addEventListener('click', () => {
     // Call directly from the gesture; looking up the window happens beforehand.
-    void chrome.sidePanel.open({windowId}).catch(showError);
+    void platform.openPanel({windowId}).catch(showError);
   });
 })();

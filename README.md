@@ -2,7 +2,7 @@
 
 [![Release v0.8.0](docs/media/release.svg?v=0.8.0)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
 
-YFE is a free, open-source UnTrap alternative for Chrome: hide Shorts, recommendations and comments, filter unwanted content, and set focus sessions. Customize the YouTube interface from a persistent side panel, with 298 appearance and behavior settings.
+YFE is a free, open-source UnTrap alternative for desktop browsers: hide Shorts, recommendations and comments, filter unwanted content, and set focus sessions. Customize the YouTube interface from a persistent settings panel, with 298 appearance and behavior settings. Chrome/Chromium and Firefox/Zen use the same feature code; browser acceptance status is recorded in the verification notes.
 
 English by default, with Russian available in settings. Local storage. No account, subscription, analytics or backend.
 
@@ -33,9 +33,19 @@ Chrome/Chromium 120+. No build step. Not yet available in the Chrome Web Store.
 
 From source, load **`extension/`**. Appearance saves immediately; other forms use **Save**. Controls start neutral, and presets share filters and restrictions. An optional toggle shortcut is available at `chrome://extensions/shortcuts`.
 
+## Test in Firefox or Zen
+
+Firefox 153+ or desktop Zen based on Firefox 153+. This minimum keeps document-specific message authorization; older engines are not supported. All 298 controls and every Chrome feature module are included, with a native Firefox sidebar. Tested on Firefox 159 and Zen 1.24b; see [verification and limits](docs/verification.md).
+
+1. From source, run **`python3 scripts/package.py firefox`** and extract **`dist/yfe-0.9.0-firefox.zip`** into a separate folder.
+2. Open **`about:debugging#/runtime/this-firefox`**, select **Load Temporary Add-on**, and choose the extracted **`manifest.json`**.
+3. Reload YouTube and click YFE's toolbar icon to open its sidebar; **↗** opens the same section in a full tab.
+
+The ZIP is an unsigned test package. Temporary loading lasts until the browser restarts; permanent installation requires a Mozilla-signed distribution, which is not included or published. Do not load the Chrome source manifest in Firefox. Set the optional shortcut in **Manage Extension Shortcuts** in `about:addons`.
+
 ## Privacy and permissions
 
-Uses `storage`, `alarms` and `sidePanel`, with access limited to YouTube and its privacy-enhanced embeds. Page content, activity and settings are processed locally; nothing is sent to the developer. Optional thumbnail replacement requests images from YouTube; optional Google Fonts loads the selected font stylesheet and files from Google. No accounts, analytics or remote scripts. [Full privacy policy](https://defaultperson.github.io/youtube-focus-extension/privacy.html).
+Uses `storage` and `alarms`, plus Chrome's `sidePanel`; Firefox uses its sidebar API. Site access is limited to YouTube and its privacy-enhanced embeds. Page content, activity and settings are processed locally; nothing is sent to the developer. Optional thumbnail replacement requests images from YouTube; optional Google Fonts loads the selected font stylesheet and files from Google. No accounts, analytics or remote scripts. [Full privacy policy](https://defaultperson.github.io/youtube-focus-extension/privacy.html).
 
 ## Limits
 
@@ -46,19 +56,21 @@ Uses `storage`, `alarms` and `sidePanel`, with access limited to YouTube and its
 <summary>Other limits</summary>
 
 - Regex rules support groups, alternation and `*`, `+`, `?` with bounded matching; lookarounds, backreferences and `{m,n}` are unsupported.
-- Automatic fullscreen may need a Play gesture from Chrome and permission from the embedding site. It stays off after you exit for the current video.
+- Automatic fullscreen may need a Play gesture from the browser and permission from the embedding site. It stays off after you exit for the current video.
 - No mobile YouTube, summaries, translation or cloud sync.
-- No artificial preset/rule quota; Chrome storage limits apply. JSON imports: 10 MB maximum.
+- No artificial preset/rule quota; browser storage limits apply. JSON imports: 10 MB maximum.
 
 </details>
 
 ## Development
 
-Plain JavaScript/CSS and Manifest V3; no runtime dependencies. Run `python3 scripts/build-runtime.py` after changing the catalog, translations or runtime code; `--check` verifies the generated page data. `python3 scripts/package.py` checks freshness and creates a deterministic Chrome ZIP with integrity and source-byte checks. Reload YFE and YouTube after changes; check navigation and turning controls back off. [Verification and limits](docs/verification.md).
+Plain JavaScript/CSS and Manifest V3; no runtime dependencies. Run `python3 scripts/build-runtime.py` after changing generated inputs; `--check` verifies freshness. Run tests with `node --test tests/*.test.cjs` and `python3 -m unittest discover -s tests`. Package with `python3 scripts/package.py chrome`, `firefox` or `all` (default: Chrome). ZIPs and integrity reports go to `dist/`; both browsers share identical source files with different manifests.
+
+Reload YFE and YouTube after changes; check navigation and turning controls back off. [Verification and limits](docs/verification.md).
 
 ## Contributing
 
-Bug reports should include your Chrome version, the YouTube page type, the setting involved, and steps to reproduce. Remove account names, private channel lists and personal settings before attaching screenshots or exports.
+Bug reports should include your browser and version (including Zen's Firefox base version), the YouTube page type, the setting involved, and steps to reproduce. Remove account names, private channel lists and personal settings before attaching screenshots or exports.
 
 ## License
 

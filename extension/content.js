@@ -22,12 +22,17 @@
     const active = settings.enabled && settings.values.appearance_google_fonts === true &&
       YTVStyles.pageCategory(location.pathname) !== 'embed' && googleFonts.has(font);
     if (!active) {
+      if (YFEPlatform.isFirefox) document.dispatchEvent(new CustomEvent('yfe:font-configure', {detail: ''}));
       fontLink?.remove();
       fontLink = null;
       return;
     }
     const query = new URLSearchParams({family: `${font}:wght@${fontWeights[font] || '400;500;600;700'}`, display: 'swap'});
     const href = `https://fonts.googleapis.com/css2?${query}`;
+    if (YFEPlatform.isFirefox) {
+      document.dispatchEvent(new CustomEvent('yfe:font-configure', {detail: href}));
+      return;
+    }
     if (fontLink?.href !== href) {
       fontLink?.remove();
       fontLink = document.createElement('link');
@@ -118,6 +123,7 @@
     accept(next);
   }).catch(error => console.error('YFE: could not load settings.', error.message));
   document.addEventListener('DOMContentLoaded', apply, {once: true});
+  if (YFEPlatform.isFirefox) document.addEventListener('yfe:font-ready', configureFont);
   document.addEventListener('yt-navigate-finish', apply);
   document.addEventListener('yt-page-data-updated', apply);
   window.addEventListener('popstate', apply);

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="settings-ui.css">
   <script src="catalog.js" defer></script>
   <script src="locales.js" defer></script>
+  <script src="platform.js" defer></script>
   <script src="i18n.js" defer></script>
   <script src="filter-rules.js" defer></script>
   <script src="feature-model.js" defer></script>
@@ -82,7 +83,7 @@
         <fieldset><legend>Block now</legend><div class="inline-actions"><label>Minutes<input id="temporary-minutes" type="number" min="1" max="10080" value="30"></label><button id="temporary-start" type="button">Start block</button><button id="temporary-stop" type="button">End temporary block</button></div><p class="muted">The block schedule still applies. Settings protection also applies to this action.</p></fieldset>
       </section>
       <section data-section="protection" hidden>
-        <h2>Settings protection</h2><p class="muted">Require confirmation for changes within the extension. The Chrome user can still remove the extension or change its data using developer tools.</p>
+        <h2>Settings protection</h2><p class="muted">Require confirmation for changes within the extension. The browser user can still remove the extension or change its data using developer tools.</p>
         <form id="protection-form">
           <label class="check"><input id="protection-enabled" type="checkbox"> Enable settings protection</label>
           <label>Method<select id="protection-method"><option value="password">Password</option><option value="phrase">Confirmation phrase</option></select></label>
@@ -97,7 +98,7 @@
           <p class="muted">Changing or turning off protection requires valid authorization.</p>
         </form>
         <fieldset><legend>Forgotten password</legend>
-          <p class="muted">Request a delayed reset without your password. Protection stays active while you wait, then turns off automatically. Other settings are kept. You can cancel before the deadline; closing Chrome does not cancel the request.</p>
+          <p class="muted">Request a delayed reset without your password. Protection stays active while you wait, then turns off automatically. Other settings are kept. You can cancel before the deadline; closing the browser does not cancel the request.</p>
           <p id="recovery-status" role="status" aria-live="polite"></p>
           <p id="recovery-deadline" hidden><span>Protection turns off at:</span> <time id="recovery-time"></time></p>
           <div class="inline-actions"><button id="request-recovery" type="button">Request password reset</button><button id="cancel-recovery" type="button" hidden>Cancel reset request</button></div>
@@ -125,7 +126,7 @@
           <label>Default playback speed<select id="player-speed"></select></label>
           <p class="muted">Set the initial speed for each video. You can still change it in YouTube for the current video. Ads and feed previews keep their own speed.</p>
           <label class="check"><input id="auto-fullscreen" type="checkbox"> Enter fullscreen automatically</label>
-          <p class="muted">On watch pages and embedded players, enter fullscreen when playback starts. If Chrome requires a gesture, press Play. Exiting fullscreen keeps it off for the current video.</p>
+          <p class="muted">On watch pages and embedded players, enter fullscreen when playback starts. If the browser requires a gesture, press Play. Exiting fullscreen keeps it off for the current video.</p>
           <label class="check"><input id="native-controls" type="checkbox"> Use native video controls</label>
           <label class="check"><input id="disable-autoplay" type="checkbox"> Stop videos from playing automatically when opened</label>
           <label class="check"><input id="disable-next" type="checkbox"> Stop the next video from playing automatically</label>

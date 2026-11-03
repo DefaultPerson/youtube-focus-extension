@@ -1,18 +1,18 @@
-# Chrome Web Store submission materials
+# Browser store submission materials
 
 Status: prepared locally; not submitted or published in the Chrome Web Store.
 
-## Listing fields
+## Chrome Web Store listing fields
 
 - Name: YFE — YouTube Focus Extension
-- Version: 0.8.0
+- Version: 0.9.0
 - Language: English
 - Category: Workflow & Planning
 - Price: Free
 - Homepage: https://defaultperson.github.io/youtube-focus-extension/
 - Privacy policy: https://defaultperson.github.io/youtube-focus-extension/privacy.html
 - Support: https://github.com/DefaultPerson/youtube-focus-extension/issues
-- Package: `dist/yfe-0.8.0-chrome.zip` (manifest at ZIP root)
+- Package: `dist/yfe-0.9.0-chrome.zip` (manifest at ZIP root)
 - Store icon: `extension/icons/icon-128.png`
 - Screenshots: `store/screenshots/` (1280 × 800 PNG)
 - Small promotional tile: `store/promo-440x280.png`
@@ -27,7 +27,7 @@ Customize YouTube, hide Shorts and distractions, filter content, and manage focu
 Make YouTube fit your focus. YFE lets you hide distractions, filter unwanted content and choose how YouTube looks from a persistent Chrome side panel.
 
 • Hide Shorts, recommendations, comments, live chat and promotional shelves.
-• Customize video cards, feeds, search, channels, navigation and the watch page with 296 appearance and behavior settings.
+• Customize video cards, feeds, search, channels, navigation and the watch page with 298 appearance and behavior settings.
 • Save appearance presets, choose one when starting a session, or switch presets on a schedule.
 • Start sessions manually, choose their duration and inactivity timeout, and follow a live timer on YouTube. Set entry pauses, confirmation phrases, breaks and weekly blocking schedules.
 • Filter channels, video cards, comments and posts by text, ID, link or a restricted regular expression. Add rules from YouTube menus.
@@ -101,6 +101,18 @@ YouTube layouts, consent screens and regional content vary. Ad skipping is exper
 - Confirm account declarations, distribution choices and final privacy certifications in the actual dashboard before submitting.
 - Keep this package unsubmitted until publication is explicitly authorized.
 
+## Firefox and Zen test distribution
+
+- Package: `dist/yfe-0.9.0-firefox.zip`, built with `python3 scripts/package.py firefox`; unsigned test ZIP, not a signed XPI.
+- Target: desktop Firefox 153+ and Zen with a Firefox 153+ base; the minimum preserves `runtime.MessageSender.documentId` authorization.
+- Identity: `yfe@defaultperson.github.io`; keep this ID for future signed updates, subject to Mozilla's uniqueness check on first submission.
+- Panel: the same settings in Firefox's sidebar; the background is an event page. All feature modules are shared with Chrome.
+- Temporary test loading: extract the ZIP, open `about:debugging#/runtime/this-firefox`, choose **Load Temporary Add-on**, select `manifest.json`, then reload YouTube. Loading lasts until restart.
+- Tested locally on Firefox 159 and Zen 1.24b; see `docs/verification.md` for scenarios and limits. Signed permanent distribution, AMO submission and Firefox-specific store screenshots are pending.
+- Reuse the feature description and privacy policy with Firefox/sidebar terminology. Optional thumbnail requests expose the requested video ID and normal request metadata to YouTube; opt-in Google Fonts requests expose the selected font and normal request metadata to Google. No account, telemetry or developer backend is used.
+- The Firefox manifest declares no required data collection. No page text, filter rules, activity timestamps or protection credentials are transmitted.
+- For Mozilla review, provide this repository's source and reproduce with `python3 scripts/build-runtime.py` followed by `python3 scripts/package.py firefox`. The runtime catalog and translations are generated from the canonical source data.
+
 ## Sources
 
 - https://developer.chrome.com/docs/webstore/prepare/
@@ -109,3 +121,7 @@ YouTube layouts, consent screens and regional content vary. Ad skipping is exper
 - https://developer.chrome.com/docs/webstore/program-policies/user-data-faq
 - https://developer.chrome.com/docs/webstore/cws-dashboard-listing
 - https://developer.chrome.com/docs/webstore/best-practices
+- https://blog.mozilla.org/addons/2026/07/23/firefox-153-webextensions-api-updates/
+- https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/
+- https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/
+- https://extensionworkshop.com/documentation/publish/add-on-policies/

@@ -100,8 +100,8 @@
       if (confirmed) void mutate(async () => { protection = await YTV.request('requestRecovery'); renderRecovery(); });
     });
     $('cancel-recovery').addEventListener('click', () => void mutate(async () => { protection = await YTV.request('cancelRecovery', {id: protection.recovery?.id}); renderRecovery(); }));
-    chrome.storage.onChanged.addListener((changes, area) => {
-      if (area !== 'local' || !Object.hasOwn(changes, 'ytv.protection')) return;
+    YTV.subscribeRecords(keys => {
+      if (!keys.includes('ytv.protection')) return;
       void YTV.request('protectionInfo').then(value => {
         const completed = value.resetAt && value.resetAt !== protection?.resetAt;
         protection = value;

@@ -1,6 +1,7 @@
 /* Local focus controls. Session and authorization decisions belong to the worker. */
 (() => {
   'use strict';
+  const platform = globalThis.YFEPlatform;
   const t = text => globalThis.YFEI18n?.t(text) ?? text;
   const stockMessage = value => ['Which settings would you like to change?', 'Какие настройки вы хотите изменить?'].includes(value);
   const el = (tag, text, className) => { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (className) node.className = className; return node; };
@@ -46,11 +47,15 @@
       <div id="focus-defaults"></div>
     </div></details>
     <details class="focus-detail"><summary>Keyboard shortcut</summary><div class="detail-body">
-      <p>In Chrome keyboard shortcuts, find YFE and “Turn the extension on or off” (toggle-extension).</p>
-      <p class="muted">Address: chrome://extensions/shortcuts</p>
-      <button id="focus-shortcuts" type="button">Open Chrome keyboard shortcuts</button>
+      <p id="focus-shortcut-instructions"></p>
+      <p id="focus-shortcut-address" class="muted"></p>
+      <button id="focus-shortcuts" type="button"></button>
     </div></details>`;
   const $ = id => section.querySelector('#' + id);
+  $('focus-shortcut-instructions').textContent = platform.shortcutInstructions;
+  $('focus-shortcut-address').textContent = platform.shortcutAddress;
+  $('focus-shortcuts').textContent = platform.shortcutButtonLabel;
+  $('focus-shortcuts').hidden = !platform.canOpenShortcutSettings;
   let presets = [], customPresets = [], busy = false, loaded = false, activePresetId = '', sessionAccess = null, currentFeatures = null;
   const option = (id, label) => { const node = el('option', label); node.value = id; return node; };
   function presetSelect(select, id = '') {
@@ -161,7 +166,7 @@
   $('focus-configure-session').addEventListener('click', () => { location.hash = '#restrictions'; setTimeout(() => { const field = document.getElementById('session-enabled'); field?.closest('fieldset')?.scrollIntoView({block: 'center'}); field?.focus({preventScroll: true}); }, 0); });
   section.addEventListener('invalid', event => { for (let node = event.target.parentElement; node && node !== section; node = node.parentElement) if (node.tagName === 'DETAILS') node.open = true; }, true);
   setInterval(() => { if (!section.hidden) describeSession(); }, 1000);
-  $('focus-shortcuts').addEventListener('click', () => { void chrome.tabs.create({url: 'chrome://extensions/shortcuts'}).catch(showError); });
+  $('focus-shortcuts').addEventListener('click', () => { void platform.openShortcutSettings().catch(showError); });
   section.querySelectorAll('button').forEach(node => { node.disabled = true; });
   Promise.all([YTV.readFeatures(), YTV.readPresets()]).then(([features, personal]) => {
     currentFeatures = features; customPresets = personal; presets = [...YTV_CATALOG.presets, ...personal]; render(features.focus); describeDefaults(); loaded = true;

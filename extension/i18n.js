@@ -126,7 +126,7 @@
     globalThis.dispatchEvent?.(new CustomEvent('yfe:languagechange', {detail: {language}}));
   }
   const extensionPage = ['chrome-extension:', 'moz-extension:'].includes(globalThis.location?.protocol);
-  const storage = extensionPage ? globalThis.chrome?.storage : null;
+  const storage = extensionPage ? (globalThis.YFEPlatform?.api ?? globalThis.browser ?? globalThis.chrome)?.storage : null;
   storage?.onChanged?.addListener((changes, area) => {
     if (area === 'local' && own(changes, 'yfeLanguage')) { revision++; apply(changes.yfeLanguage.newValue); }
   });

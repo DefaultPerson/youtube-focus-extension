@@ -1,8 +1,30 @@
-/* All mutations and session deadlines are owned by the extension worker. */
-importScripts('catalog.js', 'core.js', 'filter-rules.js', 'feature-model.js');
-void chrome.sidePanel.setPanelBehavior({openPanelOnActionClick: true}).catch(error => {
-  console.warn('Could not enable the side panel toolbar action.', error);
-});
+/* All mutations and session deadlines are owned by the extension background context. */
+if (typeof importScripts === 'function') importScripts('platform.js', 'private-storage.js', 'catalog.js', 'core.js', 'filter-rules.js', 'feature-model.js');
+const api = YFEPlatform.api;
+const local = {
+  get: (...args) => YFEStorage.local.get(...args),
+  async set(values) {
+    await YFEStorage.local.set(values);
+    if (!YFEPlatform.isFirefox) return;
+    const changed = Object.keys(values).filter(key => ['ytv.protection', 'ytv.presets'].includes(key));
+    if (!changed.length) return;
+    // IndexedDB has no storage.onChanged event. Send only record names to our UI;
+    // password verifiers and other stored values never leave this context.
+    for (const port of ports) if (caller(port.sender) === 'ui') {
+      try { port.postMessage({type: 'recordsChanged', keys: changed}); }
+      catch { ports.delete(port); }
+    }
+  }
+};
+if (YFEPlatform.isFirefox) {
+  api.action.onClicked.addListener(() => {
+    void api.sidebarAction.open().catch(error => console.warn('Could not open the side panel.', error));
+  });
+} else {
+  void api.sidePanel.setPanelBehavior({openPanelOnActionClick: true}).catch(error => {
+    console.warn('Could not enable the side panel toolbar action.', error);
+  });
+}
 const F = YTVFeatures;
 const prefix = 'ytv.value.';
 const keys = {features: 'ytv.features', protection: 'ytv.protection', runtime: 'ytv.runtime'};
@@ -20,9 +42,10 @@ const serial = task => {
   queue = result.catch(() => {}); return result;
 };
 const ready = (async () => {
-  await chrome.storage.local.setAccessLevel({accessLevel: 'TRUSTED_CONTEXTS'});
-  await chrome.storage.session.setAccessLevel({accessLevel: 'TRUSTED_CONTEXTS'});
-  const stored = await chrome.storage.local.get(null);
+  await YFEStorage.initialize();
+  const stored = await local.get(null);
+  // Only the non-sensitive language preference is shared with extension pages.
+  if (YFEPlatform.isFirefox) Object.assign(stored, await api.storage.local.get('yfeLanguage'));
   state = {
     language: stored.yfeLanguage === 'ru' ? 'ru' : 'en',
     settings: YTV.normalizeSettings({enabled: stored['ytv.enabled'], values: Object.fromEntries(Object.entries(stored).filter(([key]) => key.startsWith(prefix)).map(([key, value]) => [key.slice(prefix.length), value]))}),
@@ -37,10 +60,11 @@ const ready = (async () => {
   await scheduleBoundary();
 })();
 function caller(sender) {
-  if (sender.id !== chrome.runtime.id) return null;
+  if (sender.id !== api.runtime.id) return null;
   try {
     const url = new URL(sender.url);
-    if (url.protocol === 'chrome-extension:' && url.hostname === chrome.runtime.id && ['/options.html', '/popup.html', '/features.html'].includes(url.pathname)) return 'ui';
+    const own = new URL(api.runtime.getURL(''));
+    if (url.protocol === own.protocol && url.host === own.host && ['/options.html', '/popup.html', '/features.html'].includes(url.pathname)) return 'ui';
     if (url.protocol === 'https:' && (url.hostname === 'www.youtube.com' || url.hostname === 'www.youtube-nocookie.com' && url.pathname.startsWith('/embed/')) && Number.isInteger(sender.tab?.id)) return 'content';
   } catch {}
   return null;
@@ -54,8 +78,8 @@ async function settleRecovery() {
   const p = state.protection;
   if (!p.enabled || p.method !== 'password' || !p.recovery || Date.now() < p.recovery.readyAt) return;
   const next = {...p, enabled: false, verifier: null, phrase: '', recovery: null, resetAt: Date.now()};
-  await chrome.storage.local.set({[keys.protection]: next}); state.protection = next;
-  await chrome.storage.session.remove('ytv.auth');
+  await local.set({[keys.protection]: next}); state.protection = next;
+  await api.storage.session.remove('ytv.auth');
 }
 async function digest(credential, salt) {
   const encoder = new TextEncoder();
@@ -68,7 +92,7 @@ async function authorize(sender, needed, credential, force = false) {
   const p = state.protection;
   if (!p.enabled || !force && !needed.some(scope => p.scopes[scope])) return;
   const documentKey = sender.documentId || sender.url;
-  const auth = (await chrome.storage.session.get('ytv.auth'))['ytv.auth'] ?? {grants: {}, failures: 0, lockedUntil: 0};
+  const auth = (await api.storage.session.get('ytv.auth'))['ytv.auth'] ?? {grants: {}, failures: 0, lockedUntil: 0};
   const now = Date.now();
   if (auth.grants[documentKey] > now) return;
   if (auth.lockedUntil > now) reject('Too many attempts. Wait 30 seconds.', 'AUTH_WAIT');
@@ -78,26 +102,26 @@ async function authorize(sender, needed, credential, force = false) {
   if (!valid) {
     auth.failures++;
     if (auth.failures >= 5) { auth.lockedUntil = now + 30000; auth.failures = 0; }
-    await chrome.storage.session.set({'ytv.auth': auth});
+    await api.storage.session.set({'ytv.auth': auth});
     reject('Incorrect password or phrase.', 'AUTH_INVALID');
   }
   auth.failures = 0;
   auth.lockedUntil = 0;
   auth.grants = Object.fromEntries(Object.entries(auth.grants).filter(([, expiry]) => expiry > now));
   if (p.duration === '5m') auth.grants[documentKey] = now + 300000;
-  await chrome.storage.session.set({'ytv.auth': auth});
+  await api.storage.session.set({'ytv.auth': auth});
 }
-async function saveRuntime() { await chrome.storage.local.set({[keys.runtime]: state.runtime}); }
+async function saveRuntime() { await local.set({[keys.runtime]: state.runtime}); }
 const presets = () => [...YTV_CATALOG.presets, ...state.presets];
 const presetById = id => presets().find(p => p.id === id);
-async function saveFocus() { await chrome.storage.local.set({'ytv.focusRuntime': state.focusRuntime}); }
+async function saveFocus() { await local.set({'ytv.focusRuntime': state.focusRuntime}); }
 function validatePresetReferences(features, available = presets()) {
   const ids = new Set(available.map(p => p.id));
   if (features.focus.onOpen === 'preset' && !ids.has(features.focus.presetId) || features.focus.schedules.some(r => !ids.has(r.presetId))) reject('A preset is missing or used by automation. Update the automation first.');
 }
 async function setAppearance(values) {
   const next = YTV.normalizeSettings({enabled: state.settings.enabled, values});
-  await chrome.storage.local.set(Object.fromEntries(Object.entries(next.values).map(([id, value]) => [prefix + id, value])));
+  await local.set(Object.fromEntries(Object.entries(next.values).map(([id, value]) => [prefix + id, value])));
   state.settings = next;
 }
 async function activatePreset(id, manual = false, savePrevious = false) {
@@ -106,7 +130,7 @@ async function activatePreset(id, manual = false, savePrevious = false) {
   const focus = {...state.focusRuntime, activePresetId: id};
   if (manual) focus.manualKey = focus.activeKey;
   if (savePrevious) focus.previousAppearance = {values: {...state.settings.values}, id: state.focusRuntime.activePresetId, savedAt: Date.now()};
-  await chrome.storage.local.set({'ytv.focusRuntime': focus, ...Object.fromEntries(Object.entries(settings.values).map(([key, value]) => [prefix + key, value]))});
+  await local.set({'ytv.focusRuntime': focus, ...Object.fromEntries(Object.entries(settings.values).map(([key, value]) => [prefix + key, value]))});
   state.settings = settings; state.focusRuntime = focus;
 }
 async function reconcilePresets() {
@@ -128,17 +152,17 @@ async function reconcilePresets() {
 async function uiEntry(sender, complete = false) {
   const config = state.features.focus.openingPause;
   const key = sender.documentId || sender.url;
-  const entries = (await chrome.storage.session.get('ytv.uiEntries'))['ytv.uiEntries'] ?? {};
+  const entries = (await api.storage.session.get('ytv.uiEntries'))['ytv.uiEntries'] ?? {};
   let value = entries[key];
   if (!config.enabled || !state.settings.enabled) return {done: true};
   if (!value) {
     value = entries[key] = {readyAt: Date.now() + config.seconds * 1000, done: false};
     for (const [id, entry] of Object.entries(entries)) if (entry.readyAt < Date.now() - 86400000) delete entries[id];
-    await chrome.storage.session.set({'ytv.uiEntries': entries});
+    await api.storage.session.set({'ytv.uiEntries': entries});
   }
   if (complete) {
     if (Date.now() < value.readyAt) reject('The pause has not finished yet.');
-    value.done = true; await chrome.storage.session.set({'ytv.uiEntries': entries});
+    value.done = true; await api.storage.session.set({'ytv.uiEntries': entries});
   }
   return {...config, ...value};
 }
@@ -205,11 +229,11 @@ async function scheduleBoundary() {
   const upcoming = deadlines.filter(at => Number.isFinite(at) && at > 0);
   const next = upcoming.length ? Math.max(now, Math.min(...upcoming)) : null;
   if (next === scheduledBoundary) return;
-  if (next === null) await chrome.alarms.clear('ytv-boundary');
-  else await chrome.alarms.create('ytv-boundary', {when: next});
+  if (next === null) await api.alarms.clear('ytv-boundary');
+  else await api.alarms.create('ytv-boundary', {when: next});
   scheduledBoundary = next;
 }
-function snapshot(gate = access()) { return {version: chrome.runtime.getManifest().version, language: state.language, settings: state.settings, features: state.features, access: gate, focus: {activePresetId: state.focusRuntime.activePresetId, canRestoreAppearance: Boolean(state.focusRuntime.previousAppearance)}}; }
+function snapshot(gate = access()) { return {version: api.runtime.getManifest().version, language: state.language, settings: state.settings, features: state.features, access: gate, focus: {activePresetId: state.focusRuntime.activePresetId, canRestoreAppearance: Boolean(state.focusRuntime.previousAppearance)}}; }
 function broadcast() {
   if (!ports.size) return;
   const gate = access(), accessKey = JSON.stringify(gate);
@@ -225,7 +249,7 @@ function broadcast() {
   }
 }
 async function persistSettings(next) {
-  await chrome.storage.local.set({'ytv.enabled': next.enabled, ...Object.fromEntries(Object.entries(next.values).map(([id, value]) => [prefix + id, value]))});
+  await local.set({'ytv.enabled': next.enabled, ...Object.fromEntries(Object.entries(next.values).map(([id, value]) => [prefix + id, value]))});
   state.settings = next;
   await settle();
 }
@@ -240,7 +264,7 @@ async function handle(message, sender) {
   const type = caller(sender);
   if (!type || !message || message.app !== 'ytv') reject('This request source is not allowed.');
   const readActions = ['snapshot', 'readSettings', 'readFeatures', 'readPresets', 'protectionInfo', 'uiEntryStatus'];
-  if ((!message.clientVersion && !readActions.includes(message.action)) || message.clientVersion && message.clientVersion !== chrome.runtime.getManifest().version) reject('The extension was updated. Reload YouTube and the extension settings before changing anything.', 'VERSION_MISMATCH');
+  if ((!message.clientVersion && !readActions.includes(message.action)) || message.clientVersion && message.clientVersion !== api.runtime.getManifest().version) reject('The extension was updated. Reload YouTube and the extension settings before changing anything.', 'VERSION_MISMATCH');
   if (type === 'ui') {
     if (message.action === 'uiEntryStatus') return uiEntry(sender);
     if (message.action === 'uiEntryComplete') return uiEntry(sender, true);
@@ -249,7 +273,7 @@ async function handle(message, sender) {
   await settle(type === 'content' && (message.action === 'heartbeat' || message.action === 'snapshot'));
   const {action, data, credential} = message;
   if (action === 'snapshot') return snapshot();
-  if (action === 'openFeatures') { await chrome.tabs.create({url: chrome.runtime.getURL('options.html#restrictions')}); return true; }
+  if (action === 'openFeatures') { await api.tabs.create({url: api.runtime.getURL('options.html#restrictions')}); return true; }
   if (action === 'readSettings') return state.settings;
   if (action === 'heartbeat') {
     if (type !== 'content') reject('Invalid activity source.');
@@ -271,7 +295,7 @@ async function handle(message, sender) {
       state.runtime.preparation = state.runtime.preparation ? {...state.runtime.preparation, manual: true} : {id: crypto.randomUUID(), manual: true, confirmed: !(entry.enabled && entry.entry.enabled), expiresAt: now + 900000, readyAt: now + (entry.enabled && entry.entry.enabled ? entry.entry.seconds : 0) * 1000};
       await saveRuntime();
     }
-    if (type === 'ui' && data?.openYouTube) await chrome.tabs.create({url: 'https://www.youtube.com/'});
+    if (type === 'ui' && data?.openYouTube) await api.tabs.create({url: 'https://www.youtube.com/'});
     return snapshot();
   }
   if (action === 'startSession') {
@@ -322,7 +346,7 @@ async function handle(message, sender) {
     next.filters[data.kind].push(data.rule);
     next.filters.enabled = true;
     state.features = F.validate(next);
-    await chrome.storage.local.set({[keys.features]: state.features}); return true;
+    await local.set({[keys.features]: state.features}); return true;
   }
   if (type !== 'ui') reject('This action is only available in the extension settings.');
   if (action === 'readPresets') return state.presets;
@@ -334,14 +358,14 @@ async function handle(message, sender) {
     if (!p.recovery) {
       const requestedAt = Date.now();
       const next = {...p, recovery: {id: crypto.randomUUID(), requestedAt, readyAt: requestedAt + p.recoveryMinutes * 60000}};
-      await chrome.storage.local.set({[keys.protection]: next}); state.protection = next;
+      await local.set({[keys.protection]: next}); state.protection = next;
     }
     return protectionView();
   }
   if (action === 'cancelRecovery') {
     if (!state.protection.recovery || data?.id !== state.protection.recovery.id) reject('The reset request has changed. Refresh the settings.');
     const next = {...state.protection, recovery: null};
-    await chrome.storage.local.set({[keys.protection]: next}); state.protection = next;
+    await local.set({[keys.protection]: next}); state.protection = next;
     return protectionView();
   }
   if (action === 'activatePreset') {
@@ -356,7 +380,7 @@ async function handle(message, sender) {
     const settings = YTV.normalizeSettings({enabled: state.settings.enabled, values: previous.values});
     const focus = {...state.focusRuntime, activePresetId: presetById(previous.id)?.id ?? null, manualKey: state.focusRuntime.activeKey};
     delete focus.previousAppearance;
-    await chrome.storage.local.set({'ytv.focusRuntime': focus, ...Object.fromEntries(Object.entries(settings.values).map(([key, value]) => [prefix + key, value]))});
+    await local.set({'ytv.focusRuntime': focus, ...Object.fromEntries(Object.entries(settings.values).map(([key, value]) => [prefix + key, value]))});
     state.settings = settings; state.focusRuntime = focus; return true;
   }
   if (action === 'writeSettings' || action === 'updateSettings') {
@@ -375,7 +399,7 @@ async function handle(message, sender) {
     const validated = YTV.exportData(state.settings, data).customPresets;
     validatePresetReferences(state.features, [...YTV_CATALOG.presets, ...validated]);
     await authorize(sender, ['appearance'], credential);
-    await chrome.storage.local.set({'ytv.presets': validated}); state.presets = validated; return true;
+    await local.set({'ytv.presets': validated}); state.presets = validated; return true;
   }
   if (action === 'writeFeature') {
     if (!['focus', 'restrictions', 'filters', 'player'].includes(data?.section)) reject('Unknown section.');
@@ -388,7 +412,7 @@ async function handle(message, sender) {
       state.focusRuntime.activePresetId = state.focusRuntime.baseline?.id ?? state.focusRuntime.activePresetId;
       state.focusRuntime.activeKey = null; state.focusRuntime.baseline = null; state.focusRuntime.manualKey = null; await saveFocus();
     }
-    await chrome.storage.local.set({[keys.features]: next}); state.features = next;
+    await local.set({[keys.features]: next}); state.features = next;
     if (data.section === 'restrictions') { state.runtime = F.freshRuntime(); await saveRuntime(); }
     await settle(); return true;
   }
@@ -399,7 +423,7 @@ async function handle(message, sender) {
     const updates = {'ytv.enabled': next.settings.enabled, 'ytv.presets': next.customPresets,
       ...Object.fromEntries(Object.entries(next.settings.values).map(([id, value]) => [prefix + id, value]))};
     if (next.features) updates[keys.features] = next.features;
-    await chrome.storage.local.set(updates);
+    await local.set(updates);
     state.settings = next.settings; state.presets = next.customPresets;
     if (next.features) state.features = next.features;
     state.focusRuntime = {activePresetId: null, activeKey: null, baseline: null, manualKey: null}; await saveFocus();
@@ -426,38 +450,43 @@ async function handle(message, sender) {
       }
     }
     await authorize(sender, [], credential, true);
-    await chrome.storage.local.set({[keys.protection]: next}); state.protection = next;
-    await chrome.storage.session.remove('ytv.auth'); return protectionView();
+    await local.set({[keys.protection]: next}); state.protection = next;
+    await api.storage.session.remove('ytv.auth'); return protectionView();
   }
-  if (action === 'lockProtection') { await chrome.storage.session.remove('ytv.auth'); return true; }
+  if (action === 'lockProtection') { await api.storage.session.remove('ytv.auth'); return true; }
   reject('Unknown action.');
 }
-chrome.runtime.onMessage.addListener((message, sender, respond) => {
+api.runtime.onMessage.addListener((message, sender, respond) => {
   if (message?.app !== 'ytv') return;
   serial(() => handle(message, sender)).then(value => respond({ok: true, value}), error => respond({ok: false, error: error.message, code: error.code || 'INVALID'}));
   return true;
 });
-chrome.runtime.onConnect.addListener(port => {
+api.runtime.onConnect.addListener(port => {
   if (port.name !== 'ytv-updates' || !caller(port.sender)) { port.disconnect(); return; }
   ports.add(port); port.onDisconnect.addListener(() => ports.delete(port));
   serial(async () => { await ready; await settle(caller(port.sender) === 'content'); });
 });
-chrome.alarms.onAlarm.addListener(alarm => {
+api.alarms.onAlarm.addListener(alarm => {
   if (alarm.name !== 'ytv-boundary') return;
   void serial(async () => { await ready; scheduledBoundary = null; await settle(); });
 });
-chrome.commands.onCommand.addListener(command => {
+api.commands.onCommand.addListener(command => {
   if (command !== 'toggle-extension') return;
   void serial(async () => {
     await ready;
     if (state.protection.enabled && state.protection.scopes.disable || state.features.focus.openingPause.enabled) {
-      await chrome.tabs.create({url: chrome.runtime.getURL('options.html?toggle=1')}); return;
+      await api.tabs.create({url: api.runtime.getURL('options.html?toggle=1')}); return;
     }
     await persistSettings({...state.settings, enabled: !state.settings.enabled});
   });
 });
 
-chrome.storage.onChanged.addListener((changes, area) => {
+api.storage.onChanged.addListener((changes, area) => {
   if (area !== 'local' || !Object.hasOwn(changes, 'yfeLanguage')) return;
   void serial(async () => { await ready; state.language = changes.yfeLanguage.newValue === 'ru' ? 'ru' : 'en'; });
+});
+
+// Firefox discards alarms on browser restart; reconstruct deadlines from persisted state.
+api.runtime.onStartup.addListener(() => {
+  void serial(async () => { await ready; scheduledBoundary = undefined; await settle(); });
 });

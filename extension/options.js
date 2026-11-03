@@ -1,6 +1,7 @@
 "use strict";
 
 (() => {
+  const extensionApi = YFEPlatform.api;
   const $ = (id) => document.getElementById(id);
   const catalog = globalThis.YTV_CATALOG;
   const api = globalThis.YTV;
@@ -280,7 +281,7 @@
 
   async function init() {
     try {
-      if (!globalThis.chrome?.runtime?.id || !catalog || !api) throw new Error("Open the installed extension settings in Chrome.");
+      if (!extensionApi?.runtime?.id || !catalog || !api) throw new Error("Open the installed extension settings in your browser.");
       [settings, customPresets] = await Promise.all([api.readSettings(), api.readPresets()]);
       buildOptions();
       wireActions();
@@ -294,8 +295,8 @@
       api.subscribe((next) => { settings = next; syncControls(); });
       api.subscribeSnapshots(snapshot => { $('previous-appearance').hidden = !snapshot.focus?.canRestoreAppearance; });
       // Reload personal presets after another settings tab changes them.
-      globalThis.chrome.storage.onChanged.addListener((changes, area) => {
-        if (area !== "local") return;
+      api.subscribeRecords(keys => {
+        if (!keys.includes('ytv.presets')) return;
         void api.readPresets().then((next) => {
           if (JSON.stringify(next) !== JSON.stringify(customPresets)) { customPresets = next; renderPresets(); }
         }).catch(showError);

@@ -21,17 +21,17 @@
   <header><a href="./">YFE — YouTube Focus Extension</a></header>
   <main>
     <h1>Privacy</h1>
-    <p class="meta">Effective November 3, 2026 · Extension version 0.8.0</p>
+    <p class="meta">Effective November 3, 2026 · Extension version 0.9.0</p>
     <p>YFE customizes YouTube and supports focus sessions. Its settings and processing stay in your browser. The extension has no developer-operated backend, account system, analytics or advertising service.</p>
 
     <h2>Data used on your device</h2>
     <ul>
       <li><strong>Website content and URLs:</strong> on <code>www.youtube.com</code> and <code>www.youtube-nocookie.com/embed/*</code>, content scripts read page URLs, video/channel identifiers, titles, public author names and handles, comments, posts, page structure and player state to apply your appearance, filtering, navigation and player choices.</li>
       <li><strong>Activity:</strong> focus controls use playback state, page visibility and recent pointer, keyboard or scroll activity to calculate inactivity. They use activity timestamps; they do not record typed keystrokes or build a browsing-history log.</li>
-      <li><strong>Settings:</strong> Chrome extension storage holds appearance choices, presets, filter rules, schedules, session timestamps and temporary blocking state. Rules may contain names, handles, text, IDs or URLs that you choose to save.</li>
+      <li><strong>Settings:</strong> browser-local extension storage holds appearance choices, presets, filter rules, schedules, session timestamps and temporary blocking state. Rules may contain names, handles, text, IDs or URLs that you choose to save.</li>
       <li><strong>Optional protection:</strong> a settings password is processed locally and saved as a salted PBKDF2-SHA256 verifier, not as the original password. Confirmation phrases are stored as readable text. Temporary authorization state stays in browser session storage. A password-recovery request stores its deadline locally and disables protection after the chosen delay unless you cancel it. Other settings are kept. This feature is a self-control aid, not an account or security boundary.</li>
     </ul>
-    <p>Page content is processed in memory rather than saved as a page archive. A rule you explicitly add from a YouTube menu is saved locally. Content scripts receive the configuration needed for their features through extension messages; direct access to extension storage is restricted to trusted extension contexts.</p>
+    <p>Page content is processed in memory rather than saved as a page archive. A rule you explicitly add from a YouTube menu is saved locally. Content scripts receive the configuration needed for their features through extension messages. Chrome restricts direct storage access to trusted extension contexts. Firefox keeps authoritative settings and protection records in extension-origin IndexedDB, with temporary authorization in restricted session storage; only the language preference uses shared local storage.</p>
 
     <h2>Network requests and sharing</h2>
     <p>YFE does not send settings, rules, credentials, page content or activity to its developer or an analytics service. It does not sell data, use it for advertising, transfer it to data brokers or use it to assess creditworthiness.</p>
@@ -39,7 +39,7 @@
     <p>YFE uses data only to provide its stated focus and customization features, in accordance with the Chrome Web Store User Data Policy, including the Limited Use requirements.</p>
 
     <h2>Retention and your choices</h2>
-    <p>Saved settings remain in this browser profile until you change or remove them or uninstall YFE. Session state is updated as focus sessions advance; temporary authorization uses Chrome's session storage. You can edit rules and settings in the side panel. Uninstalling the extension removes its extension storage.</p>
+    <p>Saved settings remain in this browser profile until you change or remove them or uninstall YFE. Session state is updated as focus sessions advance; temporary authorization uses the browser's session storage. You can edit rules and settings in the Chrome side panel or Firefox/Zen sidebar. Uninstalling the extension removes its extension storage.</p>
     <p>JSON export is optional and writes a file you control. Exports include settings, presets, rules and schedules, but exclude protection credentials, active sessions, password-recovery requests and temporary blocking deadlines. Exported files remain wherever you save them until you delete them. Do not put sensitive information in a confirmation phrase or share an export without checking its contents.</p>
 
     <h2>Support and this website</h2>

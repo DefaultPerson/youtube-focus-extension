@@ -1,12 +1,14 @@
 /* Local settings and validation. No accounts, entitlements or network calls. */
 (() => {
   'use strict';
+  const api = globalThis.YFEPlatform?.api ?? globalThis.browser ?? globalThis.chrome;
   const catalog = globalThis.YTV_CATALOG;
-  const clientVersion = '0.8.0';
+  const clientVersion = '0.9.0';
   const options = new Map(catalog.options.map(option => [option.id, option]));
   let authorizationHandler = null;
   let entryHandler = null;
   const subscribers = new Set();
+  const recordSubscribers = new Set();
   let port = null;
   let reconnect = null;
   const plain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -61,20 +63,20 @@
     return normalizeSettings(raw);
   }
   async function request(action, data) {
-    if (!globalThis.chrome?.runtime?.id) throw new Error('Open the installed extension.');
-    if (chrome.runtime.getManifest().version !== clientVersion) {
-      const error = new Error('The settings page and extension are different versions. Reload YFE at chrome://extensions, then reload this page.');
+    if (!api?.runtime?.id) throw new Error('Open the installed extension.');
+    if (api.runtime.getManifest().version !== clientVersion) {
+      const error = new Error('The settings page and extension are different versions. Reload YFE in the browser’s extension manager, then reload this page.');
       error.code = 'VERSION_MISMATCH'; throw error;
     }
-    let result = await chrome.runtime.sendMessage({app: 'ytv', clientVersion, action, data});
+    let result = await api.runtime.sendMessage({app: 'ytv', clientVersion, action, data});
     if (!result?.ok && result?.code === 'FOCUS_PAUSE' && entryHandler) {
       await entryHandler();
-      result = await chrome.runtime.sendMessage({app: 'ytv', clientVersion, action, data});
+      result = await api.runtime.sendMessage({app: 'ytv', clientVersion, action, data});
     }
     if (!result?.ok && result?.code === 'PROTECTION_REQUIRED' && authorizationHandler) {
       const credential = await authorizationHandler();
       if (credential === null) throw new Error('Change cancelled.');
-      result = await chrome.runtime.sendMessage({app: 'ytv', clientVersion, action, data, credential});
+      result = await api.runtime.sendMessage({app: 'ytv', clientVersion, action, data, credential});
     }
     if (!result?.ok) { const error = new Error(result?.error || 'The background service is unavailable. Reload the extension and page.'); error.code = result?.code; throw error; }
     return result.value;
@@ -95,17 +97,33 @@
     return request('updateSettings', patch);
   }
   function connect() {
-    if (port || !subscribers.size) return;
+    if (port || !subscribers.size && !recordSubscribers.size) return;
     try {
-      const current = chrome.runtime.connect({name: 'ytv-updates'});
+      const current = api.runtime.connect({name: 'ytv-updates'});
       port = current;
-      current.onMessage.addListener(message => { if (message?.type === 'snapshot') for (const callback of subscribers) callback(message.value); });
-      current.onDisconnect.addListener(() => { if (port === current) port = null; if (subscribers.size && chrome.runtime?.id) reconnect = setTimeout(connect, 1000); });
+      current.onMessage.addListener(message => {
+        if (message?.type === 'snapshot') for (const callback of subscribers) callback(message.value);
+        if (message?.type === 'recordsChanged' && Array.isArray(message.keys)) for (const callback of recordSubscribers) callback(message.keys);
+      });
+      current.onDisconnect.addListener(() => { if (port === current) port = null; if ((subscribers.size || recordSubscribers.size) && api.runtime?.id) reconnect = setTimeout(connect, 1000); });
     } catch { /* An extension reload invalidates old tabs until they reload. */ }
   }
   function subscribeSnapshots(callback) {
     subscribers.add(callback); connect();
-    return () => { subscribers.delete(callback); if (!subscribers.size) { clearTimeout(reconnect); const old = port; port = null; old?.disconnect(); } };
+    return () => { subscribers.delete(callback); disconnectUnused(); };
+  }
+  function disconnectUnused() {
+    if (subscribers.size || recordSubscribers.size) return;
+    clearTimeout(reconnect); const old = port; port = null; old?.disconnect();
+  }
+  function subscribeRecords(callback) {
+    const nativeListener = (changes, area) => { if (area === 'local') callback(Object.keys(changes)); };
+    api.storage.onChanged.addListener(nativeListener);
+    recordSubscribers.add(callback); connect();
+    return () => {
+      api.storage.onChanged.removeListener(nativeListener);
+      recordSubscribers.delete(callback); disconnectUnused();
+    };
   }
   function subscribe(callback) {
     return subscribeSnapshots(snapshot => callback(snapshot.settings));
@@ -142,7 +160,7 @@
     if (raw.version === 2) { result.features = YTVFeatures.validate(raw.features); result.features.restrictions.temporaryUntil = 0; }
     return result;
   }
-  globalThis.YTV = Object.freeze({defaults, normalizeSettings, validateSettings, migrateValues, readSettings, writeSettings, updateSettings, subscribe, subscribeSnapshots, readPresets, writePresets, exportData, importData, request,
+  globalThis.YTV = Object.freeze({defaults, normalizeSettings, validateSettings, migrateValues, readSettings, writeSettings, updateSettings, subscribe, subscribeSnapshots, subscribeRecords, readPresets, writePresets, exportData, importData, request,
     readFeatures: () => request('readFeatures'), applyImport: raw => request('applyImport', raw),
     setAuthorizationHandler: handler => { authorizationHandler = handler; },
     setEntryHandler: handler => { entryHandler = handler; }});
