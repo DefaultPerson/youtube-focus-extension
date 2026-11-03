@@ -3,21 +3,106 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="See YFE in action: a free, open-source extension for a calmer YouTube.">
+  <meta name="description" content="Free, open-source YouTube focus extension for Chrome. Hide Shorts and recommendations, filter channels and keywords, and set focus sessions. An UnTrap alternative.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'">
-  <title>YFE — Product demo</title>
+  <title>YFE — YouTube Focus Extension &amp; Shorts Blocker</title>
+  <link rel="canonical" href="https://defaultperson.github.io/youtube-focus-extension/">
+  <link rel="sitemap" type="application/xml" href="sitemap.xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="YFE — YouTube Focus Extension">
+  <meta property="og:title" content="YFE — YouTube Focus Extension &amp; Shorts Blocker">
+  <meta property="og:description" content="Hide Shorts and recommendations, filter channels and keywords, and set focus sessions. Free, open source, and local to your browser.">
+  <meta property="og:url" content="https://defaultperson.github.io/youtube-focus-extension/">
+  <meta property="og:image" content="https://defaultperson.github.io/youtube-focus-extension/media/poster.png?v=0.6.3-sidepanel">
+  <meta property="og:image:alt" content="YFE's settings panel beside YouTube, with appearance controls and focus sessions">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="YFE — YouTube Focus Extension &amp; Shorts Blocker">
+  <meta name="twitter:description" content="A free, open-source UnTrap alternative for Chrome. Hide Shorts, filter unwanted content, and focus on the videos you choose.">
+  <meta name="twitter:image" content="https://defaultperson.github.io/youtube-focus-extension/media/poster.png?v=0.6.3-sidepanel">
   <link rel="icon" href="media/icon-32.png">
   <link rel="stylesheet" href="player.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://defaultperson.github.io/youtube-focus-extension/#extension",
+        "name": "YFE — YouTube Focus Extension",
+        "url": "https://defaultperson.github.io/youtube-focus-extension/",
+        "description": "A free, open-source YouTube focus extension for Chrome: hide Shorts and recommendations, filter channels and keywords, and manage focus sessions.",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "Windows, macOS, Linux",
+        "softwareRequirements": "Chrome or Chromium 120 or later",
+        "isAccessibleForFree": true,
+        "license": "https://opensource.org/license/mit",
+        "downloadUrl": "https://github.com/DefaultPerson/youtube-focus-extension/releases/latest",
+        "sameAs": "https://github.com/DefaultPerson/youtube-focus-extension",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+        "subjectOf": {"@id": "https://defaultperson.github.io/youtube-focus-extension/#demo"}
+      },
+      {
+        "@type": "VideoObject",
+        "@id": "https://defaultperson.github.io/youtube-focus-extension/#demo",
+        "name": "YFE side panel demo: hide Shorts, add Play all, and start focusing",
+        "description": "An 18-second demonstration of YFE 0.6.3 beside a YouTube channel: search settings, hide the Shorts link, enable Channel Play all and open focus sessions.",
+        "thumbnailUrl": "https://defaultperson.github.io/youtube-focus-extension/media/poster.png?v=0.6.3-sidepanel",
+        "contentUrl": "https://defaultperson.github.io/youtube-focus-extension/media/demo.mp4?v=0.6.3-sidepanel",
+        "uploadDate": "2026-11-03T09:48:14+03:00",
+        "duration": "PT18S",
+        "inLanguage": "en"
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <header><a class="brand" href="https://github.com/DefaultPerson/youtube-focus-extension"><img src="media/icon-32.png" width="32" height="32" alt=""><span>YFE <small>YouTube Focus Extension</small></span></a><a class="release" href="https://github.com/DefaultPerson/youtube-focus-extension/releases/latest">Get the extension</a></header>
   <main>
-    <video controls autoplay muted playsinline preload="metadata" poster="media/poster.png?v=0.6.3-sidepanel" aria-label="YFE 0.6.3 demo: use the side panel beside YouTube, hide the Shorts link, add Play all, and open focus sessions">
+    <section class="intro" aria-labelledby="title">
+      <p class="eyebrow">Free · Open source · Local settings</p>
+      <h1 id="title">YouTube Focus Extension</h1>
+      <p class="lead">Hide Shorts and recommendations. Filter unwanted channels and keywords. Choose the videos you want to watch, with 298 appearance and behavior settings in one Chrome side panel.</p>
+      <p>YFE is an independent, free UnTrap alternative for desktop Chrome and Chromium.</p>
+      <div class="actions"><a class="release primary" href="https://github.com/DefaultPerson/youtube-focus-extension/releases/latest">Get the latest release</a><a href="#install">Installation guide</a></div>
+    </section>
+    <video id="demo" controls autoplay muted playsinline preload="metadata" poster="media/poster.png?v=0.6.3-sidepanel" aria-label="YFE 0.6.3 demo: use the side panel beside YouTube, hide the Shorts link, add Play all, and open focus sessions">
       <source src="media/demo.mp4?v=0.6.3-sidepanel" type="video/mp4">
       Your browser cannot play this video. <a href="https://github.com/DefaultPerson/youtube-focus-extension">View the project on GitHub.</a>
     </video>
-    <div class="caption"><h1>Your settings. Right beside YouTube.</h1><p>YFE 0.6.3 side panel. Hide Shorts, add Play all, and find your focus.</p></div>
+    <p class="caption">18-second side panel demo, recorded with YFE 0.6.3.</p>
+    <section class="content-section" aria-labelledby="features">
+      <h2 id="features">Make YouTube fit your focus</h2>
+      <div class="feature-grid">
+        <article><h3>Hide YouTube Shorts and distractions</h3><p>Remove Shorts links and shelves, the home feed, related videos, comments and live chat from the interface. Keep the parts of YouTube you use.</p></article>
+        <article><h3>Filter channels and keywords</h3><p>Hide matching video cards, comments and posts by channel, title, text, ID or regular expression. Add filter rules from YouTube menus.</p></article>
+        <article><h3>Set focus sessions and limits</h3><p>Choose a session length, inactivity timeout, breaks and weekly blocking schedules. Protect selected settings with a local password or confirmation phrase.</p></article>
+      </div>
+      <p class="more-features">Also includes appearance presets, playback speed and quality preferences, autoplay controls, optional Google Fonts, and a Play all button for a channel's Videos tab. <a href="https://github.com/DefaultPerson/youtube-focus-extension#features">See all features on GitHub.</a></p>
+    </section>
+    <section id="install" class="content-section" aria-labelledby="install-title">
+      <h2 id="install-title">Install in Chrome or Chromium</h2>
+      <p>Chrome/Chromium 120 or later on desktop. The extension is not yet listed in the Chrome Web Store.</p>
+      <ol>
+        <li>Download the Chrome ZIP from the <a href="https://github.com/DefaultPerson/youtube-focus-extension/releases/latest">latest GitHub release</a> and extract it.</li>
+        <li>Open <code>chrome://extensions</code> and enable <strong>Developer mode</strong>.</li>
+        <li>Choose <strong>Load unpacked</strong> and select the folder containing <code>manifest.json</code>.</li>
+        <li>Reload YouTube and click YFE's toolbar icon to open the side panel.</li>
+      </ol>
+      <p>English is the default language; Russian is available in settings. No build step is needed for the release package.</p>
+    </section>
+    <section class="content-section questions" aria-labelledby="questions">
+      <h2 id="questions">Before you install</h2>
+      <h3>Is YFE a free UnTrap alternative?</h3>
+      <p>Yes. YFE is an independent project under the MIT license, with no subscription or paid feature tier. It focuses on YouTube appearance, content filters and focus controls; summaries, translation and cloud sync are not included.</p>
+      <h3>Does the Shorts blocker block every video?</h3>
+      <p>The appearance controls hide selected YouTube interface elements. Content filters hide matching cards and comments; they do not block a video that is already playing. Session limits and temporary blocking are separate controls.</p>
+      <h3>Does YFE send my settings anywhere?</h3>
+      <p>Settings stay in your browser. No developer account, analytics or backend is used. Optional thumbnail replacement requests images from YouTube, and opt-in Google Fonts downloads request font files from Google. Read the <a href="privacy.html">privacy policy</a> for the full details.</p>
+      <p class="limits">YouTube changes its layout, so some controls may need updates. Ad skipping is experimental. <a href="https://github.com/DefaultPerson/youtube-focus-extension#limits">Known limits</a> · <a href="https://github.com/DefaultPerson/youtube-focus-extension/issues">Report a problem</a></p>
+    </section>
   </main>
-  <footer><span>Free and open source</span><nav aria-label="Project links"><a href="https://github.com/DefaultPerson/youtube-focus-extension">GitHub</a><a href="privacy.html">Privacy</a></nav></footer>
+  <footer><span>Independent project. Not affiliated with YouTube, Google or UnTrap.</span><nav aria-label="Project links"><a href="https://github.com/DefaultPerson/youtube-focus-extension">GitHub</a><a href="privacy.html">Privacy</a><a href="sitemap.xml">Sitemap</a></nav></footer>
 </body>
 </html>

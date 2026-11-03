@@ -2,24 +2,24 @@
 
 [![Release v0.8.0](docs/media/release.svg?v=0.8.0)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
 
-YFE is a free, open-source UnTrap alternative for desktop browsers: hide Shorts, recommendations and comments, filter unwanted content, and set focus sessions. Customize the YouTube interface from a persistent settings panel, with 298 appearance and behavior settings. Chrome/Chromium and Firefox/Zen use the same feature code; browser acceptance status is recorded in the verification notes.
+YFE is a free, open-source **YouTube focus extension and Shorts blocker** for desktop browsers. Hide Shorts, recommendations and comments, filter channels and keywords, and set focus sessions from a persistent settings panel. This independent **UnTrap alternative** includes 298 appearance and behavior settings. Chrome/Chromium and Firefox/Zen share the same feature code; browser acceptance status is recorded in the verification notes.
 
 English by default, with Russian available in settings. Local storage. No account, subscription, analytics or backend.
 
 <p align="center">
-  <a href="https://defaultperson.github.io/youtube-focus-extension/?v=0.6.3-sidepanel"><img src="https://raw.githubusercontent.com/DefaultPerson/youtube-focus-extension/0c658a89e8f85fd2d59e656c9ed14a09f4fc00d1/docs/media/yfe-demo.gif" alt="YFE in action — customize YouTube from the side panel"></a>
+  <a href="https://defaultperson.github.io/youtube-focus-extension/#demo"><img src="https://raw.githubusercontent.com/DefaultPerson/youtube-focus-extension/0c658a89e8f85fd2d59e656c9ed14a09f4fc00d1/docs/media/yfe-demo.gif" alt="YFE in action — customize YouTube from the side panel"></a>
 </p>
 
 ## Features
 
-- **Distraction control:** hide YouTube Shorts, home recommendations, related videos, comments, live chat, topic chips and promotional shelves.
-- **Appearance:** customize the home feed, search, subscriptions, channels, video cards, watch page, navigation, embedded player, colors and fonts. Optionally download the selected font from Google Fonts.
+- **Hide YouTube Shorts and distractions:** remove Shorts, home recommendations, related videos, comments, live chat, topic chips and promotional shelves from the interface.
+- **Customize YouTube:** change the home feed, search, subscriptions, channels, video cards, watch page, navigation, embedded player, colors and fonts. Optionally download the selected font from Google Fonts.
 - **Focus sessions:** start a session from the panel or YouTube, choose its duration and idle timeout, and track it with a live timer. Entry pauses, confirmation phrases, breaks, temporary blocking and weekly schedules are included.
 - **Presets:** save layouts, select one when starting a session, or switch presets on a schedule. Applying a built-in preset requires confirmation and saves the previous appearance for restoration.
-- **Content filters:** hide matching channels, video cards, comments and posts using text, IDs, links or a bounded regular-expression syntax. Add rules from YouTube menus.
+- **Channel and keyword filters:** hide matching channels, video cards, comments and posts using text, IDs, links or a bounded regular-expression syntax. Add rules from YouTube menus.
 - **Settings protection:** require a password or phrase for selected changes, with a single-use or five-minute confirmation. Request a forgotten-password reset after a configurable delay (24 hours by default), or cancel it before it completes.
 - **Player controls:** default playback speed (0.25–4×), automatic fullscreen, preferred quality, native controls, autoplay prevention and automatic next-video control. Ad skipping and seeking are experimental.
-- **Channel Play all:** an optional button on a channel's Videos tab opens its regular-video uploads playlist, newest first, without collecting loaded cards. Shorts and live streams are excluded.
+- **Channel Play all button:** an optional button on a channel's Videos tab opens its regular-video uploads playlist, newest first, without collecting loaded cards. Shorts and live streams are excluded.
 - **One settings interface:** global search across every section, English/Russian switching, SVG navigation, JSON import/export, side panel by default and an optional full settings tab.
 
 ## Install in Chrome or Chromium
