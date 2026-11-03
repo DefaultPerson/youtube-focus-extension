@@ -1,6 +1,7 @@
 # YouTube Focus Extension[YFE]
 
 [![Release v0.9.0](docs/media/release.svg?v=0.9.0)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
+[![Firefox Add-ons: awaiting review](docs/media/firefox-addons.svg)](https://addons.mozilla.org/en-US/firefox/addon/yfe-youtube-focus-extension/)
 
 YFE is a free, open-source **YouTube focus extension and Shorts blocker** for desktop browsers. Hide Shorts, recommendations and comments, filter channels and keywords, and set focus sessions from a persistent settings panel. This independent **UnTrap alternative** includes 298 appearance and behavior settings. Chrome/Chromium and Firefox/Zen share the same feature code; browser acceptance status is recorded in the verification notes.
 
