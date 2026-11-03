@@ -35,8 +35,8 @@
     $('filters-enabled').checked = features.filters.enabled; $('filter-buttons').checked = features.filters.contextButtons;
     for (const kind of YTVFeatures.kinds) $('filter-' + kind).value = features.filters[kind].join('\n');
     const p = features.player;
-    $('player-enabled').checked = p.enabled; $('player-quality').value = p.quality;
-    for (const [id, key] of [['native-controls', 'nativeControls'], ['disable-autoplay', 'disableAutoplay'], ['disable-next', 'disableNextAutoplay'], ['skip-ads', 'skipAds'], ['seek-ads', 'seekAds']]) $(id).checked = p[key];
+    $('player-enabled').checked = p.enabled; $('player-quality').value = p.quality; $('player-speed').value = p.playbackSpeed;
+    for (const [id, key] of [['auto-fullscreen', 'autoFullscreen'], ['native-controls', 'nativeControls'], ['disable-autoplay', 'disableAutoplay'], ['disable-next', 'disableNextAutoplay'], ['skip-ads', 'skipAds'], ['seek-ads', 'seekAds']]) $(id).checked = p[key];
     renderProtection();
   }
   function renderProtection() {
@@ -58,6 +58,7 @@
     $('end-session').hidden = access.phase !== 'active';
   }
   async function init() {
+    for (const speed of YTVFeatures.speeds) { const option = document.createElement('option'); option.value = speed; option.textContent = speed ? `${speed}×` : 'Keep YouTube speed'; $('player-speed').append(option); }
     for (const [value, label] of [['auto', 'Automatic'], ['lowest', 'Lowest'], ['tiny', '144p'], ['small', '240p'], ['medium', '360p'], ['large', '480p'], ['hd720', '720p'], ['hd1080', '1080p'], ['hd1440', '1440p'], ['hd2160', '2160p (4K)'], ['highres', '4320p (8K)'], ['highest', 'Highest']]) { const option = document.createElement('option'); option.value = value; option.textContent = label; $('player-quality').append(option); }
     for (const [scope, caption] of Object.entries(scopeLabels)) { const label = document.createElement('label'); label.className = 'check'; const input = document.createElement('input'); input.type = 'checkbox'; input.id = 'scope-' + scope; label.append(input, caption); $('protection-scopes').append(label); }
     [features, protection] = await Promise.all([YTV.readFeatures(), YTV.request('protectionInfo')]); render();
@@ -66,7 +67,7 @@
     $('temporary-start').addEventListener('click', () => { if (!$('temporary-minutes').reportValidity()) return; void mutate(async () => { const current = (await YTV.readFeatures()).restrictions; await write('restrictions', {...current, enabled: true, temporaryUntil: Date.now() + Number($('temporary-minutes').value) * 60000}); $('restriction-enabled').checked = true; }); });
     $('temporary-stop').addEventListener('click', () => void mutate(async () => { const current = (await YTV.readFeatures()).restrictions; await write('restrictions', {...current, temporaryUntil: 0}); }));
     $('filters-form').addEventListener('submit', e => { e.preventDefault(); void mutate(async () => { await write('filters', {enabled: $('filters-enabled').checked, contextButtons: $('filter-buttons').checked, ...Object.fromEntries(YTVFeatures.kinds.map(kind => [kind, $('filter-' + kind).value.split(/\r?\n/).map(v => v.trim()).filter(Boolean)]))}); const current = await YTV.readFeatures(); for (const kind of YTVFeatures.kinds) $('filter-' + kind).value = current.filters[kind].join('\n'); }); });
-    $('player-form').addEventListener('submit', e => { e.preventDefault(); void mutate(() => write('player', {enabled: $('player-enabled').checked, quality: $('player-quality').value, nativeControls: $('native-controls').checked, disableAutoplay: $('disable-autoplay').checked, disableNextAutoplay: $('disable-next').checked, skipAds: $('skip-ads').checked, seekAds: $('seek-ads').checked})); });
+    $('player-form').addEventListener('submit', e => { e.preventDefault(); void mutate(() => write('player', {enabled: $('player-enabled').checked, quality: $('player-quality').value, playbackSpeed: Number($('player-speed').value), autoFullscreen: $('auto-fullscreen').checked, nativeControls: $('native-controls').checked, disableAutoplay: $('disable-autoplay').checked, disableNextAutoplay: $('disable-next').checked, skipAds: $('skip-ads').checked, seekAds: $('seek-ads').checked})); });
     $('protection-form').addEventListener('submit', e => { e.preventDefault(); void mutate(async () => {
       if ($('new-credential').value !== $('repeat-credential').value) throw new Error('The password or phrase does not match its confirmation.');
       protection = await YTV.request('configureProtection', {enabled: $('protection-enabled').checked, method: $('protection-method').value, duration: $('protection-duration').value,

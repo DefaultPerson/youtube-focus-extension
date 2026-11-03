@@ -101,7 +101,7 @@
           <label class="check"><input id="filters-enabled" type="checkbox"> Enable content filters</label>
           <label class="check"><input id="filter-buttons" type="checkbox"> Show filter buttons on YouTube</label>
           <p class="muted">One rule per line. Channels: exact name, @handle, ID or URL. Videos: part of a title, ID or URL. Comments and posts: part of the text, ID or URL. Text matching ignores case; channel IDs are case-sensitive. The video you are watching is not blocked. On watch pages, filters apply to recommendations and comments.</p>
-          <p class="muted">Regular expressions: /pattern/i with the flags i, m, s, u. Literals, character classes, dots, anchors and up to four ? quantifiers are supported. Groups, |, *, +, {…} and backreferences are not allowed, so a rule cannot freeze the page.</p>
+          <p class="muted">Regular expressions: /pattern/i with the flags i, m, s, u. Groups (…), (?:…), alternatives | and repetitions *, +, ? are supported, along with character classes, dots and anchors. Lookarounds, backreferences and {…} are not supported. Maximum pattern length: 128 characters.</p>
           <label>Channels<textarea id="filter-channels" rows="5" spellcheck="false"></textarea></label>
           <label>Videos<textarea id="filter-videos" rows="5" spellcheck="false"></textarea></label>
           <label>Comments<textarea id="filter-comments" rows="5" spellcheck="false"></textarea></label>
@@ -114,6 +114,10 @@
         <form id="player-form">
           <label class="check"><input id="player-enabled" type="checkbox"> Enable player settings</label>
           <label>Preferred quality<select id="player-quality"></select></label><p class="muted">If the preferred quality is unavailable, an available quality is used. Turning this off restores automatic quality selection by YouTube.</p>
+          <label>Default playback speed<select id="player-speed"></select></label>
+          <p class="muted">Set the initial speed for each video. You can still change it in YouTube for the current video. Ads and feed previews keep their own speed.</p>
+          <label class="check"><input id="auto-fullscreen" type="checkbox"> Enter fullscreen automatically</label>
+          <p class="muted">On watch pages and embedded players, enter fullscreen when playback starts. If Chrome requires a gesture, press Play. Exiting fullscreen keeps it off for the current video.</p>
           <label class="check"><input id="native-controls" type="checkbox"> Use native video controls</label>
           <label class="check"><input id="disable-autoplay" type="checkbox"> Stop videos from playing automatically when opened</label>
           <label class="check"><input id="disable-next" type="checkbox"> Stop the next video from playing automatically</label>

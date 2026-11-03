@@ -1,5 +1,15 @@
 # Release verification
 
+Version 0.7.0 adds default playback speed, automatic fullscreen and extended regex filters (2026-11-03):
+
+- Speed choices cover 0.25–4× in 0.25 steps, with a neutral Keep YouTube speed option. Fullscreen starts off, requires Chrome's playback gesture when necessary, and respects exiting for the current video. No new permissions or dependencies were added.
+- Regex supports ordinary/noncapturing groups, alternatives and `*`, `+`, `?`, including nested and lazy repetitions. Extended patterns use a nonbacktracking matcher; the previous simple-pattern fast path remains. Patterns are limited to 128 characters and matching input to 8,192. Lookarounds, backreferences, named groups, counted repetitions and Unicode property escapes are unsupported.
+- 104,672 temporary regex assertions passed, including native-RegExp comparisons, Unicode/escape cases and pathological inputs. Local Node matching of nested overlapping repetitions took about 1.2 ms for an 8,192-character nonmatch; a 40-alternative pattern took about 7.1 ms. These are matcher measurements, not whole-page performance claims.
+- 62 worker/model checks passed for migration, all speed choices, invalid input, import/export, restart recovery and existing session/scheduling behavior. Catalog/runtime parity and deterministic ZIP checks passed.
+- 16 Chromium fixture checks covered speed changes, ad transitions, SPA navigation, real fullscreen entry/exit, restoration, and regex filtering. Eight settings checks covered English/Russian, global search and the 390px layout. These scripts are temporary, not a committed test suite.
+- The existing Chrome installation loaded the 0.7.0 UI and worker. A real YouTube video played at 1.5×; a Play gesture entered fullscreen, Esc exited, playback resumed without reentry, and a manual 1.25× choice persisted. On a real watch page in an isolated profile, the regex filter hid three matching recommendations and restored all three when disabled. The user's search page remained empty during this check; other extensions were left unchanged.
+- All 39 installed source files matched the new version. After temporary settings were restored, all 598 prior storage entries retained their original values; only the two neutral player defaults were added. Chrome Web Store submission was not performed.
+
 Version 0.6.3 adds an optional Channel Play all button (2026-11-03):
 
 - Live Chromium checks on Google and Google for Developers opened regular-video playlists with 2,035 and 4,652 entries. Videos → Shorts → Videos and navigation between channels retained the correct channel ID despite stale HTML metadata.

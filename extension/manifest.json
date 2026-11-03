@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "YFE \u2014 YouTube Focus Extension",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "minimum_chrome_version": "120",
   "description": "Customize YouTube, hide Shorts and distractions, filter content, and manage focus sessions from a Chrome side panel.",
   "permissions": [

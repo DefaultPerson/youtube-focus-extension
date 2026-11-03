@@ -3,7 +3,7 @@
   'use strict';
   const channel = 'ytv-local-player-v1';
   const qualities = new Set(['auto', 'lowest', 'tiny', 'small', 'medium', 'large', 'hd720', 'hd1080', 'hd1440', 'hd2160', 'highres', 'highest']);
-  const defaults = {enabled: false, quality: 'auto', nativeControls: false, disableAutoplay: false, disableNextAutoplay: false, skipAds: false, seekAds: false};
+  const defaults = {enabled: false, quality: 'auto', playbackSpeed: 0, autoFullscreen: false, nativeControls: false, disableAutoplay: false, disableNextAutoplay: false, skipAds: false, seekAds: false};
   const playerSelector = '#movie_player, .html5-video-player, ytd-video-preview, ytm-video-preview, ytd-channel-video-player-renderer';
   const nativeStyle = document.createElement('style');
   nativeStyle.textContent = '[data-ytv-native-controls="on"] .ytp-chrome-bottom,[data-ytv-native-controls="on"] .ytp-gradient-bottom{display:none!important} [data-ytv-native-controls="on"] video::-webkit-media-controls{display:flex!important}';
@@ -23,6 +23,61 @@
   let userPlayers = new WeakMap();
   const clickedAt = new WeakMap();
   let adCandidates = new WeakMap();
+  let fullscreenOwned = null;
+  let fullscreenHandled = false;
+  let fullscreenPending = false;
+  let fullscreenEpoch = 0;
+
+  function mainPlayer(video) {
+    if (!(location.pathname === '/watch' || /^\/(?:embed|shorts)\//.test(location.pathname))) return null;
+    return video.closest('#movie_player, .html5-video-player');
+  }
+  function isAd(player) { return player.matches('.ad-showing, .ad-interrupting'); }
+  function restoreSpeed(video, state) {
+    if (state.speed) {
+      if (video.playbackRate === state.speed.applied) video.playbackRate = state.speed.rate;
+      if (video.defaultPlaybackRate === state.speed.applied) video.defaultPlaybackRate = state.speed.defaultRate;
+    }
+    state.speed = null; state.speedApplied = false; state.speedStarted = false;
+  }
+  function applySpeed(video, state) {
+    const player = mainPlayer(video);
+    if (!config.playbackSpeed || !player || isAd(player) || video.duration === Infinity) {
+      if (state.speed) restoreSpeed(video, state);
+      return;
+    }
+    if (state.speedApplied) return;
+    state.speed ??= {rate: video.playbackRate, defaultRate: video.defaultPlaybackRate};
+    state.speed.applied = config.playbackSpeed;
+    state.speedApplied = true;
+    video.defaultPlaybackRate = config.playbackSpeed;
+    video.playbackRate = config.playbackSpeed;
+  }
+  function exitOwnedFullscreen() {
+    fullscreenEpoch++; fullscreenPending = false;
+    if (fullscreenOwned && document.fullscreenElement === fullscreenOwned) void document.exitFullscreen().catch(() => {});
+    fullscreenOwned = null; fullscreenHandled = false;
+  }
+  function onFullscreenChange() {
+    if (document.fullscreenElement?.querySelector('video')) fullscreenHandled = true;
+    if (document.fullscreenElement !== fullscreenOwned) fullscreenOwned = null;
+  }
+  function enterFullscreen(video) {
+    if (!config.autoFullscreen || fullscreenHandled || fullscreenPending || location.pathname.startsWith('/shorts/')) return;
+    const player = mainPlayer(video);
+    if (!player || !video.readyState || isAd(player) || !visible(player) || !document.fullscreenEnabled || document.fullscreenElement || !navigator.userActivation?.isActive) return;
+    const epoch = fullscreenEpoch;
+    fullscreenPending = true;
+    // Request during the play gesture; delayed synthetic clicks lose activation.
+    player.requestFullscreen().then(() => {
+      if (epoch !== fullscreenEpoch || !active || !config.autoFullscreen) {
+        if (document.fullscreenElement === player) void document.exitFullscreen().catch(() => {});
+        return;
+      }
+      fullscreenOwned = player; fullscreenHandled = true;
+    }).catch(() => { /* A frame policy or Chrome may decline; the next Play can retry. */ })
+      .finally(() => { if (epoch === fullscreenEpoch) fullscreenPending = false; });
+  }
 
   function sendQuality() {
     window.postMessage({channel, type: 'configure', config: {enabled: config.enabled, quality: config.quality}}, location.origin);
@@ -44,6 +99,7 @@
     else element.setAttribute(name, value);
   }
   function releaseVideo(video, state) {
+    restoreSpeed(video, state);
     if (state.controlsOwned && video.controls) restoreAttribute(video, 'controls', state.controls);
     if (state.autoplayOwned && !video.autoplay) restoreAttribute(video, 'autoplay', state.autoplay);
     videos.delete(video);
@@ -51,6 +107,7 @@
   function checkVideo(video) {
     if (!(video instanceof HTMLVideoElement) || !video.closest(playerSelector)) return;
     const state = media(video);
+    applySpeed(video, state);
     if (config.nativeControls) {
       if (!state.controlsOwned) state.controls = video.getAttribute('controls');
       state.controlsOwned = true;
@@ -159,7 +216,8 @@
     navigation = location.href;
     userPlayers = new WeakMap();
     adCandidates = new WeakMap();
-    for (const state of videos.values()) { state.allowed = false; state.source = ''; }
+    fullscreenEpoch++; fullscreenPending = false; fullscreenHandled = Boolean(document.fullscreenElement);
+    for (const [video, state] of videos) { restoreSpeed(video, state); state.allowed = false; state.source = ''; }
     schedule();
   }
   function onMedia(event) {
@@ -174,11 +232,17 @@
       }
     } else if (event.type === 'loadedmetadata') {
       const state = media(video);
+      state.speedApplied = false; state.speedStarted = false;
       const source = video.currentSrc || video.getAttribute('src') || '';
       if (state.source && source && source !== state.source && !video.closest('#movie_player, .html5-video-player') && Date.now() - state.userAt > 2000) state.allowed = false;
       state.source = source;
     }
+    if (event.type === 'playing') {
+      const state = media(video);
+      if (!state.speedStarted) { state.speedApplied = false; state.speedStarted = true; }
+    }
     checkVideo(video);
+    if (['play', 'playing'].includes(event.type) && !video.paused) enterFullscreen(video);
     schedule();
   }
   function allowUserPlay(event) {
@@ -195,6 +259,19 @@
     userPlayers.set(player, Date.now());
     player.querySelectorAll('video').forEach(video => { const state = media(video); state.allowed = true; state.userAt = Date.now(); });
   }
+  function fullscreenGesture(event) {
+    if (!config.autoFullscreen || !event.isTrusted || event.repeat) return;
+    const target = event.target;
+    if (!(target instanceof Element) || target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"]')) return;
+    let player = target.closest('#movie_player, .html5-video-player');
+    if (event.type === 'keydown') {
+      if (![' ', 'Enter', 'k', 'K', 'MediaPlayPause', 'MediaPlay'].includes(event.key)) return;
+      if (event.key === 'Enter' && !target.closest('video, .ytp-play-button, .ytp-large-play-button, .ytp-cued-thumbnail-overlay')) return;
+      if (!player && target === document.body && event.key !== 'Enter') player = document.querySelector('#movie_player, .html5-video-player');
+    } else if (event.button !== 0 || !target.closest('video, .ytp-play-button, .ytp-large-play-button, .ytp-cued-thumbnail-overlay')) return;
+    const video = player?.querySelector('video');
+    if (video && (video.paused || video.ended)) enterFullscreen(video);
+  }
   const mediaEvents = ['play', 'playing', 'loadedmetadata', 'emptied'];
   const navigationEvents = ['yt-navigate-start', 'yt-navigate-finish', 'yt-page-data-updated'];
   function stop() {
@@ -209,12 +286,16 @@
     for (const name of navigationEvents) document.removeEventListener(name, onNavigation, true);
     document.removeEventListener('pointerdown', allowUserPlay, true);
     document.removeEventListener('keydown', allowUserPlay, true);
+    document.removeEventListener('click', fullscreenGesture, true);
+    document.removeEventListener('keydown', fullscreenGesture, true);
+    document.removeEventListener('fullscreenchange', onFullscreenChange);
     document.removeEventListener('DOMContentLoaded', schedule);
     window.removeEventListener('popstate', resetNavigation);
     for (const [video, state] of videos) releaseVideo(video, state);
     for (const [player, original] of nativePlayers) if (player.getAttribute('data-ytv-native-controls') === 'on') restoreAttribute(player, 'data-ytv-native-controls', original);
     nativePlayers.clear(); nativeStyle.remove();
     userPlayers = new WeakMap();
+    exitOwnedFullscreen();
     restoreNext();
   }
   function onNavigation(event) {
@@ -225,11 +306,14 @@
     if (destroyed) return;
     const previous = config;
     config = {...defaults, enabled: value?.enabled === true, quality: qualities.has(value?.quality) ? value.quality : 'auto'};
-    for (const key of ['nativeControls', 'disableAutoplay', 'disableNextAutoplay', 'skipAds', 'seekAds']) config[key] = value?.[key] === true;
+    if (typeof value?.playbackSpeed === 'number' && value.playbackSpeed >= 0.25 && value.playbackSpeed <= 4 && Number.isInteger(value.playbackSpeed * 4)) config.playbackSpeed = value.playbackSpeed;
+    for (const key of ['autoFullscreen', 'nativeControls', 'disableAutoplay', 'disableNextAutoplay', 'skipAds', 'seekAds']) config[key] = value?.[key] === true;
     sendQuality();
-    const needed = config.enabled && (config.nativeControls || config.disableAutoplay || config.disableNextAutoplay || config.skipAds || config.seekAds);
+    const needed = config.enabled && (config.playbackSpeed || config.autoFullscreen || config.nativeControls || config.disableAutoplay || config.disableNextAutoplay || config.skipAds || config.seekAds);
     if (!needed) { stop(); return; }
     if (previous.disableNextAutoplay && !config.disableNextAutoplay) restoreNext();
+    if (previous.playbackSpeed !== config.playbackSpeed) for (const [video, state] of videos) restoreSpeed(video, state);
+    if (previous.autoFullscreen && !config.autoFullscreen) exitOwnedFullscreen();
     if (!active) {
       active = true;
       navigation = location.href;
@@ -239,6 +323,9 @@
       for (const name of navigationEvents) document.addEventListener(name, onNavigation, true);
       document.addEventListener('pointerdown', allowUserPlay, true);
       document.addEventListener('keydown', allowUserPlay, true);
+      document.addEventListener('click', fullscreenGesture, true);
+      document.addEventListener('keydown', fullscreenGesture, true);
+      document.addEventListener('fullscreenchange', onFullscreenChange);
       document.addEventListener('DOMContentLoaded', schedule);
       window.addEventListener('popstate', resetNavigation);
     }

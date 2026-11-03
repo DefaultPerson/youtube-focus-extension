@@ -32,6 +32,145 @@
     } catch { /* Invalid percent escapes do not supply an identity. */ }
     return null;
   }
+  // Thompson's construction: every state is visited at most once per input
+  // character, even for nested repetition and overlapping alternatives. Each
+  // native predicate consumes one character or tests a zero-width assertion.
+  function boundedRegex(pattern, flags) {
+    let cursor = 0;
+    const unicode = flags.includes('u');
+    const states = [];
+    const predicates = [];
+    const predicateBySource = new Map();
+    const emit = state => states.push(state) - 1;
+    function atom() {
+      const begin = cursor;
+      const character = pattern[cursor++];
+      if (character === '(') {
+        if (pattern[cursor] === '?') {
+          if (pattern.slice(cursor, cursor + 2) !== '?:') throw new SyntaxError('Only ordinary and noncapturing groups are supported');
+          cursor += 2;
+        }
+        const group = expression();
+        if (pattern[cursor++] !== ')') throw new SyntaxError('Unclosed group');
+        return group;
+      }
+      if (character === '[') {
+        while (cursor < pattern.length && pattern[cursor] !== ']') {
+          if (pattern[cursor++] === '\\') cursor++;
+        }
+        if (pattern[cursor++] !== ']') throw new SyntaxError('Unclosed character class');
+      } else if (character === '\\') {
+        const escaped = pattern[cursor++];
+        if (escaped === 'x' && /^[0-9a-f]{2}/i.test(pattern.slice(cursor))) cursor += 2;
+        else if (escaped === 'u' && /^[0-9a-f]{4}/i.test(pattern.slice(cursor))) {
+          cursor += 4;
+          // Under /u, adjacent escaped UTF-16 surrogates form one atom.
+          if (unicode && /^d[89ab][0-9a-f]{2}$/i.test(pattern.slice(cursor - 4, cursor)) && /^\\u[dD][c-fC-F][0-9a-f]{2}/.test(pattern.slice(cursor))) cursor += 6;
+        } else if (escaped === 'u' && unicode && pattern[cursor] === '{') {
+          const close = pattern.indexOf('}', cursor);
+          if (close < 0) throw new SyntaxError('Unclosed Unicode escape');
+          cursor = close + 1;
+        } else if (escaped === '0' && !unicode) {
+          let digits = 0;
+          while (digits < 2 && /[0-7]/.test(pattern[cursor] || 'x')) { cursor++; digits++; }
+        }
+      } else {
+        if ('*+?{}|)'.includes(character)) throw new SyntaxError('Unsupported quantifier or unexpected delimiter');
+        if (unicode && pattern.codePointAt(begin) > 0xffff) cursor++;
+      }
+      const source = pattern.slice(begin, cursor);
+      if (!predicateBySource.has(source)) {
+        predicateBySource.set(source, predicates.length);
+        predicates.push(new RegExp(source, `${flags}y`));
+      }
+      return {kind: source === '^' || source === '$' || source === '\\b' || source === '\\B' ? 'assert' : 'char', predicate: predicateBySource.get(source)};
+    }
+    function sequence() {
+      const children = [];
+      while (cursor < pattern.length && !')|'.includes(pattern[cursor])) {
+        let child = atom();
+        const quantifier = pattern[cursor];
+        if (quantifier && '*+?'.includes(quantifier)) {
+          cursor++;
+          if (pattern[cursor] === '?') cursor++; // Greediness cannot change a boolean match.
+          child = {kind: 'repeat', quantifier, child};
+        }
+        children.push(child);
+      }
+      return {kind: 'sequence', children};
+    }
+    function expression() {
+      const children = [sequence()];
+      while (pattern[cursor] === '|') { cursor++; children.push(sequence()); }
+      return children.length === 1 ? children[0] : {kind: 'alternative', children};
+    }
+    function compile(node, next) {
+      if (node.kind === 'sequence') {
+        for (let i = node.children.length - 1; i >= 0; i--) next = compile(node.children[i], next);
+        return next;
+      }
+      if (node.kind === 'alternative') {
+        let start = compile(node.children[0], next);
+        for (let i = 1; i < node.children.length; i++) start = emit({kind: 'split', left: start, right: compile(node.children[i], next)});
+        return start;
+      }
+      if (node.kind === 'repeat') {
+        if (node.quantifier === '?') return emit({kind: 'split', left: compile(node.child, next), right: next});
+        const split = emit({kind: 'split', right: next});
+        const start = compile(node.child, split);
+        states[split].left = start;
+        return node.quantifier === '*' ? split : start;
+      }
+      return emit({...node, next});
+    }
+    const tree = expression();
+    if (cursor !== pattern.length) throw new SyntaxError('Unexpected delimiter');
+    const start = compile(tree, emit({kind: 'match'}));
+    return {test(value) {
+      const input = String(value).slice(0, MAX_INPUT_LENGTH);
+      const seen = new Uint32Array(states.length);
+      const tested = new Uint32Array(predicates.length);
+      const matched = new Uint8Array(predicates.length);
+      let pending = [];
+      let following = [];
+      const active = [];
+      let generation = 0;
+      let position = 0;
+      function accepts(index) {
+        if (tested[index] !== generation) {
+          tested[index] = generation;
+          predicates[index].lastIndex = position;
+          matched[index] = predicates[index].test(input);
+        }
+        return matched[index];
+      }
+      while (true) {
+        generation++;
+        pending.push(start); // Unanchored search shares states across every start position.
+        while (pending.length) {
+          const index = pending.pop();
+          if (seen[index] === generation) continue;
+          seen[index] = generation;
+          const state = states[index];
+          if (state.kind === 'match') return true;
+          if (state.kind === 'split') pending.push(state.left, state.right);
+          else if (state.kind === 'assert') {
+            if (accepts(state.predicate)) pending.push(state.next);
+          } else active.push(index);
+        }
+        if (position === input.length) return false;
+        for (const index of active) {
+          const state = states[index];
+          if (accepts(state.predicate)) following.push(state.next);
+        }
+        active.length = 0;
+        const empty = pending;
+        pending = following;
+        following = empty;
+        position += unicode && input.codePointAt(position) > 0xffff ? 2 : 1;
+      }
+    }};
+  }
   function parseRegex(raw) {
     if (!raw.startsWith('/')) return undefined;
     let delimiter = -1;
@@ -45,11 +184,10 @@
     const pattern = raw.slice(1, delimiter);
     const flags = raw.slice(delimiter + 1);
     if (!pattern || pattern.length > MAX_PATTERN_LENGTH || !/^[imsu]*$/.test(flags) || new Set(flags).size !== flags.length) return null;
-    // A bounded subset: no groups, alternatives, repetitions or backreferences.
-    // At most four optional atoms keep backtracking bounded independently of input.
     let escaped = false;
     let inClass = false;
     let optional = 0;
+    let simple = true;
     for (const character of pattern) {
       if (escaped) {
         if (/[1-9kpcP]/.test(character)) return null;
@@ -60,11 +198,16 @@
       if (character === '[' && !inClass) { inClass = true; continue; }
       if (character === ']' && inClass) { inClass = false; continue; }
       if (inClass) continue;
-      if ('()*+{}|'.includes(character)) return null;
-      if (character === '?' && ++optional > 4) return null;
+      if ('()*+{}|'.includes(character)) simple = false;
+      if (character === '?' && ++optional > 4) simple = false;
     }
     if (escaped || inClass) return null;
-    try { return new RegExp(pattern, flags); } catch { return null; }
+    try {
+      const native = new RegExp(pattern, flags); // Syntax validation never executes the pattern.
+      // Keep the existing fast path: at most four optional atoms and no other
+      // repetition or alternatives, so backtracking is bounded by a constant.
+      return simple ? native : boundedRegex(pattern, flags);
+    } catch { return null; }
   }
   function normalizeRule(kind, value) {
     if (!kinds.has(kind) || typeof value !== 'string') return null;

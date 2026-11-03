@@ -3,6 +3,7 @@
   'use strict';
   const scopes = ['appearance', 'restrictions', 'filters', 'player', 'disable', 'importReset'];
   const quality = ['auto', 'lowest', 'tiny', 'small', 'medium', 'large', 'hd720', 'hd1080', 'hd1440', 'hd2160', 'highres', 'highest'];
+  const speeds = [0, ...Array.from({length: 16}, (_, i) => (i + 1) / 4)];
   const kinds = ['channels', 'videos', 'comments', 'posts'];
   const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
   function fail(message) { throw new Error(message); }
@@ -18,7 +19,7 @@
         entry: {enabled: false, message: 'Why are you opening YouTube?', seconds: 5, phrase: '', countdownStyle: 'detailed'},
         session: {enabled: false, minutes: 20, idleMinutes: 15, cooldownMinutes: 5, skipPhrase: '', allowSkip: true}},
       filters: {enabled: false, contextButtons: false, channels: [], videos: [], comments: [], posts: []},
-      player: {enabled: false, quality: 'auto', nativeControls: false, disableAutoplay: false, disableNextAutoplay: false, skipAds: false, seekAds: false},
+      player: {enabled: false, quality: 'auto', playbackSpeed: 0, autoFullscreen: false, nativeControls: false, disableAutoplay: false, disableNextAutoplay: false, skipAds: false, seekAds: false},
     };
   }
   function validate(raw) {
@@ -29,6 +30,11 @@
       raw.restrictions.session.allowSkip = Boolean(raw.restrictions.session.skipPhrase);
     }
     if (raw?.version === 2 && raw.player && !Object.hasOwn(raw.player, 'seekAds')) { raw = structuredClone(raw); raw.player.seekAds = false; }
+    if (raw?.version === 2 && object(raw.player) && (!Object.hasOwn(raw.player, 'playbackSpeed') || !Object.hasOwn(raw.player, 'autoFullscreen'))) {
+      raw = structuredClone(raw);
+      if (!Object.hasOwn(raw.player, 'playbackSpeed')) raw.player.playbackSpeed = 0;
+      if (!Object.hasOwn(raw.player, 'autoFullscreen')) raw.player.autoFullscreen = false;
+    }
     if (raw?.version === 2 && object(raw.focus) && !Object.hasOwn(raw.focus, 'showSessionWidget')) { raw = structuredClone(raw); raw.focus.showSessionWidget = false; }
     shape(raw, ['version', 'focus', 'restrictions', 'filters', 'player']);
     if (raw.version !== 2) fail('Unsupported feature settings version.');
@@ -80,13 +86,14 @@
         return normalized;
       }))];
     }
-    shape(p, ['enabled', 'quality', 'nativeControls', 'disableAutoplay', 'disableNextAutoplay', 'skipAds', 'seekAds']);
+    shape(p, ['enabled', 'quality', 'playbackSpeed', 'autoFullscreen', 'nativeControls', 'disableAutoplay', 'disableNextAutoplay', 'skipAds', 'seekAds']);
     if (!quality.includes(p.quality)) fail('Unknown video quality.');
+    if (!speeds.includes(p.playbackSpeed)) fail('Unknown playback speed.');
     return {version: 2, focus: focusValue,
       restrictions: {enabled: bool(r.enabled), temporaryUntil: integer(r.temporaryUntil, 0, 8640000000000000), schedules,
         entry: {enabled: bool(r.entry.enabled), message: text(r.entry.message), seconds: integer(r.entry.seconds, 0, 300), phrase: text(r.entry.phrase), countdownStyle: r.entry.countdownStyle},
         session: {enabled: bool(r.session.enabled), minutes: integer(r.session.minutes, 0, 1440), idleMinutes: integer(r.session.idleMinutes, 0, 1440), cooldownMinutes: integer(r.session.cooldownMinutes, 0, 1440), skipPhrase: text(r.session.skipPhrase), allowSkip: bool(r.session.allowSkip)}},
-      filters, player: Object.fromEntries(Object.entries(p).map(([key, value]) => [key, key === 'quality' ? value : bool(value)]))};
+      filters, player: Object.fromEntries(Object.entries(p).map(([key, value]) => [key, ['quality', 'playbackSpeed'].includes(key) ? value : bool(value)]))};
   }
   function protectionDefaults() {
     return {enabled: false, method: 'password', phrase: '', verifier: null, duration: 'single', scopes: Object.fromEntries(scopes.map(s => [s, true]))};
@@ -145,5 +152,5 @@
     if (!config.enabled) return freshRuntime();
     return next;
   }
-  globalThis.YTVFeatures = Object.freeze({defaults, validate, scopes, kinds, quality, protectionDefaults, scheduleWindow, presetWindow, freshRuntime, advance});
+  globalThis.YTVFeatures = Object.freeze({defaults, validate, scopes, kinds, quality, speeds, protectionDefaults, scheduleWindow, presetWindow, freshRuntime, advance});
 })();
