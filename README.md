@@ -1,7 +1,7 @@
 # YouTube Focus Extension[YFE]
 
 [![Release v0.9.0](docs/media/release.svg?v=0.9.0)](https://github.com/DefaultPerson/youtube-focus-extension/releases/latest)
-[![Firefox Add-ons: awaiting review](docs/media/firefox-addons.svg)](https://addons.mozilla.org/en-US/firefox/addon/yfe-youtube-focus-extension/)
+[![Firefox Add-ons: available](docs/media/firefox-addons.svg?v=0.9.0-public)](https://addons.mozilla.org/en-US/firefox/addon/yfe-youtube-focus-extension/)
 
 YFE is a free, open-source **YouTube focus extension and Shorts blocker** for desktop browsers. Hide Shorts, recommendations and comments, filter channels and keywords, and set focus sessions from a persistent settings panel. This independent **UnTrap alternative** includes 298 appearance and behavior settings. Chrome/Chromium and Firefox/Zen share the same feature code; browser acceptance status is recorded in the verification notes.
 
@@ -42,7 +42,7 @@ Firefox 153+ or desktop Zen based on Firefox 153+. This minimum keeps document-s
 2. Open **`about:debugging#/runtime/this-firefox`**, select **Load Temporary Add-on**, and choose the extracted **`manifest.json`**.
 3. Reload YouTube and click YFE's toolbar icon to open its sidebar; **↗** opens the same section in a full tab.
 
-The ZIP is an unsigned test package. Version 0.9.0 and its reproducible source archive were submitted to Mozilla Add-ons on November 3, 2026; review and signing are pending. Temporary loading lasts until the browser restarts; a signed XPI is not yet available. Do not load the Chrome source manifest in Firefox. Set the optional shortcut in **Manage Extension Shortcuts** in `about:addons`.
+A signed version is available from [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/yfe-youtube-focus-extension/). The release ZIP is an unsigned test package; temporary loading lasts until the browser restarts. Do not load the Chrome source manifest in Firefox. Set the optional shortcut in **Manage Extension Shortcuts** in `about:addons`.
 
 ## Privacy and permissions
 
